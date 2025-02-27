@@ -2,18 +2,20 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
 import { TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Page = () => {
   return (
     <View style={styles.container}>
-      <Text>Welcome to MyJournal!!!!!!</Text>
+      <View style={{ marginTop: 32 }}>
+        <Text>Welcome to MyJournal!!!!!!</Text>
 
-      <Link href="/challenges" asChild>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Click to see Challenges</Text>
-        </TouchableOpacity>
-      </Link>
-
+        <Link href="/challenges" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Click to see Challenges</Text>
+          </TouchableOpacity>
+        </Link>
+      </View>
     </View>
   );
 };
