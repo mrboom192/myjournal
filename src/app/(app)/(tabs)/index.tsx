@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import { Link, router, useRouter } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
+import Header from "@/src/components/Header";
 import { TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Page = () => {
   const router = useRouter();
@@ -13,7 +15,9 @@ const Page = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen options={{ header: () => <Header /> }} />
+
       <View style={{ marginTop: 32 }}>
         <Text>Welcome to MyJournal!!!!!!</Text>
 
@@ -21,7 +25,7 @@ const Page = () => {
           <Text style={styles.buttonText}>Click to see Challenges</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
