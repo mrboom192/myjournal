@@ -1,20 +1,25 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import { Link } from "expo-router";
+import { Link, router, useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import * as Haptics from "expo-haptics";
 
 const Page = () => {
+  const router = useRouter();
+
+  const handleOpenChallenges = () => {
+    router.push("/challenges");
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // This makes the phone vibrate
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ marginTop: 32 }}>
         <Text>Welcome to MyJournal!!!!!!</Text>
 
-        <Link href="/challenges" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Click to see Challenges</Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity onPress={handleOpenChallenges} style={styles.button}>
+          <Text style={styles.buttonText}>Click to see Challenges</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
