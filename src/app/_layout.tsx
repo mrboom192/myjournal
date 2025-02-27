@@ -12,7 +12,7 @@ import "react-native-reanimated";
 import { SessionProvider } from "../contexts/AuthContext";
 import { UserProvider } from "../contexts/UserContext";
 
-import { useColorScheme } from "@/components/useColorScheme";
+import { useColorScheme } from "@/src/components/useColorScheme";
 
 export {
   // Catch any errors thrown by the Layout component.
