@@ -15,7 +15,7 @@ const Page = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Stack.Screen options={{ header: () => <Header /> }} />
 
       <View style={{ marginTop: 32 }}>
@@ -25,7 +25,7 @@ const Page = () => {
           <Text style={styles.buttonText}>Click to see Challenges</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
+    marginTop: 32,
   },
   button: {
     marginTop: 20,
