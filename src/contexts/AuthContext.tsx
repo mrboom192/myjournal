@@ -66,6 +66,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
       // Save the user UID or token to session state
       setSession(user.uid); // Or user.email or user.getIdToken() for token
+      router.replace("/"); // Lets go home!!!
     } catch (error) {
       console.error("Error signing in:", error);
       throw error; // Re-throw to handle errors in the UI
