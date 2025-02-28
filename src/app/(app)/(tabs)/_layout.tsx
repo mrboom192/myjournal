@@ -1,16 +1,16 @@
 import { Tabs } from "expo-router";
-import React from 'react';
-import { Image } from 'react-native';
+import React from "react";
+import { Image } from "react-native";
 import { useColorScheme } from "@/src/components/useColorScheme";
 
 export default function TabLayout(): React.JSX.Element {
   const colorScheme = useColorScheme();
-  
+
   // Use theme colors for tab bar
   const activeColor = colorScheme === "dark" ? "#FFFFFF" : "#007AFF";
   const inactiveColor = colorScheme === "dark" ? "#8E8E93" : "#8E8E93";
   const backgroundColor = colorScheme === "dark" ? "#1C1C1E" : "#FFFFFF";
-  
+
   return (
     <Tabs
       screenOptions={{
@@ -20,36 +20,34 @@ export default function TabLayout(): React.JSX.Element {
         headerShown: false,
       }}
     >
-      <Tabs.Screen 
-        name="index" 
+      <Tabs.Screen
+        name="index"
         options={{
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
             <Image
-              source={require('../../../../assets/images/home_button.png')}
-              style={{ 
-                width: 24, 
+              source={require("../../../../assets/images/home_button.png")}
+              style={{
+                width: 24,
                 height: 24,
-                tintColor: color 
+                tintColor: color,
               }}
             />
           ),
         }}
       />
 
-      
-
-      <Tabs.Screen 
-        name="profile" 
+      <Tabs.Screen
+        name="profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
             <Image
-              source={require('../../../../assets/images/account_circle_button.png')}
-              style={{ 
-                width: 24, 
+              source={require("../../../../assets/images/account_circle_button.png")}
+              style={{
+                width: 24,
                 height: 24,
-                tintColor: color 
+                tintColor: color,
               }}
             />
           ),
