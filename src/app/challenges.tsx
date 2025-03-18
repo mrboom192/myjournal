@@ -1,61 +1,18 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import {View, Text, StyleSheet, FlatList,TouchableOpacity,}
+from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const challenges = [
-  {
-    id: "1",
-    title: "Write an entry for today",
-    points: 5,
-    description: "Write anything on your mind today!",
-  },
-  {
-    id: "2",
-    title: "Write down a new recipe",
-    points: 10,
-    description:
-      "Learned a new recipe? Make sure to keep track of it! Write down the ingredients and instructions.",
-  },
-  {
-    id: "3",
-    title: "Favorite memory",
-    points: 10,
-    description: "Want to remember a moment forever? Make sure to write it!",
-  },
-  {
-    id: "4",
-    title: "Movies/Shows List",
-    points: 10,
-    description: "Create a list of your favorite shows/movies.",
-  },
-  {
-    id: "5",
-    title: "Gym Plan",
-    points: 10,
-    description: "Make sure to stay on track by creating a gym plan.",
-  },
-  {
-    id: "6",
-    title: "Goals",
-    points: 10,
-    description:
-      "Write an entry reflecting on the goals you have set for this year!",
-  },
-  {
-    id: "7",
-    title: "Travel Journal ",
-    points: 10,
-    description:
-      "Write down places, hotels, locations visited, and important information here.",
-  },
+  { id: "1", title: "Write an entry for today", points: 5, description: "Write anything on your mind today!" },
+  { id: "2", title: "Write down a new recipe", points: 10, description: "Learned a new recipe? Make sure to keep track of it! Write down the ingredients and instructions." },
+  { id: "3", title: "Favorite memory", points: 10, description: "Want to remember a moment forever? Make sure to write it!" },
+  { id: "4", title: "Movies/Shows List", points: 10, description: "Create a list of your favorite shows/movies." },
+  { id: "5", title: "Gym Plan", points: 10, description: "Make sure to stay on track by creating a gym plan." },
+  { id: "6", title: "Goals", points: 10, description: "Write an entry reflecting on the goals you have set for this year!" },
+  { id: "7", title: "Travel Journal ", points: 10, description: "Write down places, hotels, locations visited, and important information here." },
 ];
 
 const Challenges = () => {
@@ -110,7 +67,7 @@ const Challenges = () => {
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
 
-      {/* Header with Streak Flame 🔥 */}
+      {/* Streak Flame Title 🔥 */}
 
       <Text style={styles.title}>Challenges</Text>
       <View style={styles.streakContainer}>
@@ -122,7 +79,10 @@ const Challenges = () => {
         data={challenges}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.challengeItem}>
+          <TouchableOpacity 
+            style={styles.challengeItem}
+            onPress={() => router.push(`/challenge/${item.title}`)} //this creates the new screen with notes when the user selects a challenge
+          >
             <Text style={styles.challengeText}>
               {item.title} - {item.points} points
             </Text>
@@ -162,7 +122,7 @@ const styles = StyleSheet.create({
   },
   challengeText: {
     fontSize: 18,
-    color: "#660066",
+    color: "#000000",
     fontWeight: "bold",
   },
   description: {
