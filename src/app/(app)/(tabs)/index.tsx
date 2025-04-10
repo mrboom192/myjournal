@@ -15,7 +15,14 @@ const Page = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        alignItems: "center",
+        marginTop: 32,
+      }}
+    >
       <Stack.Screen options={{ header: () => <Header /> }} />
 
       <View style={{ marginTop: 32 }}>

@@ -12,6 +12,8 @@ import "react-native-reanimated";
 import { SessionProvider } from "../contexts/AuthContext";
 
 import { useColorScheme } from "@/src/components/useColorScheme";
+import { SignUpProvider } from "../contexts/SignupContext";
+import { UserProvider } from "../contexts/UserContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,12 +59,16 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SessionProvider>
-        <Stack
-          screenOptions={{
-            navigationBarColor: "#FFF",
-            headerShown: false,
-          }}
-        />
+        <UserProvider>
+          <SignUpProvider>
+            <Stack
+              screenOptions={{
+                navigationBarColor: "#FFF",
+                headerShown: false,
+              }}
+            />
+          </SignUpProvider>
+        </UserProvider>
       </SessionProvider>
     </ThemeProvider>
   );

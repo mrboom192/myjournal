@@ -1,23 +1,24 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  ScrollView
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for dummy icons
-import { useRouter } from 'expo-router';
+  ScrollView,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for dummy icons
+import { useRouter } from "expo-router";
+import { useUser } from "@/src/contexts/UserContext";
 
 const ProfileScreen = () => {
   const router = useRouter();
-  
+  const { data } = useUser();
+
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       {/* Scrollable content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        
         {/* Header / Profile Info */}
         <View style={styles.header}>
           <View style={styles.profileRow}>
@@ -28,9 +29,11 @@ const ProfileScreen = () => {
               color="#fff"
               style={styles.profileIcon}
             />
-            <Text style={styles.userName}>Ghulam Quadri</Text>
+            <Text style={styles.userName}>
+              {data.firstName} {data.lastName}
+            </Text>
           </View>
-          
+
           {/* Mood Section */}
           <TouchableOpacity style={styles.moodButton}>
             <Text style={styles.moodButtonText}>Set mood</Text>
@@ -48,12 +51,42 @@ const ProfileScreen = () => {
           </View>
           <View style={styles.friendsAvatars}>
             {/* Dummy friend icons */}
-            <Ionicons name="person" size={40} color="#fff" style={styles.friendIcon} />
-            <Ionicons name="person" size={40} color="#fff" style={styles.friendIcon} />
-            <Ionicons name="person" size={40} color="#fff" style={styles.friendIcon} />
-            <Ionicons name="person" size={40} color="#fff" style={styles.friendIcon} />
-            <Ionicons name="person" size={40} color="#fff" style={styles.friendIcon} />
-            <Ionicons name="person" size={40} color="#fff" style={styles.friendIcon} />
+            <Ionicons
+              name="person"
+              size={40}
+              color="#fff"
+              style={styles.friendIcon}
+            />
+            <Ionicons
+              name="person"
+              size={40}
+              color="#fff"
+              style={styles.friendIcon}
+            />
+            <Ionicons
+              name="person"
+              size={40}
+              color="#fff"
+              style={styles.friendIcon}
+            />
+            <Ionicons
+              name="person"
+              size={40}
+              color="#fff"
+              style={styles.friendIcon}
+            />
+            <Ionicons
+              name="person"
+              size={40}
+              color="#fff"
+              style={styles.friendIcon}
+            />
+            <Ionicons
+              name="person"
+              size={40}
+              color="#fff"
+              style={styles.friendIcon}
+            />
           </View>
         </View>
 
@@ -105,111 +138,111 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1c1b22'
+    backgroundColor: "#1c1b22",
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   header: {
-    backgroundColor: '#2a2933',
+    backgroundColor: "#2a2933",
     borderRadius: 12,
     padding: 16,
-    marginBottom: 20
+    marginBottom: 20,
   },
   profileRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
   },
   profileIcon: {
-    marginRight: 12
+    marginRight: 12,
   },
   userName: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '600'
+    fontWeight: "600",
   },
   moodButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#3b3946',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#3b3946",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
-    alignSelf: 'flex-start'
+    alignSelf: "flex-start",
   },
   moodButtonText: {
-    color: '#fff',
-    marginRight: 8
+    color: "#fff",
+    marginRight: 8,
   },
   moodEmoji: {
-    fontSize: 18
+    fontSize: 18,
   },
   friendsContainer: {
-    backgroundColor: '#2a2933',
+    backgroundColor: "#2a2933",
     borderRadius: 12,
     padding: 16,
-    marginBottom: 20
+    marginBottom: 20,
   },
   friendsTitleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
   },
   friendsTitle: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600'
+    fontWeight: "600",
   },
   seeAllText: {
-    color: '#9b9a9e'
+    color: "#9b9a9e",
   },
   friendsAvatars: {
-    flexDirection: 'row'
+    flexDirection: "row",
   },
   friendIcon: {
-    marginRight: 8
+    marginRight: 8,
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#2a2933',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "#2a2933",
     borderRadius: 12,
     padding: 16,
-    marginBottom: 20
+    marginBottom: 20,
   },
   statItem: {
-    alignItems: 'center'
+    alignItems: "center",
   },
   statValue: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600'
+    fontWeight: "600",
   },
   statLabel: {
-    color: '#9b9a9e',
+    color: "#9b9a9e",
     fontSize: 12,
-    marginTop: 4
+    marginTop: 4,
   },
   settingsContainer: {
-    backgroundColor: '#2a2933',
-    borderRadius: 12
+    backgroundColor: "#2a2933",
+    borderRadius: 12,
   },
   settingsItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
-    borderBottomColor: '#3b3946',
-    borderBottomWidth: 1
+    borderBottomColor: "#3b3946",
+    borderBottomWidth: 1,
   },
   settingsItemText: {
-    color: '#fff',
-    fontSize: 16
+    color: "#fff",
+    fontSize: 16,
   },
   settingsItemArrow: {
-    color: '#9b9a9e',
-    fontSize: 16
-  }
+    color: "#9b9a9e",
+    fontSize: 16,
+  },
 });

@@ -1,183 +1,231 @@
 import {
   View,
   Text,
-  Pressable,
-  KeyboardAvoidingView,
-  ActivityIndicator,
+  TextInput,
   TouchableOpacity,
-  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  Pressable,
 } from "react-native";
-import { Link } from "expo-router";
-import { useState } from "react";
-import React from "react";
+import React, { useState } from "react";
+import Colors from "../constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import LabeledInput from "../components/LabeledInput";
-import { useSession } from "@/src/contexts/AuthContext";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
+import { useSignUp } from "../contexts/SignupContext";
+import { useSession } from "../contexts/AuthContext";
 
-const Page = () => {
+const SignUp = () => {
+  const { signUpData, setSignUpData } = useSignUp();
   const { signUp } = useSession();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const router = useRouter();
+  const handleSignUp = async () => {
+    const { email, password, ...userInfo } = signUpData;
 
-  async function handleSignUp() {
     try {
-      await signUp(email, password);
-    } catch (error) {
-      console.error("Sign-up failed");
+      setSubmitting(true);
+      await signUp(email, password, userInfo);
+    } catch (e) {
+      // Already handled in the context, but you could add UI feedback here
+    } finally {
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <KeyboardAvoidingView style={styles.keyboardView} behavior="padding">
-          <View style={styles.inputContainer}>
-            <Text style={styles.subtitle}>Create an account</Text>
-            <LabeledInput
-              label="Email"
-              placeholder="Email"
-              iconLeft={
-                <Ionicons name="mail-outline" size={16} color="#717171" />
-              }
-              value={email}
-              onChangeText={setEmail}
-            />
-            <LabeledInput
-              label="Password"
-              placeholder="Password"
-              iconLeft={
-                <Ionicons
-                  name="lock-closed-outline"
-                  size={16}
-                  color="#717171"
-                />
-              }
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={true}
-            />
-            {loading ? (
-              <ActivityIndicator size="small" style={styles.loadingIndicator} />
-            ) : (
-              <TouchableOpacity
-                style={styles.signUpButton}
-                onPress={handleSignUp}
-              >
-                <Text style={styles.signUpText}>Sign Up</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{
+          flex: 1,
+          paddingHorizontal: 24,
+          paddingTop: 32,
+          paddingBottom: 16,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            router.back();
+          }}
+          disabled={submitting}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={24}
+            color={submitting ? "#aaa" : "#000"}
+          />
+        </TouchableOpacity>
 
-          <View style={styles.alreadyAccountContainer}>
-            <Text style={styles.alreadyAccountText}>
-              Already have an account?{" "}
-            </Text>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => router.back()}
-            >
-              <Text style={styles.text}>Back</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </View>
+        <Text
+          style={{
+            fontSize: 20,
+            fontFamily: "dm-sb",
+            marginVertical: 24,
+            textAlign: "center",
+          }}
+        >
+          Finish signing up
+        </Text>
+
+        {/* First Name */}
+        <Text style={{ fontFamily: "dm", fontSize: 14, marginBottom: 6 }}>
+          First name
+        </Text>
+        <TextInput
+          editable={!submitting}
+          style={{
+            borderColor: Colors.light.faintGrey,
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 16,
+            paddingVertical: 14,
+            fontSize: 16,
+            fontFamily: "dm",
+            marginBottom: 16,
+          }}
+          placeholder="e.g. John"
+          value={signUpData.firstName}
+          onChangeText={(text) => setSignUpData({ firstName: text })}
+        />
+
+        {/* Last Name */}
+        <Text style={{ fontFamily: "dm", fontSize: 14, marginBottom: 6 }}>
+          Last name
+        </Text>
+        <TextInput
+          editable={!submitting}
+          style={{
+            borderColor: Colors.light.faintGrey,
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 16,
+            paddingVertical: 14,
+            fontSize: 16,
+            fontFamily: "dm",
+            marginBottom: 16,
+          }}
+          placeholder="e.g. Smith"
+          value={signUpData.lastName}
+          onChangeText={(text) => setSignUpData({ lastName: text })}
+        />
+
+        {/* Email*/}
+        <Text style={{ fontFamily: "dm", fontSize: 14, marginBottom: 6 }}>
+          Email
+        </Text>
+        <TextInput
+          editable={!submitting}
+          style={{
+            borderColor: Colors.light.faintGrey,
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 16,
+            paddingVertical: 14,
+            fontSize: 16,
+            fontFamily: "dm",
+            marginBottom: 16,
+          }}
+          placeholder="e.g. johnsmith@email.com"
+          value={signUpData.email}
+          onChangeText={(text) => setSignUpData({ email: text })}
+        />
+
+        {/* Password */}
+        <Text style={{ fontFamily: "dm", fontSize: 14, marginBottom: 6 }}>
+          Password
+        </Text>
+        <View
+          style={{
+            borderColor: Colors.light.faintGrey,
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 16,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingVertical: 4,
+            marginBottom: 16,
+          }}
+        >
+          <TextInput
+            editable={!submitting}
+            style={{
+              flex: 1,
+              fontSize: 16,
+              fontFamily: "dm",
+              paddingVertical: 10,
+            }}
+            placeholder="Password"
+            secureTextEntry={!showPassword}
+            value={signUpData.password}
+            onChangeText={(text) => setSignUpData({ password: text })}
+          />
+          <TouchableOpacity
+            disabled={submitting}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={20}
+              color={Colors.light.grey}
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Terms */}
+        <Text
+          style={{
+            fontSize: 12,
+            color: "#666",
+            textAlign: "center",
+            fontFamily: "dm",
+            lineHeight: 16,
+            marginBottom: 24,
+          }}
+        >
+          By selecting Agree and continue, I agree to MyJournal's{" "}
+          <Text style={{ textDecorationLine: "underline" }}>
+            Terms of Service, Payments Terms of Service and Nondiscrimination
+            Policy
+          </Text>{" "}
+          and acknowledge the{" "}
+          <Text style={{ textDecorationLine: "underline" }}>
+            Privacy Policy
+          </Text>
+          .
+        </Text>
+
+        {/* Agree Button */}
+        <TouchableOpacity
+          disabled={submitting}
+          style={{
+            backgroundColor: "#000",
+            borderRadius: 8,
+            paddingVertical: 16,
+            alignItems: "center",
+          }}
+          onPress={handleSignUp}
+        >
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 16,
+              fontFamily: "dm-sb",
+            }}
+          >
+            {submitting ? "Signing up..." : "Agree and continue"}
+          </Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  text: {
-    color: "white",
-    textTransform: "capitalize",
-    fontWeight: "500",
-  },
-  button: {
-    width: 128,
-    paddingVertical: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    backgroundColor: "#2C2C2C",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-  },
-  innerContainer: {
-    alignItems: "flex-start",
-    marginHorizontal: 32,
-    marginTop: 16,
-    marginBottom: 64,
-  },
-  keyboardView: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flex: 1,
-    gap: 8,
-  },
-  title: {
-    color: "#F1744D",
-    fontSize: 32,
-    fontWeight: "500",
-  },
-  inputContainer: {
-    width: "100%",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    gap: 16,
-  },
-  subtitle: {
-    color: "#475569",
-    fontSize: 20,
-    fontWeight: "400",
-  },
-  loadingIndicator: {
-    margin: 28,
-  },
-  signUpButton: {
-    alignSelf: "stretch",
-    paddingVertical: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    backgroundColor: "#2C2C2C",
-  },
-  signUpText: {
-    color: "white",
-    textTransform: "uppercase",
-  },
-  separatorContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 12,
-    alignSelf: "stretch",
-  },
-  separator: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#AAA",
-  },
-  alreadyAccountContainer: {
-    alignSelf: "stretch",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    gap: 16,
-  },
-  alreadyAccountText: {
-    color: "#475569",
-  },
-  signInLink: {
-    color: "#F1744D",
-    textDecorationLine: "underline",
-  },
-});
-
-export default Page;
+export default SignUp;
