@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,17 +15,36 @@ import UserAvatar from "@/src/components/UserAvatar";
 import { useSession } from "@/src/contexts/AuthContext";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
+import { Audio } from "expo-av";
 
 const ProfileScreen = () => {
   const router = useRouter();
   const { data, loading } = useUser();
   const { signOut } = useSession();
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+  const playSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require("@/assets/chicken-jockey.mp3") // or a URL string
+    );
+    setSound(sound);
+    await sound.playAsync();
+  };
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync(); // clean up on unmount
+        }
+      : undefined;
+  }, [sound]);
 
   function handleLogout() {
     signOut();
   }
 
   async function handleCopy() {
+    playSound();
     await Clipboard.setStringAsync(data.friendCode);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }

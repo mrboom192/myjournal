@@ -30,7 +30,19 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow MyJournal to access your microphone."
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow MyJournal to access your microphone."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
