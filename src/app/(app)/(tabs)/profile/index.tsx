@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for dummy icons
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import UserAvatar from "@/src/components/UserAvatar";
 
@@ -18,6 +18,7 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
+      <Stack.Screen options={{ headerShown: false }} />
       {/* Scrollable content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header / Profile Info */}
@@ -111,7 +112,10 @@ const ProfileScreen = () => {
 
         {/* Settings */}
         <View style={styles.settingsContainer}>
-          <TouchableOpacity style={styles.settingsItem}>
+          <TouchableOpacity
+            style={styles.settingsItem}
+            onPress={() => router.push("/profile/account-info")}
+          >
             <Text style={styles.settingsItemText}>Account info</Text>
             <Text style={styles.settingsItemArrow}>›</Text>
           </TouchableOpacity>
