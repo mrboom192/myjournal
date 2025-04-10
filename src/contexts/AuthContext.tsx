@@ -8,7 +8,14 @@ import {
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { router } from "expo-router";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 
 const AuthContext = createContext<{
   signIn: (email: string, password: string) => Promise<void>;
@@ -48,10 +55,13 @@ export function SessionProvider({ children }: PropsWithChildren) {
       );
       const user = userCredential.user;
 
+      const friendCode = await generateFriendCode(user.uid);
+
       // Store user information in Firestore, merging user-specific data
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         uid: user.uid,
+        friendCode,
         ...data, // Spread additional user information
       });
 
@@ -98,3 +108,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
     </AuthContext.Provider>
   );
 }
+
+// Utility to generate a short alphanumeric code
+const generateFriendCode = (uid: string) => {
+  // Use the last 6–8 characters of UID, or hash if needed
+  return uid.slice(-8);
+};

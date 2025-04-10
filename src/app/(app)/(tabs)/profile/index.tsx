@@ -13,14 +13,25 @@ import { Stack, useRouter } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import UserAvatar from "@/src/components/UserAvatar";
 import { useSession } from "@/src/contexts/AuthContext";
+import * as Clipboard from "expo-clipboard";
+import * as Haptics from "expo-haptics";
 
 const ProfileScreen = () => {
   const router = useRouter();
-  const { data } = useUser();
+  const { data, loading } = useUser();
   const { signOut } = useSession();
 
   function handleLogout() {
     signOut();
+  }
+
+  async function handleCopy() {
+    await Clipboard.setStringAsync(data.friendCode);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  }
+
+  if (loading) {
+    return <Text>Loading...</Text>;
   }
 
   return (
@@ -43,6 +54,28 @@ const ProfileScreen = () => {
             <Text style={styles.userName}>
               {data.firstName} {data.lastName}
             </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 16,
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontWeight: "500",
+                marginRight: 8,
+              }}
+            >
+              Friend code: {data.friendCode}
+            </Text>
+
+            <Pressable onPress={handleCopy}>
+              <Ionicons name="copy-outline" size={20} color="#9b9a9e" />
+            </Pressable>
           </View>
 
           {/* Mood Section */}
@@ -260,8 +293,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
-    borderBottomColor: "#3b3946",
-    borderBottomWidth: 1,
   },
   settingsItemText: {
     color: "#fff",
