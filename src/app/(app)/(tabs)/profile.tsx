@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for dummy icons
 import { useRouter } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
+import UserAvatar from "@/src/components/UserAvatar";
 
 const ProfileScreen = () => {
   const router = useRouter();
@@ -21,14 +22,16 @@ const ProfileScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header / Profile Info */}
         <View style={styles.header}>
-          <View style={styles.profileRow}>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 8,
+              alignItems: "center",
+              marginBottom: 16,
+            }}
+          >
             {/* Dummy profile icon instead of a profile image */}
-            <Ionicons
-              name="person-circle-outline"
-              size={50}
-              color="#fff"
-              style={styles.profileIcon}
-            />
+            <UserAvatar size={50} canUpload={true} />
             <Text style={styles.userName}>
               {data.firstName} {data.lastName}
             </Text>
