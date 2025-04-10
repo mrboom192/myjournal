@@ -51,7 +51,12 @@ const AccountInfo = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "#1c1b22",
+      }}
+    >
       <Stack.Screen
         options={{
           title: "Account info",
@@ -61,11 +66,15 @@ const AccountInfo = () => {
         }}
       />
 
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.card}>
+      <ScrollView>
+        <View
+          style={{
+            backgroundColor: "#2a2933",
+            borderRadius: 12,
+            padding: 16,
+            marginHorizontal: 16,
+          }}
+        >
           <Text style={styles.label}>First name</Text>
           <TextInput
             value={firstName}
@@ -104,7 +113,7 @@ const AccountInfo = () => {
           </Text>
         </Pressable>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -114,19 +123,6 @@ export default AccountInfo;
 //     STYLES
 // -----------------
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#1c1b22",
-  },
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 100,
-  },
-  card: {
-    backgroundColor: "#2a2933",
-    borderRadius: 12,
-    padding: 16,
-  },
   label: {
     color: "#fff",
     fontFamily: "dm",
