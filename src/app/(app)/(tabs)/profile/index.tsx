@@ -119,18 +119,6 @@ const ProfileScreen = () => {
             <Text style={styles.settingsItemText}>Account info</Text>
             <Text style={styles.settingsItemArrow}>›</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>Notifications</Text>
-            <Text style={styles.settingsItemArrow}>›</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>Language</Text>
-            <Text style={styles.settingsItemArrow}>›</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>Account Info</Text>
-            <Text style={styles.settingsItemArrow}>›</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
