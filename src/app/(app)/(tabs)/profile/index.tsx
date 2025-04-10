@@ -16,6 +16,7 @@ import { useSession } from "@/src/contexts/AuthContext";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { Audio } from "expo-av";
+import Avatar from "@/src/components/Avatar";
 
 const ProfileScreen = () => {
   const router = useRouter();
@@ -107,49 +108,31 @@ const ProfileScreen = () => {
         {/* Friends */}
         <View style={styles.friendsContainer}>
           <View style={styles.friendsTitleRow}>
-            <Text style={styles.friendsTitle}>6 Friends</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAllText}>See all</Text>
+            <Text style={styles.friendsTitle}>
+              {data.friends?.length || "0"} friends
+            </Text>
+            <TouchableOpacity
+              onPress={() => router.push("/(app)/(modals)/friends")}
+            >
+              <Text style={{ color: "#9b9a9e", fontSize: 16 }}>See all</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.friendsAvatars}>
-            {/* Dummy friend icons */}
-            <Ionicons
-              name="person"
-              size={40}
-              color="#fff"
-              style={styles.friendIcon}
-            />
-            <Ionicons
-              name="person"
-              size={40}
-              color="#fff"
-              style={styles.friendIcon}
-            />
-            <Ionicons
-              name="person"
-              size={40}
-              color="#fff"
-              style={styles.friendIcon}
-            />
-            <Ionicons
-              name="person"
-              size={40}
-              color="#fff"
-              style={styles.friendIcon}
-            />
-            <Ionicons
-              name="person"
-              size={40}
-              color="#fff"
-              style={styles.friendIcon}
-            />
-            <Ionicons
-              name="person"
-              size={40}
-              color="#fff"
-              style={styles.friendIcon}
-            />
+            {data.friends?.length > 0 ? (
+              <ScrollView horizontal>
+                {data.friends.map((friend: any) => {
+                  <Avatar
+                    size={24}
+                    initials={friend.firstName + " " + friend.lastName}
+                    uri={friend.image}
+                  />;
+                })}
+              </ScrollView>
+            ) : (
+              <Text style={{ fontWeight: 500, color: "#9b9a9e" }}>
+                No friends
+              </Text>
+            )}
           </View>
         </View>
 
@@ -180,9 +163,9 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <Pressable
+        <TouchableOpacity
           onPress={handleLogout}
-          style={({ pressed }) => [
+          style={[
             {
               paddingVertical: 14,
               paddingHorizontal: 16,
@@ -190,7 +173,7 @@ const ProfileScreen = () => {
               alignItems: "center",
               marginTop: 20,
             },
-            { backgroundColor: pressed ? "#2c2a36" : "#3b3946" },
+            { backgroundColor: "#2a2933" },
           ]}
         >
           <Text
@@ -202,7 +185,7 @@ const ProfileScreen = () => {
           >
             Log out
           </Text>
-        </Pressable>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -272,9 +255,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
-  },
-  seeAllText: {
-    color: "#9b9a9e",
   },
   friendsAvatars: {
     flexDirection: "row",

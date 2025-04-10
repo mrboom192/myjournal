@@ -35,6 +35,13 @@ export default function AppLayout() {
   return (
     <Stack screenOptions={{ navigationBarColor: "#FFF" }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(modals)/friends"
+        options={{
+          presentation: "modal",
+          title: "Friends",
+        }}
+      />
     </Stack>
   );
 }
