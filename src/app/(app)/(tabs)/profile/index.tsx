@@ -5,16 +5,23 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for dummy icons
 import { Stack, useRouter } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import UserAvatar from "@/src/components/UserAvatar";
+import { useSession } from "@/src/contexts/AuthContext";
 
 const ProfileScreen = () => {
   const router = useRouter();
   const { data } = useUser();
+  const { signOut } = useSession();
+
+  function handleLogout() {
+    signOut();
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -120,6 +127,30 @@ const ProfileScreen = () => {
             <Text style={styles.settingsItemArrow}>›</Text>
           </TouchableOpacity>
         </View>
+
+        <Pressable
+          onPress={handleLogout}
+          style={({ pressed }) => [
+            {
+              paddingVertical: 14,
+              paddingHorizontal: 16,
+              borderRadius: 10,
+              alignItems: "center",
+              marginTop: 20,
+            },
+            { backgroundColor: pressed ? "#2c2a36" : "#3b3946" },
+          ]}
+        >
+          <Text
+            style={{
+              color: "#ff6b6b",
+              fontFamily: "dm-sb",
+              fontSize: 16,
+            }}
+          >
+            Log out
+          </Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
