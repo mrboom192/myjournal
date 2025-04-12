@@ -16,6 +16,7 @@ import {
   collection,
   getDocs,
   getFirestore,
+  onSnapshot,
   query,
   where,
 } from "firebase/firestore";
@@ -45,27 +46,21 @@ const HomePage = () => {
   const [entries, setEntries] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchEntries = async () => {
-      if (loading || !data?.uid) return;
+    if (loading || !data?.uid) return;
 
-      try {
-        const db = getFirestore();
-        const entriesRef = collection(db, "entries");
-        const q = query(entriesRef, where("userId", "==", data.uid));
-        const querySnapshot = await getDocs(q);
+    const db = getFirestore();
+    const entriesRef = collection(db, "entries");
+    const q = query(entriesRef, where("userId", "==", data.uid));
 
-        const entriesData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const entriesData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<any, "id">),
+      }));
+      setEntries(entriesData);
+    });
 
-        setEntries(entriesData);
-      } catch (error) {
-        console.error("Error fetching entries:", error);
-      }
-    };
-
-    fetchEntries();
+    return () => unsubscribe();
   }, [loading, data?.uid]);
 
   const handlePrevMonth = () => {
