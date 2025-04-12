@@ -87,18 +87,28 @@ const ProfileScreen = () => {
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
             >
-              <Text style={styles.seeAllText}>See all <Ionicons name="chevron-forward" size={16} color="#9b9a9e" /></Text>
+              <Text style={styles.seeAllText}>
+                See all{" "}
+                <Ionicons name="chevron-forward" size={16} color="#9b9a9e" />
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.friendsAvatars}>
             {data.friends?.length > 0 ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {/* For demo, show placeholder avatars if no friends */}
-                {(data.friends.length > 0 ? data.friends : Array(6).fill(null)).map((friend: any, index: number) => (
+                {(data.friends.length > 0
+                  ? data.friends
+                  : Array(6).fill(null)
+                ).map((friend: any, index: number) => (
                   <View key={index} style={styles.friendAvatarContainer}>
                     <Avatar
                       size={40}
-                      initials={friend?.firstName ? friend.firstName[0] + friend.lastName[0] : ""}
+                      initials={
+                        friend?.firstName
+                          ? friend.firstName[0] + friend.lastName[0]
+                          : ""
+                      }
                       uri={friend?.image || undefined}
                     />
                   </View>
@@ -139,27 +149,24 @@ const ProfileScreen = () => {
             <Text style={styles.settingsItemText}>Account info</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.settingsItem}>
             <Text style={styles.settingsItemText}>Notifications</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.settingsItem}>
             <Text style={styles.settingsItemText}>Language</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.settingsItem}>
             <Text style={styles.settingsItemText}>Appearance</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          onPress={handleLogout}
-          style={styles.logoutButton}
-        >
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
       </ScrollView>

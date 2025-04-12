@@ -29,7 +29,7 @@ const JournalEntryScreen = () => {
   const params = useLocalSearchParams();
 
   // Get params if editing an existing entry
-  const isEditMode = params.editMode === "true";
+  const isEditMode = params.mode === "edit";
   const paramTitle = params.title
     ? decodeURIComponent(params.title as string)
     : "";
@@ -167,6 +167,7 @@ const JournalEntryScreen = () => {
             placeholderTextColor="#9b9a9e"
             value={title}
             onChangeText={setTitle}
+            editable={isEditMode}
           />
 
           <Text style={styles.dateText}>{formattedDate}</Text>
@@ -179,9 +180,10 @@ const JournalEntryScreen = () => {
             placeholderTextColor="#9b9a9e"
             value={content}
             onChangeText={setContent}
+            editable={isEditMode}
             multiline
             textAlignVertical="top"
-            autoFocus={isChallenge}
+            autoFocus={!isEditMode}
           />
         </ScrollView>
       </KeyboardAvoidingView>

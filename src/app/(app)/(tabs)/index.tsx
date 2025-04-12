@@ -1,15 +1,39 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import UserAvatar from "@/src/components/UserAvatar";
 import { useUser } from "@/src/contexts/UserContext";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+import Colors from "@/src/constants/Colors";
 
 const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const HomePage = () => {
@@ -18,12 +42,31 @@ const HomePage = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  // Sample journal entry data
-  const sampleEntry = {
-    title: "Trip to Wisconsin",
-    date: "January 8th, 2025",
-    content: "Today I went to Wisconsin for the first time, and I have to say—it was not what I expected. I always pictured endless dairy farms and cold, but there's so much more to it...\n\nThe drive in was peaceful, with rolling hills and quiet towns that felt like something out of an old postcard. I stopped at a roadside diner just past the state line, and the waitress—her name was Marla—insisted I try the cheese curds. I wasn't sure what to expect, but they were warm, crispy, and squeaky when I bit into them. Apparently, that means they're fresh. Who knew cheese could be so much fun?"
-  };
+  const [entries, setEntries] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchEntries = async () => {
+      if (loading || !data?.uid) return;
+
+      try {
+        const db = getFirestore();
+        const entriesRef = collection(db, "entries");
+        const q = query(entriesRef, where("userId", "==", data.uid));
+        const querySnapshot = await getDocs(q);
+
+        const entriesData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<any, "id">),
+        }));
+
+        setEntries(entriesData);
+      } catch (error) {
+        console.error("Error fetching entries:", error);
+      }
+    };
+
+    fetchEntries();
+  }, [loading, data?.uid]);
 
   const handlePrevMonth = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -57,21 +100,22 @@ const HomePage = () => {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <Stack.Screen options={{ headerShown: false }} />
-      
+
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.greetingRow}>
           <UserAvatar size={40} canUpload={false} />
-          <Text style={styles.greeting}>
-            Hi, {data.firstName || "Ghulam"}!
-          </Text>
+          <Text style={styles.greeting}>Hi, {data.firstName || "Ghulam"}!</Text>
         </View>
         <TouchableOpacity style={styles.searchButton}>
           <Ionicons name="search" size={22} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* Month Navigation */}
         <View style={styles.monthNavigation}>
           <TouchableOpacity onPress={handlePrevMonth}>
@@ -93,30 +137,60 @@ const HomePage = () => {
           </Text>
         </View>
 
+        {!entries && (
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              marginTop: 48,
+              marginBottom: 64,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: 600,
+                color: Colors.light.grey,
+              }}
+            >
+              No entries
+            </Text>
+          </View>
+        )}
+
         {/* Recent Journal Entry */}
-        <TouchableOpacity 
-          style={styles.journalEntryCard}
-          onPress={() => {
-            router.push({
-              pathname: "/(app)/(modals)/journal-entry",
-              params: { 
-                title: sampleEntry.title,
-                content: sampleEntry.content,
-                editMode: true
-              }
-            });
-          }}
-        >
-          <Text style={styles.entryTitle}>{sampleEntry.title}</Text>
-          <Text style={styles.entryDate}>Created on {sampleEntry.date}</Text>
-          <View style={styles.divider} />
-          <Text style={styles.entryContent} numberOfLines={4}>
-            {sampleEntry.content}
-          </Text>
-        </TouchableOpacity>
-        
+        {entries.map((entry) => {
+          return (
+            <TouchableOpacity
+              key={entry.id}
+              style={styles.journalEntryCard}
+              onPress={() => {
+                router.push({
+                  pathname: "/(app)/(modals)/journal-entry",
+                  params: {
+                    title: entry.title,
+                    content: entry.content,
+                    mode: "edit",
+                    challengeId: entry.challengeId,
+                  },
+                });
+              }}
+            >
+              <Text style={styles.entryTitle}>{entry.title}</Text>
+              <Text style={styles.entryDate}>
+                {" "}
+                Created on {entry.createdAt?.toDate().toLocaleDateString()}
+              </Text>
+              <View style={styles.divider} />
+              <Text style={styles.entryContent} numberOfLines={4}>
+                {entry.content}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+
         {/* Challenges Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.challengesButton}
           onPress={handleOpenChallenges}
         >
@@ -128,27 +202,15 @@ const HomePage = () => {
 
         {/* Collections */}
         <Text style={styles.sectionTitle}>Collections</Text>
-        
-        <TouchableOpacity 
-          style={styles.collectionItem}
-          onPress={() => {
-            router.push({
-              pathname: "/(app)/(modals)/journal-entry",
-              params: { 
-                title: sampleEntry.title,
-                content: sampleEntry.content,
-                editMode: true
-              }
-            });
-          }}
-        >
+
+        <TouchableOpacity style={styles.collectionItem}>
           <View style={styles.collectionIconContainer}>
             <Ionicons name="journal-outline" size={20} color="#9C27B0" />
           </View>
           <Text style={styles.collectionName}>Wisconsin Trip</Text>
           <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.collectionItem}>
           <View style={styles.collectionIconContainer}>
             <Ionicons name="leaf-outline" size={20} color="#4CAF50" />
