@@ -65,9 +65,21 @@ const JournalEntryScreen = () => {
 
     try {
       await runTransaction(db, async (transaction) => {
-        // Prepare the new journal entry
-        const newEntryRef = doc(entriesRef); // auto-ID
-        const newEntryData = {
+        // read
+        const userDoc = await transaction.get(userRef);
+        if (!userDoc.exists()) {
+          throw new Error("User does not exist!");
+        }
+
+        const currentPoints = userDoc.data()?.points || 0;
+
+        // from challenges json
+        const challengePoints = isChallenge
+          ? challenges.find((c) => c.id === challengeId)?.points || 1
+          : 1;
+
+        const entryRef = doc(entriesRef); // auto-ID
+        const entry = {
           userId,
           title,
           content,
@@ -75,18 +87,10 @@ const JournalEntryScreen = () => {
           ...(isChallenge ? { challengeId } : {}),
         };
 
-        // Add journal entry
-        transaction.set(newEntryRef, newEntryData);
-
-        // Update user's points
-        const userDoc = await transaction.get(userRef);
-        if (!userDoc.exists()) {
-          throw new Error("User does not exist!");
-        }
-
-        const currentPoints = userDoc.data()?.points || 0;
+        // Now safe to write
+        transaction.set(entryRef, entry);
         transaction.update(userRef, {
-          points: currentPoints + 1,
+          points: currentPoints + challengePoints,
         });
       });
 

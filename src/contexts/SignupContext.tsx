@@ -5,6 +5,7 @@ type SignUpData = {
   firstName: string;
   lastName: string;
   password: string;
+  points: number;
 };
 
 type SignUpContextType = {
@@ -18,6 +19,7 @@ const defaultData: SignUpData = {
   firstName: "",
   lastName: "",
   password: "",
+  points: 0,
 };
 
 const SignUpContext = createContext<SignUpContextType | undefined>(undefined);
