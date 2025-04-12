@@ -14,18 +14,15 @@ import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { auth, db } from "@/firebaseConfig";
-import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
-
-// Maps challenge ID to color and icon
-const challengeMap = {
-  "1": { color: "#9C27B0", icon: "create-outline" },
-  "2": { color: "#4CAF50", icon: "restaurant-outline" },
-  "3": { color: "#F44336", icon: "heart-outline" },
-  "4": { color: "#2196F3", icon: "film-outline" },
-  "5": { color: "#FF9800", icon: "fitness-outline" },
-  "6": { color: "#FFC107", icon: "trophy-outline" },
-  "7": { color: "#03A9F4", icon: "airplane-outline" },
-};
+import challenges from "@/assets/data/challenges.json";
+import {
+  addDoc,
+  collection,
+  doc,
+  runTransaction,
+  setDoc,
+  Timestamp,
+} from "firebase/firestore";
 
 const JournalEntryScreen = () => {
   const router = useRouter();
@@ -39,10 +36,10 @@ const JournalEntryScreen = () => {
   const paramContent = params.content
     ? decodeURIComponent(params.content as string)
     : "";
-  const isChallenge = params.isChallenge === "true";
   const challengeId = params.challengeId as string;
+  const isChallenge = !!challengeId;
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(paramTitle);
   const [content, setContent] = useState("");
   const currentDate = new Date();
 
@@ -58,17 +55,45 @@ const JournalEntryScreen = () => {
     months[currentDate.getMonth()]
   } ${getOrdinalNum(currentDate.getDate())}, ${currentDate.getFullYear()}`;
 
+  const userId = auth.currentUser?.uid;
+  if (!userId) return; // Exit if user is not authenticated
+
   const handleSave = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    // Save the journal entry logic would go here
-    await addDoc(collection(db, "entries"), {
-      userId: auth.currentUser?.uid,
-      title,
-      content,
-      createdAt: Timestamp.now(),
-    });
+    const userRef = doc(db, "users", userId);
+    const entriesRef = collection(db, "entries");
 
-    router.back();
+    try {
+      await runTransaction(db, async (transaction) => {
+        // Prepare the new journal entry
+        const newEntryRef = doc(entriesRef); // auto-ID
+        const newEntryData = {
+          userId,
+          title,
+          content,
+          createdAt: Timestamp.now(),
+          ...(isChallenge ? { challengeId } : {}),
+        };
+
+        // Add journal entry
+        transaction.set(newEntryRef, newEntryData);
+
+        // Update user's points
+        const userDoc = await transaction.get(userRef);
+        if (!userDoc.exists()) {
+          throw new Error("User does not exist!");
+        }
+
+        const currentPoints = userDoc.data()?.points || 0;
+        transaction.update(userRef, {
+          points: currentPoints + 1,
+        });
+      });
+
+      router.back();
+    } catch (error) {
+      console.error("Transaction failed: ", error);
+    }
   };
 
   return (
@@ -110,17 +135,22 @@ const JournalEntryScreen = () => {
                   styles.challengeIconContainer,
                   {
                     backgroundColor: `${
-                      (challengeMap as any)[challengeId]?.color || "#9C27B0"
+                      challenges.find((c) => c.id === challengeId)?.color ||
+                      "#9C27B0"
                     }20`,
                   },
                 ]}
               >
                 <Ionicons
                   name={
-                    (challengeMap as any)[challengeId]?.icon || "create-outline"
+                    (challenges.find((c) => c.id === challengeId)
+                      ?.icon as any) || "create-outline"
                   }
                   size={16}
-                  color={(challengeMap as any)[challengeId]?.color || "#9C27B0"}
+                  color={
+                    challenges.find((c) => c.id === challengeId)?.color ||
+                    "#9C27B0"
+                  }
                 />
               </View>
               <Text style={styles.challengeBadgeText}>Challenge Entry</Text>
