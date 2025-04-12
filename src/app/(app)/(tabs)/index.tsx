@@ -114,6 +114,17 @@ const HomePage = () => {
             {sampleEntry.content}
           </Text>
         </TouchableOpacity>
+        
+        {/* Challenges Button */}
+        <TouchableOpacity 
+          style={styles.challengesButton}
+          onPress={handleOpenChallenges}
+        >
+          <View style={styles.challengesIconContainer}>
+            <Ionicons name="trophy-outline" size={20} color="#FFC107" />
+          </View>
+          <Text style={styles.challengesButtonText}>View Challenges</Text>
+        </TouchableOpacity>
 
         {/* Collections */}
         <Text style={styles.sectionTitle}>Collections</Text>
@@ -144,17 +155,6 @@ const HomePage = () => {
           </View>
           <Text style={styles.collectionName}>Hiking in the Wichita...</Text>
           <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
-        </TouchableOpacity>
-        
-        {/* Challenges Button */}
-        <TouchableOpacity 
-          style={styles.challengesButton}
-          onPress={handleOpenChallenges}
-        >
-          <View style={styles.challengesIconContainer}>
-            <Ionicons name="trophy-outline" size={20} color="#FFC107" />
-          </View>
-          <Text style={styles.challengesButtonText}>View Challenges</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

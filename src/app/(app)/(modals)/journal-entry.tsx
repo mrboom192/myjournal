@@ -14,6 +14,17 @@ import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 
+// Maps challenge ID to color and icon
+const challengeMap = {
+  "1": { color: "#9C27B0", icon: "create-outline" },
+  "2": { color: "#4CAF50", icon: "restaurant-outline" },
+  "3": { color: "#F44336", icon: "heart-outline" },
+  "4": { color: "#2196F3", icon: "film-outline" },
+  "5": { color: "#FF9800", icon: "fitness-outline" },
+  "6": { color: "#FFC107", icon: "trophy-outline" },
+  "7": { color: "#03A9F4", icon: "airplane-outline" },
+};
+
 const JournalEntryScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -22,6 +33,8 @@ const JournalEntryScreen = () => {
   const isEditMode = params.editMode === 'true';
   const paramTitle = params.title ? decodeURIComponent(params.title as string) : '';
   const paramContent = params.content ? decodeURIComponent(params.content as string) : '';
+  const isChallenge = params.isChallenge === 'true';
+  const challengeId = params.challengeId as string;
   
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -40,6 +53,7 @@ const JournalEntryScreen = () => {
   const handleSave = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     // Save the journal entry logic would go here
+    // If it's a challenge, we could update challenge completion status
     router.back();
   };
 
@@ -60,12 +74,36 @@ const JournalEntryScreen = () => {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="chevron-back" size={24} color="#fff" />
           </TouchableOpacity>
+          {isChallenge && challengeId && (
+            <View style={styles.headerTitleContainer}>
+              <Text style={styles.headerTitle}>
+                {title || paramTitle}
+              </Text>
+            </View>
+          )}
           <TouchableOpacity onPress={handleSave} style={styles.doneButton}>
             <Text style={styles.doneButtonText}>done</Text>
           </TouchableOpacity>
         </View>
         
         <ScrollView style={styles.scrollView}>
+          {/* Challenge Badge (if this is a challenge entry) */}
+          {isChallenge && challengeId && (
+            <View style={styles.challengeBadgeContainer}>
+              <View style={[
+                styles.challengeIconContainer, 
+                { backgroundColor: `${challengeMap[challengeId]?.color || "#9C27B0"}20` }
+              ]}>
+                <Ionicons 
+                  name={challengeMap[challengeId]?.icon || "create-outline"} 
+                  size={16} 
+                  color={challengeMap[challengeId]?.color || "#9C27B0"} 
+                />
+              </View>
+              <Text style={styles.challengeBadgeText}>Challenge Entry</Text>
+            </View>
+          )}
+          
           <TextInput
             style={styles.titleInput}
             placeholder="Title"
@@ -86,6 +124,7 @@ const JournalEntryScreen = () => {
             onChangeText={setContent}
             multiline
             textAlignVertical="top"
+            autoFocus={isChallenge}
           />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -115,6 +154,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
+  headerTitleContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
   backButton: {
     padding: 8,
   },
@@ -130,6 +178,25 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  challengeBadgeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  challengeIconContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  challengeBadgeText: {
+    color: '#9b9a9e',
+    fontSize: 14,
+    fontWeight: '500',
   },
   titleInput: {
     color: '#fff',
