@@ -178,7 +178,6 @@ const HomePage = () => {
             >
               <Text style={styles.entryTitle}>{entry.title}</Text>
               <Text style={styles.entryDate}>
-                {" "}
                 Created on {entry.createdAt?.toDate().toLocaleDateString()}
               </Text>
               <View style={styles.divider} />

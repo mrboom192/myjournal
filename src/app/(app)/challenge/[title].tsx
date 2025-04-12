@@ -42,6 +42,7 @@ const ChallengeDetail = () => {
         title: journalTitle,
         content: starterContent,
         challengeId: challengeInfo.id,
+        mode: "edit",
       },
     });
   };
