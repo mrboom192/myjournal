@@ -42,6 +42,13 @@ export default function AppLayout() {
           title: "Friends",
         }}
       />
+      <Stack.Screen
+        name="(modals)/journal-entry"
+        options={{
+          presentation: "modal",
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

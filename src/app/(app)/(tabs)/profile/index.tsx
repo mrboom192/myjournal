@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for dummy icons
+import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
 import { Stack, useRouter } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import UserAvatar from "@/src/components/UserAvatar";
@@ -59,77 +59,53 @@ const ProfileScreen = () => {
       <Stack.Screen options={{ headerShown: false }} />
       {/* Scrollable content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header / Profile Info */}
-        <View style={styles.header}>
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 8,
-              alignItems: "center",
-              marginBottom: 16,
-            }}
-          >
-            {/* Dummy profile icon instead of a profile image */}
-            <UserAvatar size={50} canUpload={true} />
+        {/* Header with profile and menu */}
+        <View style={styles.profileHeader}>
+          <View style={styles.profileRow}>
+            <UserAvatar size={48} canUpload={true} />
             <Text style={styles.userName}>
               {data.firstName} {data.lastName}
             </Text>
           </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 16,
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontWeight: "500",
-                marginRight: 8,
-              }}
-            >
-              Friend code: {data.friendCode}
-            </Text>
-
-            <Pressable onPress={handleCopy}>
-              <Ionicons name="copy-outline" size={20} color="#9b9a9e" />
-            </Pressable>
-          </View>
-
-          {/* Mood Section */}
-          <TouchableOpacity style={styles.moodButton}>
-            <Text style={styles.moodButtonText}>Set mood</Text>
-            <Text style={styles.moodEmoji}>😊</Text>
-          </TouchableOpacity>
+          <Pressable>
+            <Ionicons name="ellipsis-horizontal" size={24} color="#9b9a9e" />
+          </Pressable>
         </View>
 
+        {/* Mood Section */}
+        <TouchableOpacity style={styles.moodButton}>
+          <Text style={styles.moodButtonText}>Set mood</Text>
+          <Text style={styles.moodEmoji}>😊</Text>
+        </TouchableOpacity>
+
         {/* Friends */}
-        <View style={styles.friendsContainer}>
+        <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
-            <Text style={styles.friendsTitle}>
-              {data.friends?.length || "0"} friends
+            <Text style={styles.sectionTitle}>
+              {data.friends?.length || "6"} Friends
             </Text>
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
             >
-              <Text style={{ color: "#9b9a9e", fontSize: 16 }}>See all</Text>
+              <Text style={styles.seeAllText}>See all <Ionicons name="chevron-forward" size={16} color="#9b9a9e" /></Text>
             </TouchableOpacity>
           </View>
           <View style={styles.friendsAvatars}>
             {data.friends?.length > 0 ? (
-              <ScrollView horizontal>
-                {data.friends.map((friend: any) => {
-                  <Avatar
-                    size={24}
-                    initials={friend.firstName + " " + friend.lastName}
-                    uri={friend.image}
-                  />;
-                })}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {/* For demo, show placeholder avatars if no friends */}
+                {(data.friends.length > 0 ? data.friends : Array(6).fill(null)).map((friend: any, index: number) => (
+                  <View key={index} style={styles.friendAvatarContainer}>
+                    <Avatar
+                      size={40}
+                      initials={friend?.firstName ? friend.firstName[0] + friend.lastName[0] : ""}
+                      uri={friend?.image || undefined}
+                    />
+                  </View>
+                ))}
               </ScrollView>
             ) : (
-              <Text style={{ fontWeight: 500, color: "#9b9a9e" }}>
+              <Text style={{ fontWeight: "500", color: "#9b9a9e" }}>
                 No friends
               </Text>
             )}
@@ -139,8 +115,9 @@ const ProfileScreen = () => {
         {/* Statistics */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>16 days</Text>
-            <Text style={styles.statLabel}>Current streak</Text>
+            <Text style={styles.statValue}>16</Text>
+            <Text style={styles.statLabel}>days</Text>
+            <Text style={styles.statSubLabel}>Current streak</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>32</Text>
@@ -153,38 +130,37 @@ const ProfileScreen = () => {
         </View>
 
         {/* Settings */}
+        <Text style={styles.settingsHeader}>Settings</Text>
         <View style={styles.settingsContainer}>
           <TouchableOpacity
             style={styles.settingsItem}
             onPress={() => router.push("/profile/account-info")}
           >
             <Text style={styles.settingsItemText}>Account info</Text>
-            <Text style={styles.settingsItemArrow}>›</Text>
+            <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.settingsItem}>
+            <Text style={styles.settingsItemText}>Notifications</Text>
+            <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.settingsItem}>
+            <Text style={styles.settingsItemText}>Language</Text>
+            <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.settingsItem}>
+            <Text style={styles.settingsItemText}>Appearance</Text>
+            <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity
           onPress={handleLogout}
-          style={[
-            {
-              paddingVertical: 14,
-              paddingHorizontal: 16,
-              borderRadius: 10,
-              alignItems: "center",
-              marginTop: 20,
-            },
-            { backgroundColor: "#2a2933" },
-          ]}
+          style={styles.logoutButton}
         >
-          <Text
-            style={{
-              color: "#ff6b6b",
-              fontFamily: "dm-sb",
-              fontSize: 16,
-            }}
-          >
-            Log out
-          </Text>
+          <Text style={styles.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -205,19 +181,16 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 40,
   },
-  header: {
-    backgroundColor: "#2a2933",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-  },
-  profileRow: {
+  profileHeader: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 16,
   },
-  profileIcon: {
-    marginRight: 12,
+  profileRow: {
+    flexDirection: "row",
+    gap: 12,
+    alignItems: "center",
   },
   userName: {
     color: "#fff",
@@ -227,40 +200,46 @@ const styles = StyleSheet.create({
   moodButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#3b3946",
+    backgroundColor: "#2a2933",
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 20,
     alignSelf: "flex-start",
+    marginBottom: 20,
   },
   moodButtonText: {
     color: "#fff",
+    fontWeight: "500",
     marginRight: 8,
   },
   moodEmoji: {
     fontSize: 18,
   },
-  friendsContainer: {
-    backgroundColor: "#2a2933",
-    borderRadius: 12,
-    padding: 16,
+  friendsSection: {
     marginBottom: 20,
   },
-  friendsTitleRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 12,
-  },
-  friendsTitle: {
+  sectionTitle: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },
+  friendsTitleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  seeAllText: {
+    color: "#9b9a9e",
+    fontSize: 14,
+    flexDirection: "row",
+    alignItems: "center",
+  },
   friendsAvatars: {
     flexDirection: "row",
   },
-  friendIcon: {
-    marginRight: 8,
+  friendAvatarContainer: {
+    marginRight: 10,
   },
   statsContainer: {
     flexDirection: "row",
@@ -271,34 +250,57 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statItem: {
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   statValue: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#f0883e", // Orange color like in the image
   },
   statLabel: {
     color: "#9b9a9e",
+    fontSize: 14,
+  },
+  statSubLabel: {
+    color: "#9b9a9e",
     fontSize: 12,
-    marginTop: 4,
+  },
+  settingsHeader: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 12,
   },
   settingsContainer: {
     backgroundColor: "#2a2933",
     borderRadius: 12,
+    marginBottom: 20,
   },
   settingsItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#3b3946",
   },
   settingsItemText: {
     color: "#fff",
     fontSize: 16,
+    fontWeight: "500",
   },
-  settingsItemArrow: {
-    color: "#9b9a9e",
+  logoutButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 20,
+    backgroundColor: "#2a2933",
+  },
+  logoutButtonText: {
+    color: "#ff6b6b",
+    fontWeight: "600",
     fontSize: 16,
   },
 });
