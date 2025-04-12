@@ -10,10 +10,10 @@ export default function TabLayout(): React.JSX.Element {
   const router = useRouter();
 
   // Use theme colors for tab bar
-  const activeColor = colorScheme === "dark" ? "#FFFFFF" : "#007AFF";
-  const inactiveColor = colorScheme === "dark" ? "#8E8E93" : "#8E8E93";
-  const backgroundColor = colorScheme === "dark" ? "#1C1C1E" : "#FFFFFF";
-  
+  const activeColor = "#FFFFFF";
+  const inactiveColor = "#8E8E93";
+  const backgroundColor = "#1C1C1E";
+
   // Function to handle new journal entry
   const handleNewJournal = () => {
     router.push("/(app)/(modals)/journal-entry");
@@ -22,18 +22,18 @@ export default function TabLayout(): React.JSX.Element {
   return (
     <>
       {/* Custom Floating Button for New Journal Entry */}
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.floatingButton}
         onPress={handleNewJournal}
       >
         <Ionicons name="add" size={28} color="#fff" />
       </TouchableOpacity>
-      
+
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: activeColor,
           tabBarInactiveTintColor: inactiveColor,
-          tabBarStyle: { 
+          tabBarStyle: {
             backgroundColor,
             height: 60,
             paddingBottom: 8,
@@ -81,18 +81,18 @@ export default function TabLayout(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   floatingButton: {
-    position: 'absolute',
+    position: "absolute",
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#9C27B0', // Purple color to match the prompt card
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#9C27B0", // Purple color to match the prompt card
+    alignItems: "center",
+    justifyContent: "center",
     bottom: 25, // Position above the tab bar
-    left: '50%',
+    left: "50%",
     marginLeft: -28, // Half of the width to center it
     zIndex: 999, // Ensure it's above other elements
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,

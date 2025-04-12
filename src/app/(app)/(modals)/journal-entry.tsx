@@ -45,11 +45,9 @@ const JournalEntryScreen = () => {
 
   // Initialize with params data if in edit mode
   useEffect(() => {
-    if (isEditMode) {
-      setTitle(paramTitle);
-      setContent(paramContent);
-    }
-  }, [isEditMode, paramTitle, paramContent]);
+    setTitle(paramTitle);
+    setContent(paramContent);
+  }, [paramTitle, paramContent]);
 
   const formattedDate = `Created on ${
     months[currentDate.getMonth()]

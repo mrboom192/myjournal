@@ -56,7 +56,7 @@ const HomePage = () => {
 
         const entriesData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Omit<any, "id">),
+          ...doc.data(),
         }));
 
         setEntries(entriesData);
@@ -170,7 +170,7 @@ const HomePage = () => {
                   params: {
                     title: entry.title,
                     content: entry.content,
-                    mode: "edit",
+                    mode: "read",
                     challengeId: entry.challengeId,
                   },
                 });
