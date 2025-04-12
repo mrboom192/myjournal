@@ -39,6 +39,8 @@ const JournalEntryScreen = () => {
   const paramContent = params.content
     ? decodeURIComponent(params.content as string)
     : "";
+  const isChallenge = params.isChallenge === "true";
+  const challengeId = params.challengeId as string;
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -108,15 +110,17 @@ const JournalEntryScreen = () => {
                   styles.challengeIconContainer,
                   {
                     backgroundColor: `${
-                      challengeMap[challengeId]?.color || "#9C27B0"
+                      (challengeMap as any)[challengeId]?.color || "#9C27B0"
                     }20`,
                   },
                 ]}
               >
                 <Ionicons
-                  name={challengeMap[challengeId]?.icon || "create-outline"}
+                  name={
+                    (challengeMap as any)[challengeId]?.icon || "create-outline"
+                  }
                   size={16}
-                  color={challengeMap[challengeId]?.color || "#9C27B0"}
+                  color={(challengeMap as any)[challengeId]?.color || "#9C27B0"}
                 />
               </View>
               <Text style={styles.challengeBadgeText}>Challenge Entry</Text>
