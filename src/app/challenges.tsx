@@ -132,8 +132,7 @@ const Challenges = () => {
       <>
         {/* Streak Card */}
         <View style={styles.streakContainer}>
-          <Ionicons name="flame" size={24} color="#FFC107" />
-          <Text style={styles.streakText}>{streak} Days Streak</Text>
+          <Text style={styles.streakText}>{streak} Days Streak 🔥</Text>
         </View>
 
         {/* Challenge List */}
@@ -141,6 +140,7 @@ const Challenges = () => {
           data={challenges}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
+          
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.challengeItem}
@@ -193,6 +193,7 @@ const Challenges = () => {
           data={users}
           keyExtractor={(item) => item.uid}
           contentContainerStyle={styles.listContainer}
+          
           renderItem={({ item, index }) => (
             <View style={styles.leaderboardItem}>
               <Text style={styles.rankText}>#{index + 1}</Text>
@@ -325,6 +326,8 @@ const styles = StyleSheet.create({
   streakText: {
     fontSize: 18,
     fontWeight: "600",
+    textAlign: "center",
+    flex: 1,
     marginLeft: 10,
     color: "#FFC107",
   },
