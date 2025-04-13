@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import {db} from "@/firebaseConfig"
+import {v4 as uuidv4} from "uuid";
+import { doc, setDoc, updateDoc, collection, query, where, getDocs, arrayUnion } from "firebase/firestore";
 import {
   View,
   Text,
@@ -6,6 +9,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  TextInput
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
@@ -23,15 +27,9 @@ const ProfileScreen = () => {
   const { data, loading } = useUser();
   const { signOut } = useSession();
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [friendCodeInput, setFriendCodeInput] = useState("");
 
-  const playSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("@/assets/chicken-jockey.mp3") // or a URL string
-    );
-    setSound(sound);
-    await sound.playAsync();
-  };
-
+  
   useEffect(() => {
     return sound
       ? () => {
@@ -45,10 +43,58 @@ const ProfileScreen = () => {
   }
 
   async function handleCopy() {
-    playSound();
     await Clipboard.setStringAsync(data.friendCode);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }
+  useEffect(() => {
+    if (!loading && data && !data.friendCode) {
+      const generateFriendCode = async () => {
+        const friendCode = uuidv4().slice(0, 6); // makes the friend code 6 characters long
+        const userRef = doc(db, "users", data.id);
+        await setDoc(userRef, { friendCode }, { merge: true });
+      };
+      generateFriendCode();
+    }
+  }, [loading, data]);
+  
+
+  const handleAddFriend = async () => {
+    const q = query(
+      collection(db, "users"),
+      where("friendCode", "==", friendCodeInput)
+    );
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const friendDoc = snapshot.docs[0];
+      const friendId = friendDoc.id;
+
+      if (friendId === data.id) {
+        alert("You can't add yourself as a friend!");
+        return;
+      }
+
+      const userRef = doc(db, "users", data.id); //these adds the user as a friend for each person
+      const friendRef = doc(db, "users", friendId);
+
+      await updateDoc(userRef, {
+        friends: arrayUnion({ id: friendId, ...friendDoc.data() }),
+      });
+
+      await updateDoc(friendRef, {
+        friends: arrayUnion({
+          id: data.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        }),
+      });
+
+      alert("Your friend has been added!");
+      setFriendCodeInput("");
+    } else {
+      alert("Friend code was not found.");
+    }
+  };
+
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -72,6 +118,51 @@ const ProfileScreen = () => {
           </Pressable>
         </View>
 
+        <View style={{ marginBottom: 20 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}>
+        <Text style={styles.sectionTitle}>Friend Code: </Text>
+          <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
+            {data.friendCode}
+          </Text>
+          <Pressable onPress={handleCopy}>
+            <Ionicons name="copy" size={20} color="#fff" style={{ marginLeft: 10 }} />
+          </Pressable>
+        </View>
+
+        {/* Add Friend */}
+        <View style={{ marginTop: 20 }}>
+          <Text style={styles.sectionTitle}>Add a Friend</Text>
+          <View style={{ flexDirection: "row", marginTop: 8 }}>
+            <TextInput
+              style={{
+                flex: 1,
+                backgroundColor: "#2a2933",
+                padding: 10,
+                color: "#fff",
+                borderRadius: 8,
+              }}
+              placeholder="Enter friend code"
+              placeholderTextColor="#888"
+              value={friendCodeInput}
+              onChangeText={setFriendCodeInput}
+            />
+            <TouchableOpacity
+              onPress={handleAddFriend}
+              style={{
+                backgroundColor: "#660066",
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                borderRadius: 8,
+                marginLeft: 10,
+              }}
+            >
+              <Text style={{ color: "#fff", fontWeight: "600" }}>Add</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+
         {/* Mood Section */}
         <TouchableOpacity style={styles.moodButton}>
           <Text style={styles.moodButtonText}>Set mood</Text>
@@ -82,7 +173,7 @@ const ProfileScreen = () => {
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <Text style={styles.sectionTitle}>
-              {data.friends?.length || "6"} Friends
+              {data.friends?.length || "0"} Friends
             </Text>
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
@@ -173,6 +264,8 @@ const ProfileScreen = () => {
     </SafeAreaView>
   );
 };
+
+
 
 export default ProfileScreen;
 

@@ -13,7 +13,7 @@ const Friends = () => {
         backgroundColor: "#2a2933",
       }}
     >
-      <Text>Friends</Text>
+     
     </View>
   );
 };
