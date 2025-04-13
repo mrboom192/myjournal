@@ -132,7 +132,7 @@ const HomePage = () => {
           </Text>
         </View>
 
-        {!entries && (
+        {entries.length === 0 && (
           <View
             style={{
               width: "100%",
