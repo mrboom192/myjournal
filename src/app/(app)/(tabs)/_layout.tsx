@@ -16,7 +16,12 @@ export default function TabLayout(): React.JSX.Element {
 
   // Function to handle new journal entry
   const handleNewJournal = () => {
-    router.push("/(app)/(modals)/journal-entry");
+    router.push({
+      pathname: "/(app)/(modals)/journal-entry",
+      params: {
+        mode: "edit",
+      },
+    });
   };
 
   return (
