@@ -3,8 +3,8 @@ import React from "react";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { PoppinsSemiBold } from "./StyledText";
-import { Collection } from "../types/Collection";
+import { PoppinsSemiBold } from "../StyledText";
+import { Collection } from "../../types/Collection";
 
 const CollectionButton = ({ data }: { data: Collection }) => {
   return (

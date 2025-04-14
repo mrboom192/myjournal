@@ -26,8 +26,7 @@ import i18n from "@/src/locales"; //for languages
 import PromptsCard from "@/src/components/PromptsCard";
 import NoEntries from "@/src/components/NoEntries";
 import JournalEntry from "@/src/components/JournalEntry";
-import NoCollections from "@/src/components/NoCollections";
-import CollectionButton from "@/src/components/CollectionButton";
+import Collections from "@/src/components/Collections/Collections";
 
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
@@ -43,7 +42,6 @@ const HomePage = () => {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const [entries, setEntries] = useState<any[]>([]);
-  const [collections, setCollections] = useState<any[]>([]);
   const [allEntries, setAllEntries] = useState<any[]>([]);
 
   useEffect(() => {
@@ -84,24 +82,6 @@ const HomePage = () => {
       setEntries([]);
     }
   }, [allEntries, currentMonth, currentYear]);
-
-  useEffect(() => {
-    if (loading || !data?.uid) return;
-
-    const db = getFirestore();
-    const collectionsRef = collection(db, "collections");
-    const q = query(collectionsRef, where("userId", "==", data.uid));
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const collectionsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<any, "id">),
-      }));
-      setCollections(collectionsData);
-    });
-
-    return () => unsubscribe();
-  }, [loading, data?.uid]);
 
   const handlePrevMonth = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -211,18 +191,7 @@ const HomePage = () => {
           </PoppinsSemiBold>
         </TouchableOpacity>
 
-        {/* Collections */}
-        <PoppinsSemiBold style={styles.sectionTitle}>
-          {i18n.t("home.collections")}
-        </PoppinsSemiBold>
-
-        {collections.length === 0 ? (
-          <NoCollections />
-        ) : (
-          collections.map((collection) => (
-            <CollectionButton data={collection} />
-          ))
-        )}
+        <Collections />
 
         <TouchableOpacity
           style={styles.addCollectionButton}
@@ -286,12 +255,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "600",
-  },
-  sectionTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 10,
   },
   challengesButton: {
     flexDirection: "row",

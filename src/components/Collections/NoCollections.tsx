@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import { PoppinsSemiBold } from "./StyledText";
-import i18n from "../locales";
+import { PoppinsSemiBold } from "../StyledText";
+import i18n from "../../locales";
 
 const NoCollections = () => {
   return (
