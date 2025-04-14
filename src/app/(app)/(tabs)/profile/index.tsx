@@ -157,11 +157,11 @@ const ProfileScreen = () => {
           <Text style={styles.moodEmoji}>😊</Text>
         </TouchableOpacity>
 
-        {/* Friends */}
+        {/* Friends- checks if the length is 1 or more for plural form or friends*/}
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <Text style={styles.sectionTitle}>
-              {data.friends?.length || "0"} Friends
+              {data.friends?.length || 0} {data.friends?.length===1? "Friend" : "Friends"} 
             </Text>
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
