@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   Alert,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
@@ -24,6 +25,9 @@ import {
   setDoc,
   Timestamp,
   deleteDoc,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 
 const months = [
@@ -64,7 +68,41 @@ const JournalEntryScreen = () => {
 
   const [title, setTitle] = useState(paramTitle);
   const [content, setContent] = useState("");
+  const [collections, setCollections] = useState<any[]>([]);
+  const [selectedCollection, setSelectedCollection] = useState<any>(null);
+  const [showCollectionModal, setShowCollectionModal] = useState(false);
   const currentDate = new Date();
+
+  // Fetch collections
+  useEffect(() => {
+    const fetchCollections = async () => {
+      if (!auth.currentUser?.uid) return;
+
+      const collectionsRef = collection(db, "collections");
+      const q = query(collectionsRef, where("userId", "==", auth.currentUser.uid));
+      
+      try {
+        const querySnapshot = await getDocs(q);
+        const collectionsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setCollections(collectionsData);
+
+        // If entry has a collection, select it
+        if (params.collectionId) {
+          const collection = collectionsData.find(c => c.id === params.collectionId);
+          if (collection) {
+            setSelectedCollection(collection);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching collections:", error);
+      }
+    };
+
+    fetchCollections();
+  }, []);
 
   // Initialize with params data if in edit mode
   useEffect(() => {
@@ -123,6 +161,7 @@ const JournalEntryScreen = () => {
         userId,
         updatedAt: Timestamp.now(),
         challengeId: challengeId || null,
+        collectionId: selectedCollection?.id || null,
       };
 
       if (entryId) {
@@ -130,7 +169,6 @@ const JournalEntryScreen = () => {
         const entryRef = doc(db, "entries", entryId);
         await setDoc(entryRef, {
           ...entryData,
-          createdAt: Timestamp.now(), // Keep original creation date
         }, { merge: true });
       } else {
         // Create new entry
@@ -184,15 +222,24 @@ const JournalEntryScreen = () => {
         </TouchableOpacity>
 
         <View style={styles.headerRight}>
-          {isReadMode && (
-            <TouchableOpacity
-              style={[styles.headerButton, { marginRight: 8 }]}
-              onPress={handleDelete}
-            >
-              <Ionicons name="trash-outline" size={24} color="#ff4444" />
-            </TouchableOpacity>
-          )}
-          {!isReadMode && (
+          {isReadMode ? (
+            <>
+              <TouchableOpacity
+                style={[styles.headerButton, { marginRight: 8 }]}
+                onPress={handleDelete}
+              >
+                <Ionicons name="trash-outline" size={24} color="#ff4444" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.headerButton}
+                onPress={() => {
+                  router.setParams({ mode: "edit" });
+                }}
+              >
+                <Ionicons name="create-outline" size={24} color="#fff" />
+              </TouchableOpacity>
+            </>
+          ) : (
             <TouchableOpacity
               style={styles.headerButton}
               onPress={handleSave}
@@ -249,6 +296,35 @@ const JournalEntryScreen = () => {
 
           <Text style={styles.dateText}>{formattedDate}</Text>
 
+          {/* Collection Selector */}
+          {!isReadMode && (
+            <TouchableOpacity
+              style={styles.collectionSelector}
+              onPress={() => setShowCollectionModal(true)}
+            >
+              {selectedCollection ? (
+                <View style={styles.selectedCollection}>
+                  <View
+                    style={[
+                      styles.collectionIcon,
+                      { backgroundColor: `${selectedCollection.color}20` },
+                    ]}
+                  >
+                    <Ionicons
+                      name={selectedCollection.icon as any}
+                      size={16}
+                      color={selectedCollection.color}
+                    />
+                  </View>
+                  <Text style={styles.collectionName}>{selectedCollection.name}</Text>
+                </View>
+              ) : (
+                <Text style={styles.collectionPlaceholder}>Add to Collection</Text>
+              )}
+              <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
+            </TouchableOpacity>
+          )}
+
           <View style={styles.divider} />
 
           <TextInput
@@ -260,10 +336,67 @@ const JournalEntryScreen = () => {
             editable={!isReadMode}
             multiline
             textAlignVertical="top"
-            autoFocus={isEditMode && !entryId}
           />
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Collection Selection Modal */}
+      <Modal
+        visible={showCollectionModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowCollectionModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Choose Collection</Text>
+              <TouchableOpacity
+                onPress={() => setShowCollectionModal(false)}
+              >
+                <Ionicons name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.collectionsList}>
+              <TouchableOpacity
+                style={styles.collectionItem}
+                onPress={() => {
+                  setSelectedCollection(null);
+                  setShowCollectionModal(false);
+                }}
+              >
+                <Text style={styles.collectionName}>No Collection</Text>
+              </TouchableOpacity>
+
+              {collections.map((collection) => (
+                <TouchableOpacity
+                  key={collection.id}
+                  style={styles.collectionItem}
+                  onPress={() => {
+                    setSelectedCollection(collection);
+                    setShowCollectionModal(false);
+                  }}
+                >
+                  <View
+                    style={[
+                      styles.collectionIcon,
+                      { backgroundColor: `${collection.color}20` },
+                    ]}
+                  >
+                    <Ionicons
+                      name={collection.icon as any}
+                      size={16}
+                      color={collection.color}
+                    />
+                  </View>
+                  <Text style={styles.collectionName}>{collection.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -337,6 +470,71 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     minHeight: 200,
     padding: 0,
+  },
+  collectionSelector: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#2a2933",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  selectedCollection: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  collectionIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8,
+  },
+  collectionName: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  collectionPlaceholder: {
+    color: "#9b9a9e",
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: "#1c1b22",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingBottom: 32,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2a2933",
+  },
+  modalTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  collectionsList: {
+    padding: 16,
+  },
+  collectionItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+    backgroundColor: "#2a2933",
   },
 });
 

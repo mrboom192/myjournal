@@ -127,6 +127,8 @@ const HomePage = () => {
       const filteredEntries = allEntries
         .filter(entry => {
           if (!entry.createdAt) return false;
+          // Only show entries that aren't in collections
+          if (entry.collectionId) return false;
           const entryDate = entry.createdAt.toDate();
           return entryDate.getMonth() === currentMonth && 
                  entryDate.getFullYear() === currentYear;
@@ -345,7 +347,15 @@ const HomePage = () => {
               key={collection.id} 
               style={styles.collectionItem}
               onPress={() => {
-                // Navigate to collection view (to be implemented)
+                router.push({
+                  pathname: "/(app)/(modals)/collection-view",
+                  params: {
+                    id: collection.id,
+                    name: collection.name,
+                    color: collection.color,
+                    icon: collection.icon
+                  }
+                });
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               }}
             >
