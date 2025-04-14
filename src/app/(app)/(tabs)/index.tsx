@@ -28,6 +28,7 @@ import NoEntries from "@/src/components/NoEntries";
 import JournalEntry from "@/src/components/JournalEntry";
 import Collections from "@/src/components/Collections/Collections";
 
+
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
     month: "long",
@@ -163,11 +164,14 @@ const HomePage = () => {
             <Ionicons name="chevron-forward" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
+        <JournalCalendar
+          entries={allEntries}
+          currentMonth={currentMonth}
+          currentYear={currentYear}
+        />
 
-        {/* Monthly Calendar */}
-        <JournalCalendar entries={allEntries} />
 
-        <PromptsCard />
+        
 
         {entries.length === 0 && (
           <NoEntries formattedMonthYear={formattedMonthYear} />
@@ -177,6 +181,9 @@ const HomePage = () => {
         {entries.map((entry) => {
           return <JournalEntry data={entry} />;
         })}
+
+        {/* Prompt Card */}
+        <PromptsCard />
 
         {/* Challenges Button */}
         <TouchableOpacity
