@@ -69,6 +69,7 @@ export default function TabLayout(): React.JSX.Element {
           name="profile"
           options={{
             title: "Profile",
+            headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <Image
                 source={require("../../../../assets/images/account_circle_button.png")}
