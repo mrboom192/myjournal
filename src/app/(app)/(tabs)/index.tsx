@@ -23,49 +23,8 @@ import {
 import Colors from "@/src/constants/Colors";
 import { PoppinsRegular, PoppinsSemiBold } from "@/src/components/StyledText";
 import i18n from "@/src/locales"; //for languages
+import Prompt from "@/src/components/Prompt";
 
-/*// Journal prompts that will rotate
-const journalPrompts = [
-  "What's one thing you're grateful for?",
-  "What made you smile today?",
-  "What's something new you learned recently?",
-  "What are you looking forward to this week?",
-  "What's a challenge you're facing right now?",
-  "Write about someone who inspires you.",
-  "What's a goal you're working towards?",
-  "What's your favorite memory from last month?",
-  "How are you feeling right now?",
-  "What's something that made you proud recently?",
-];
-*/
-const journalPrompts = [
-  i18n.t("prompts.grateful"),
-  i18n.t("prompts.smile"),
-  i18n.t("prompts.learned"),
-  i18n.t("prompts.lookForward"),
-  i18n.t("prompts.challenge"),
-  i18n.t("prompts.inspires"),
-  i18n.t("prompts.goal"),
-  i18n.t("prompts.memory"),
-  i18n.t("prompts.feeling"),
-  i18n.t("prompts.proud"),
-];
-/*
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-*/
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
     month: "long",
@@ -78,52 +37,10 @@ const HomePage = () => {
   const { data, loading } = useUser();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
-  const promptIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [promptProgress, setPromptProgress] = useState(0);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [entries, setEntries] = useState<any[]>([]);
   const [collections, setCollections] = useState<any[]>([]);
   const [allEntries, setAllEntries] = useState<any[]>([]);
-
-  // Set up the interval for changing prompts
-  useEffect(() => {
-    // Reset progress
-    setPromptProgress(0);
-
-    // Start the interval for changing prompts
-    promptIntervalRef.current = setInterval(() => {
-      setCurrentPromptIndex(
-        (prevIndex) => (prevIndex + 1) % journalPrompts.length
-      );
-      setPromptProgress(0); // Reset progress when prompt changes
-    }, 300000); // 5 minutes instead of 5 seconds
-
-    // Clean up the interval on component unmount
-    return () => {
-      if (promptIntervalRef.current) {
-        clearInterval(promptIntervalRef.current);
-      }
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-    };
-  }, []);
-
-  // Set up interval for progress bar
-  useEffect(() => {
-    // Start the interval for updating progress
-    progressIntervalRef.current = setInterval(() => {
-      setPromptProgress((prev) => Math.min(prev + 0.00033, 1)); // Adjusted for 5 minutes (0.00033 ≈ 1/3000)
-    }, 100);
-
-    return () => {
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current);
-      }
-    };
-  }, [currentPromptIndex]);
 
   useEffect(() => {
     if (loading || !data?.uid) return;
@@ -217,18 +134,6 @@ const HomePage = () => {
     });
   };
 
-  const handlePromptPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push({
-      pathname: "/(app)/(modals)/journal-entry",
-      params: {
-        mode: "edit",
-        title: "Journal Entry",
-        content: `${journalPrompts[currentPromptIndex]}\n\n`,
-      },
-    });
-  };
-
   const handleSearchPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push("/(app)/(modals)/search");
@@ -275,33 +180,7 @@ const HomePage = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Prompt Card */}
-        <TouchableOpacity
-          style={styles.promptCard}
-          onPress={handlePromptPress}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.promptLabel}>Prompt</Text>
-          <PoppinsSemiBold style={styles.promptText}>
-            {journalPrompts[currentPromptIndex]}
-          </PoppinsSemiBold>
-          <View style={styles.promptProgressContainer}>
-            <View
-              style={[
-                styles.promptProgressBar,
-                { width: `${promptProgress * 100}%` },
-              ]}
-            />
-          </View>
-          <View style={styles.promptActionHint}>
-            <Ionicons
-              name="create-outline"
-              size={16}
-              color="rgba(255,255,255,0.7)"
-            />
-            <Text style={styles.promptActionText}>Tap to write</Text>
-          </View>
-        </TouchableOpacity>
+        <Prompt />
 
         {entries.length === 0 && (
           <View
@@ -480,51 +359,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "600",
-  },
-  promptCard: {
-    backgroundColor: "#9C27B0",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
-    position: "relative",
-    overflow: "hidden",
-  },
-  promptLabel: {
-    color: "rgba(255, 255, 255, 0.7)",
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  promptText: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 15,
-  },
-  promptProgressContainer: {
-    height: 4,
-    width: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 2,
-    overflow: "hidden",
-  },
-  promptProgressBar: {
-    height: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-  },
-  promptActionHint: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  promptActionText: {
-    color: "rgba(255, 255, 255, 0.7)",
-    fontSize: 14,
-    marginLeft: 5,
   },
   journalEntryCard: {
     backgroundColor: "#2a2933",
