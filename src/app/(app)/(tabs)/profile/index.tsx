@@ -28,6 +28,8 @@ const ProfileScreen = () => {
   const { signOut, session } = useSession();
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [friendCodeInput, setFriendCodeInput] = useState("");
+  const [showFriends, setShowFriends] = useState(false);
+
 
   function handleLogout() {
     signOut();
@@ -157,11 +159,12 @@ const ProfileScreen = () => {
           <Text style={styles.moodEmoji}>😊</Text>
         </TouchableOpacity>
 
-        {/* Friends- checks if the length is 1 or more for plural form or friends*/}
+        {/* Friends- checks if the length is 0, 1, or more for plural form of friends*/}
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <Text style={styles.sectionTitle}>
-              {data.friends?.length || 0} {data.friends?.length===1? "Friend" : "Friends"} 
+            {data.friends?.length === 0 ? "No Friends"
+                : `${data.friends.length} ${data.friends.length === 1 ? "Friend" : "Friends"}`}
             </Text>
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
