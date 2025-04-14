@@ -21,6 +21,7 @@ import {
   where,
 } from "firebase/firestore";
 import Colors from "@/src/constants/Colors";
+import { PoppinsRegular, PoppinsSemiBold } from "@/src/components/StyledText";
 
 // Journal prompts that will rotate
 const journalPrompts = [
@@ -69,15 +70,15 @@ const HomePage = () => {
   useEffect(() => {
     // Reset progress
     setPromptProgress(0);
-    
+
     // Start the interval for changing prompts
     promptIntervalRef.current = setInterval(() => {
-      setCurrentPromptIndex((prevIndex) => 
-        (prevIndex + 1) % journalPrompts.length
+      setCurrentPromptIndex(
+        (prevIndex) => (prevIndex + 1) % journalPrompts.length
       );
       setPromptProgress(0); // Reset progress when prompt changes
     }, 300000); // 5 minutes instead of 5 seconds
-    
+
     // Clean up the interval on component unmount
     return () => {
       if (promptIntervalRef.current) {
@@ -95,7 +96,7 @@ const HomePage = () => {
     progressIntervalRef.current = setInterval(() => {
       setPromptProgress((prev) => Math.min(prev + 0.00033, 1)); // Adjusted for 5 minutes (0.00033 ≈ 1/3000)
     }, 100);
-    
+
     return () => {
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current);
@@ -125,13 +126,15 @@ const HomePage = () => {
   useEffect(() => {
     if (allEntries.length > 0) {
       const filteredEntries = allEntries
-        .filter(entry => {
+        .filter((entry) => {
           if (!entry.createdAt) return false;
           // Only show entries that aren't in collections
           if (entry.collectionId) return false;
           const entryDate = entry.createdAt.toDate();
-          return entryDate.getMonth() === currentMonth && 
-                 entryDate.getFullYear() === currentYear;
+          return (
+            entryDate.getMonth() === currentMonth &&
+            entryDate.getFullYear() === currentYear
+          );
         })
         .sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate()); // Sort by newest first
       setEntries(filteredEntries);
@@ -189,7 +192,7 @@ const HomePage = () => {
   const handleAddCollection = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push({
-      pathname: "/(app)/(modals)/add-collection"
+      pathname: "/(app)/(modals)/add-collection",
     });
   };
 
@@ -222,9 +225,14 @@ const HomePage = () => {
       <View style={styles.header}>
         <View style={styles.greetingRow}>
           <UserAvatar size={40} canUpload={false} />
-          <Text style={styles.greeting}>Hi, {data.firstName || "Ghulam"}!</Text>
+          <PoppinsSemiBold style={styles.greeting}>
+            Hi, {data.firstName || "Ghulam"}!
+          </PoppinsSemiBold>
         </View>
-        <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress}>
+        <TouchableOpacity
+          style={styles.searchButton}
+          onPress={handleSearchPress}
+        >
           <Ionicons name="search" size={22} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -238,36 +246,41 @@ const HomePage = () => {
           <TouchableOpacity onPress={handlePrevMonth}>
             <Ionicons name="chevron-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.monthText}>
+          <PoppinsSemiBold style={styles.monthText}>
             {formattedMonthYear}
-          </Text>
+          </PoppinsSemiBold>
           <TouchableOpacity onPress={handleNextMonth}>
             <Ionicons name="chevron-forward" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
 
-        
         {/* Prompt Card */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.promptCard}
           onPress={handlePromptPress}
           activeOpacity={0.8}
         >
-          <Text style={styles.promptLabel}>Prompt</Text>
-          <Text style={styles.promptText}>
+          <PoppinsRegular style={styles.promptLabel}>Prompt</PoppinsRegular>
+          <PoppinsSemiBold style={styles.promptText}>
             {journalPrompts[currentPromptIndex]}
-          </Text>
+          </PoppinsSemiBold>
           <View style={styles.promptProgressContainer}>
-            <View 
+            <View
               style={[
-                styles.promptProgressBar, 
-                { width: `${promptProgress * 100}%` }
-              ]} 
+                styles.promptProgressBar,
+                { width: `${promptProgress * 100}%` },
+              ]}
             />
           </View>
           <View style={styles.promptActionHint}>
-            <Ionicons name="create-outline" size={16} color="rgba(255,255,255,0.7)" />
-            <Text style={styles.promptActionText}>Tap to write</Text>
+            <Ionicons
+              name="create-outline"
+              size={16}
+              color="rgba(255,255,255,0.7)"
+            />
+            <PoppinsRegular style={styles.promptActionText}>
+              Tap to write
+            </PoppinsRegular>
           </View>
         </TouchableOpacity>
 
@@ -343,8 +356,8 @@ const HomePage = () => {
           </View>
         ) : (
           collections.map((collection) => (
-            <TouchableOpacity 
-              key={collection.id} 
+            <TouchableOpacity
+              key={collection.id}
               style={styles.collectionItem}
               onPress={() => {
                 router.push({
@@ -353,22 +366,25 @@ const HomePage = () => {
                     id: collection.id,
                     name: collection.name,
                     color: collection.color,
-                    icon: collection.icon
-                  }
+                    icon: collection.icon,
+                  },
                 });
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               }}
             >
-              <View 
+              <View
                 style={[
                   styles.collectionIconContainer,
-                  { backgroundColor: `${collection.color}20` || "rgba(156, 39, 176, 0.2)" }
+                  {
+                    backgroundColor:
+                      `${collection.color}20` || "rgba(156, 39, 176, 0.2)",
+                  },
                 ]}
               >
-                <Ionicons 
-                  name={collection.icon || "journal-outline"} 
-                  size={20} 
-                  color={collection.color || "#9C27B0"} 
+                <Ionicons
+                  name={collection.icon || "journal-outline"}
+                  size={20}
+                  color={collection.color || "#9C27B0"}
                 />
               </View>
               <Text style={styles.collectionName}>{collection.name}</Text>
@@ -377,7 +393,7 @@ const HomePage = () => {
           ))
         )}
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.addCollectionButton}
           onPress={handleAddCollection}
         >
@@ -440,6 +456,9 @@ const styles = StyleSheet.create({
   },
   promptCard: {
     backgroundColor: "#9C27B0",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 12,
     padding: 20,
     marginBottom: 20,
@@ -460,6 +479,7 @@ const styles = StyleSheet.create({
   },
   promptProgressContainer: {
     height: 4,
+    width: "100%",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 2,
     overflow: "hidden",
