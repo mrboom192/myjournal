@@ -40,6 +40,8 @@ const ProfileScreen = () => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }
 
+  const [mood, setMood] = useState("😊");
+  const [isMoodVisible, setMoodVisible] = useState(false);
 
   const handleAddFriend = async () => {
     const code = friendCodeInput.trim().toUpperCase();
@@ -153,11 +155,14 @@ const ProfileScreen = () => {
       </View>
 
 
-        {/* Mood Section */}
-        <TouchableOpacity style={styles.moodButton}>
+        {/* Mood*/}
+          <TouchableOpacity
+          style={styles.moodButton}
+          onPress={() => setMoodVisible(true)}
+          > 
           <Text style={styles.moodButtonText}>Set mood</Text>
-          <Text style={styles.moodEmoji}>😊</Text>
-        </TouchableOpacity>
+         <Text style={styles.moodEmoji}>{mood}</Text>
+         </TouchableOpacity>
 
         {/* Friends- checks if the length is 0, 1, or more for plural form of friends*/}
         <View style={styles.friendsSection}>
@@ -232,7 +237,8 @@ const ProfileScreen = () => {
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.settingsItem}>
+          <TouchableOpacity 
+            style={styles.settingsItem}>
             <Text style={styles.settingsItemText}>Notifications</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
@@ -252,7 +258,30 @@ const ProfileScreen = () => {
           <Text style={styles.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
       </ScrollView>
+
+          {isMoodVisible && (
+      <View style={styles.emojiContainer}>
+        <Text style={styles.emojiPickerTitle}>Pick your mood</Text>
+        <View style={styles.emojiGrid}>
+          {["😊", "😃", "🤣", "😔", "😢", "😫", "😤", "😡", "😴", "😎", "😭","🤫", "🥶", "😑", "🤔", "😍","😇", "😳", "😈", "🤪", "🤓", "🤩", "🤯", "🥳"].map((emoji) => (
+            <TouchableOpacity
+              key={emoji}
+              onPress={() => {
+                setMood(emoji);
+                setMoodVisible(false);
+              }}
+              style={styles.emojiButton}
+            >
+              <Text style={{ fontSize: 28 }}>{emoji}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    )}
+
     </SafeAreaView>
+
+    
   );
 };
 
@@ -260,10 +289,10 @@ const ProfileScreen = () => {
 
 export default ProfileScreen;
 
-// -----------------
-//      STYLES
-// -----------------
+// STYLES
+
 const styles = StyleSheet.create({
+    
   container: {
     flex: 1,
     backgroundColor: "#1c1b22",
@@ -394,4 +423,37 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
   },
+  emojiContainer: {
+    position: "absolute",
+    bottom: 0, // or top: '30%' if you prefer it in the middle
+    left: 0,
+    right: 0,
+    backgroundColor: "#2a2933",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    zIndex: 100,  // ensure it appears above other content
+  },
+  emojiPickerTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  emojiGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 2,
+  },
+  emojiButton: {
+    backgroundColor: "#444",
+    padding: 5,
+    borderRadius: 12,
+    margin: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
+
