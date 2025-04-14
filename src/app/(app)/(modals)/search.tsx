@@ -18,6 +18,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import Colors from "@/src/constants/Colors";
+import { Entry } from "@/src/types/Entry";
 
 export default function SearchModal() {
   const router = useRouter();
@@ -34,20 +35,17 @@ export default function SearchModal() {
 
     const db = getFirestore();
     const entriesRef = collection(db, "entries");
-    const q = query(
-      entriesRef,
-      where("userId", "==", data.uid)
-    );
+    const q = query(entriesRef, where("userId", "==", data.uid));
 
     try {
       const querySnapshot = await getDocs(q);
       const results = querySnapshot.docs
-        .map(doc => ({
+        .map((doc) => ({
           id: doc.id,
-          ...(doc.data() as Omit<any, "id">),
+          ...doc.data(),
         }))
-        .filter(entry => 
-          entry.title.toLowerCase().includes(text.toLowerCase())
+        .filter((entry) =>
+          (entry as Entry).title.toLowerCase().includes(text.toLowerCase())
         );
       setSearchResults(results);
     } catch (error) {
@@ -172,4 +170,4 @@ const styles = StyleSheet.create({
     color: "#9b9a9e",
     fontSize: 16,
   },
-}); 
+});

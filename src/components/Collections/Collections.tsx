@@ -42,7 +42,9 @@ const Collections = () => {
       {collections.length === 0 ? (
         <NoCollections />
       ) : (
-        collections.map((collection) => <CollectionButton data={collection} />)
+        collections.map((collection) => (
+          <CollectionButton key={collection.id} data={collection} />
+        ))
       )}
     </>
   );
