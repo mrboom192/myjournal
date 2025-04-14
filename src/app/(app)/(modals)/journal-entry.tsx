@@ -26,6 +26,25 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const getOrdinalNum = (n) => {
+  return n + (n > 0 ? ["th", "st", "nd", "rd"][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : "");
+};
+
 const JournalEntryScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -58,84 +77,93 @@ const JournalEntryScreen = () => {
   } ${getOrdinalNum(currentDate.getDate())}, ${currentDate.getFullYear()}`;
 
   const userId = auth.currentUser?.uid;
-  if (!userId) return; // Exit if user is not authenticated
-
-  const handleSave = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    const userRef = doc(db, "users", userId);
-    const entriesRef = collection(db, "entries");
-
-    try {
-      await runTransaction(db, async (transaction) => {
-        // read
-        const userDoc = await transaction.get(userRef);
-        if (!userDoc.exists()) {
-          throw new Error("User does not exist!");
-        }
-
-        const currentPoints = userDoc.data()?.points || 0;
-
-        // from challenges json
-        const challengePoints = isChallenge
-          ? challenges.find((c) => c.id === challengeId)?.points || 1
-          : 1;
-
-        const entryRef = doc(entriesRef); // auto-ID
-        const entry = {
-          userId,
-          title,
-          content,
-          createdAt: Timestamp.now(),
-          ...(isChallenge ? { challengeId } : {}),
-        };
-
-        // Now safe to write
-        transaction.set(entryRef, entry);
-        transaction.update(userRef, {
-          points: currentPoints + challengePoints,
-        });
-      });
-
-      router.back();
-    } catch (error) {
-      console.error("Transaction failed: ", error);
-    }
-  };
+  if (!userId) return null;
 
   const handleDelete = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    
     Alert.alert(
-      "Delete Journal Entry",
+      "Delete Entry",
       "Are you sure you want to delete this entry? This action cannot be undone.",
       [
         {
           text: "Cancel",
-          style: "cancel",
+          style: "cancel"
         },
         {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
             try {
-              if (!entryId) {
-                console.error("Entry ID is missing");
-                return;
-              }
+              if (!entryId) return;
               
               const entryRef = doc(db, "entries", entryId);
               await deleteDoc(entryRef);
               
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               router.back();
-              
             } catch (error) {
               console.error("Error deleting entry:", error);
-              Alert.alert("Error", "Could not delete the entry. Please try again.");
+              Alert.alert("Error", "Failed to delete entry. Please try again.");
             }
-          },
-        },
+          }
+        }
       ]
     );
+  };
+
+  const handleSave = async () => {
+    if (!title.trim()) {
+      Alert.alert("Error", "Please enter a title");
+      return;
+    }
+
+    try {
+      const entryData = {
+        title: title.trim(),
+        content,
+        userId,
+        updatedAt: Timestamp.now(),
+        challengeId: challengeId || null,
+      };
+
+      if (entryId) {
+        // Update existing entry
+        const entryRef = doc(db, "entries", entryId);
+        await setDoc(entryRef, {
+          ...entryData,
+          createdAt: Timestamp.now(), // Keep original creation date
+        }, { merge: true });
+      } else {
+        // Create new entry
+        const entriesRef = collection(db, "entries");
+        await addDoc(entriesRef, {
+          ...entryData,
+          createdAt: Timestamp.now(),
+        });
+
+        // If this is a challenge entry, update user points
+        if (challengeId) {
+          const challenge = challenges.find(c => c.id === challengeId);
+          if (challenge) {
+            const userRef = doc(db, "users", userId);
+            await runTransaction(db, async (transaction) => {
+              const userDoc = await transaction.get(userRef);
+              if (!userDoc.exists()) return;
+              
+              const currentPoints = userDoc.data().points || 0;
+              transaction.update(userRef, {
+                points: currentPoints + challenge.points
+              });
+            });
+          }
+        }
+      }
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.back();
+    } catch (error) {
+      console.error("Error saving entry:", error);
+      Alert.alert("Error", "Failed to save entry. Please try again.");
+    }
   };
 
   return (
@@ -143,37 +171,42 @@ const JournalEntryScreen = () => {
       <Stack.Screen
         options={{
           headerShown: false,
-          presentation: "modal",
         }}
       />
 
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          {isChallenge && challengeId && (
-            <View style={styles.headerTitleContainer}>
-              <Text style={styles.headerTitle}>{title || paramTitle}</Text>
-            </View>
-          )}
-          {isReadMode && entryId ? (
-            <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-              <Ionicons name="trash-outline" size={22} color="#FF3B30" />
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="close" size={24} color="#fff" />
+        </TouchableOpacity>
+
+        <View style={styles.headerRight}>
+          {isReadMode && (
+            <TouchableOpacity
+              style={[styles.headerButton, { marginRight: 8 }]}
+              onPress={handleDelete}
+            >
+              <Ionicons name="trash-outline" size={24} color="#ff4444" />
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity onPress={handleSave} style={styles.doneButton}>
-              <Text style={styles.doneButtonText}>done</Text>
+          )}
+          {!isReadMode && (
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={handleSave}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>
           )}
         </View>
+      </View>
 
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <ScrollView style={styles.scrollView}>
           {/* Challenge Badge (if this is a challenge entry) */}
           {isChallenge && challengeId && (
@@ -211,7 +244,7 @@ const JournalEntryScreen = () => {
             placeholderTextColor="#9b9a9e"
             value={title}
             onChangeText={setTitle}
-            editable={isEditMode}
+            editable={!isReadMode}
           />
 
           <Text style={styles.dateText}>{formattedDate}</Text>
@@ -224,41 +257,16 @@ const JournalEntryScreen = () => {
             placeholderTextColor="#9b9a9e"
             value={content}
             onChangeText={setContent}
-            editable={isEditMode}
+            editable={!isReadMode}
             multiline
             textAlignVertical="top"
-            autoFocus={!isEditMode}
+            autoFocus={isEditMode && !entryId}
           />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
-
-// Helper functions
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-function getOrdinalNum(n: number) {
-  return (
-    n +
-    (n > 0
-      ? ["th", "st", "nd", "rd"][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10]
-      : "")
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -270,78 +278,65 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 10,
   },
-  headerTitleContainer: {
-    flex: 1,
-    alignItems: "center",
-  },
-  headerTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  backButton: {
+  headerButton: {
     padding: 8,
   },
-  doneButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  doneButtonText: {
+  saveButtonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   scrollView: {
     flex: 1,
-    paddingHorizontal: 20,
+    padding: 16,
   },
   challengeBadgeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
-    marginBottom: 8,
+    marginBottom: 16,
   },
   challengeIconContainer: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 32,
+    height: 32,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 8,
   },
   challengeBadgeText: {
-    color: "#9b9a9e",
+    color: "#fff",
     fontSize: 14,
     fontWeight: "500",
   },
   titleInput: {
-    color: "#fff",
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 16,
+    color: "#fff",
     marginBottom: 8,
+    padding: 0,
   },
   dateText: {
     color: "#9b9a9e",
     fontSize: 14,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   divider: {
     height: 1,
-    backgroundColor: "#3b3946",
+    backgroundColor: "#2a2933",
     marginBottom: 16,
   },
   contentInput: {
-    color: "#fff",
     fontSize: 16,
+    color: "#fff",
     lineHeight: 24,
-    minHeight: 300,
-  },
-  deleteButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    minHeight: 200,
+    padding: 0,
   },
 });
 

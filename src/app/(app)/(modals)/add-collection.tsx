@@ -1,171 +1,226 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
-import { Stack, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useUser } from '@/src/contexts/UserContext';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
+import React, { useState } from "react";
+import { Stack, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useUser } from "@/src/contexts/UserContext";
+import {
+  collection,
+  getFirestore,
+  addDoc,
+} from "firebase/firestore";
+import * as Haptics from "expo-haptics";
 
-const AddCollectionScreen = () => {
+// Available icons for collections
+const ICONS = [
+  "journal-outline",
+  "book-outline",
+  "heart-outline",
+  "star-outline",
+  "flower-outline",
+  "leaf-outline",
+  "pencil-outline",
+  "moon-outline",
+  "sunny-outline",
+  "planet-outline",
+  "paw-outline",
+  "musical-notes-outline",
+  "camera-outline",
+  "airplane-outline",
+  "cafe-outline",
+];
+
+// Color options for collections
+const COLORS = [
+  "#9C27B0", // Purple
+  "#2196F3", // Blue
+  "#4CAF50", // Green
+  "#FFC107", // Amber
+  "#F44336", // Red
+  "#FF9800", // Orange
+  "#00BCD4", // Cyan
+  "#795548", // Brown
+  "#607D8B", // Blue Grey
+  "#E91E63", // Pink
+];
+
+export default function AddCollectionModal() {
   const router = useRouter();
   const { data } = useUser();
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('journal-outline');
-  const [color, setColor] = useState('#9C27B0');
-  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState(ICONS[0]);
+  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
 
-  const handleSave = async () => {
-    if (!name.trim()) return;
-    
-    setIsLoading(true);
+  const handleCreate = async () => {
+    if (!name.trim()) {
+      Alert.alert("Error", "Please enter a collection name");
+      return;
+    }
+
+    if (!data?.uid) {
+      Alert.alert("Error", "You must be logged in to create a collection");
+      return;
+    }
+
     try {
       const db = getFirestore();
-      await addDoc(collection(db, "collections"), {
+      const collectionsRef = collection(db, "collections");
+      await addDoc(collectionsRef, {
         name: name.trim(),
-        icon,
-        color,
+        icon: selectedIcon,
+        color: selectedColor,
         userId: data.uid,
-        createdAt: serverTimestamp(),
+        createdAt: new Date(),
       });
-      
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.back();
     } catch (error) {
-      console.error("Error adding collection:", error);
-    } finally {
-      setIsLoading(false);
+      console.error("Error creating collection:", error);
+      Alert.alert("Error", "Failed to create collection. Please try again.");
     }
   };
 
-  const iconOptions = [
-    { name: 'journal-outline', color: '#9C27B0' },
-    { name: 'leaf-outline', color: '#4CAF50' },
-    { name: 'airplane-outline', color: '#2196F3' },
-    { name: 'restaurant-outline', color: '#FF5722' },
-    { name: 'heart-outline', color: '#E91E63' },
-    { name: 'fitness-outline', color: '#FF9800' },
-  ];
-
   return (
     <View style={styles.container}>
-      <Stack.Screen 
+      <Stack.Screen
         options={{
-          title: 'New Collection',
+          title: "New Collection",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="close" size={24} color="#fff" />
             </TouchableOpacity>
           ),
-        }} 
+          headerRight: () => (
+            <TouchableOpacity onPress={handleCreate}>
+              <Text style={styles.createButton}>Create</Text>
+            </TouchableOpacity>
+          ),
+        }}
       />
-      
-      <View style={styles.form}>
-        <Text style={styles.label}>Collection Name</Text>
+
+      <ScrollView style={styles.content}>
+        {/* Name Input */}
+        <Text style={styles.label}>Name</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter collection name..."
-          placeholderTextColor="#9b9a9e"
           value={name}
           onChangeText={setName}
+          placeholder="Collection name"
+          placeholderTextColor="#9b9a9e"
         />
-        
-        <Text style={styles.label}>Choose Icon</Text>
+
+        {/* Icon Selection */}
+        <Text style={styles.label}>Icon</Text>
         <View style={styles.iconGrid}>
-          {iconOptions.map((option) => (
+          {ICONS.map((icon) => (
             <TouchableOpacity
-              key={option.name}
+              key={icon}
               style={[
-                styles.iconOption,
-                icon === option.name && { borderColor: option.color }
+                styles.iconButton,
+                selectedIcon === icon && {
+                  backgroundColor: `${selectedColor}20`,
+                },
               ]}
               onPress={() => {
-                setIcon(option.name);
-                setColor(option.color);
+                setSelectedIcon(icon);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               }}
             >
-              <View 
-                style={[
-                  styles.iconContainer, 
-                  { backgroundColor: `${option.color}20` }
-                ]}
-              >
-                <Ionicons name={option.name} size={24} color={option.color} />
-              </View>
+              <Ionicons
+                name={icon as any}
+                size={24}
+                color={selectedIcon === icon ? selectedColor : "#9b9a9e"}
+              />
             </TouchableOpacity>
           ))}
         </View>
-      </View>
-      
-      <TouchableOpacity 
-        style={[styles.saveButton, !name.trim() && styles.saveButtonDisabled]}
-        onPress={handleSave}
-        disabled={!name.trim() || isLoading}
-      >
-        <Text style={styles.saveButtonText}>
-          {isLoading ? 'Saving...' : 'Create Collection'}
-        </Text>
-      </TouchableOpacity>
+
+        {/* Color Selection */}
+        <Text style={styles.label}>Color</Text>
+        <View style={styles.colorGrid}>
+          {COLORS.map((color) => (
+            <TouchableOpacity
+              key={color}
+              style={[
+                styles.colorButton,
+                { backgroundColor: color },
+                selectedColor === color && styles.selectedColor,
+              ]}
+              onPress={() => {
+                setSelectedColor(color);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1c1b22',
-    padding: 20,
+    backgroundColor: "#1c1b22",
   },
-  form: {
+  content: {
     flex: 1,
+    padding: 16,
   },
   label: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
-    marginTop: 20,
+    marginTop: 16,
   },
   input: {
-    backgroundColor: '#2a2933',
+    backgroundColor: "#2a2933",
     borderRadius: 8,
-    padding: 16,
-    color: '#fff',
+    padding: 12,
+    color: "#fff",
     fontSize: 16,
   },
   iconGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 16,
   },
-  iconOption: {
-    width: '30%',
-    margin: '1.5%',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
+  iconButton: {
+    width: 48,
+    height: 48,
     borderRadius: 8,
-    padding: 8,
+    backgroundColor: "#2a2933",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  iconContainer: {
-    width: 50,
-    height: 50,
+  colorGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 16,
+  },
+  colorButton: {
+    width: 48,
+    height: 48,
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  saveButton: {
-    backgroundColor: '#9C27B0',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    marginBottom: 20,
+  selectedColor: {
+    borderWidth: 3,
+    borderColor: "#fff",
   },
-  saveButtonDisabled: {
-    opacity: 0.5,
-  },
-  saveButtonText: {
-    color: '#fff',
+  createButton: {
+    color: "#fff",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
-});
-
-export default AddCollectionScreen; 
+}); 

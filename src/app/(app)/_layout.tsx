@@ -50,9 +50,10 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
-        name="challenge"
+        name="(modals)/search"
         options={{
-          headerShown: false,
+          presentation: "modal",
+          headerShown: true,
         }}
       />
     </Stack>

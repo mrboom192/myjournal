@@ -144,7 +144,15 @@ const Challenges = () => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.challengeItem}
-              onPress={() => router.push(`/challenge/${item.title}`)}
+              onPress={() => router.push({
+                pathname: "/(app)/(modals)/journal-entry",
+                params: {
+                  mode: "edit",
+                  title: item.title,
+                  content: item.prompts.map(p => `${p}\n`).join("\n"),
+                  challengeId: item.id
+                }
+              })}
             >
               <View
                 style={[

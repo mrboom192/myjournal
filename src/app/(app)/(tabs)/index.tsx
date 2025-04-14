@@ -124,13 +124,17 @@ const HomePage = () => {
   // Filter entries whenever month/year changes
   useEffect(() => {
     if (allEntries.length > 0) {
-      const filteredEntries = allEntries.filter(entry => {
-        if (!entry.createdAt) return false;
-        const entryDate = entry.createdAt.toDate();
-        return entryDate.getMonth() === currentMonth && 
-               entryDate.getFullYear() === currentYear;
-      });
+      const filteredEntries = allEntries
+        .filter(entry => {
+          if (!entry.createdAt) return false;
+          const entryDate = entry.createdAt.toDate();
+          return entryDate.getMonth() === currentMonth && 
+                 entryDate.getFullYear() === currentYear;
+        })
+        .sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate()); // Sort by newest first
       setEntries(filteredEntries);
+    } else {
+      setEntries([]);
     }
   }, [allEntries, currentMonth, currentYear]);
 
@@ -199,6 +203,11 @@ const HomePage = () => {
     });
   };
 
+  const handleSearchPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push("/(app)/(modals)/search");
+  };
+
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -213,7 +222,7 @@ const HomePage = () => {
           <UserAvatar size={40} canUpload={false} />
           <Text style={styles.greeting}>Hi, {data.firstName || "Ghulam"}!</Text>
         </View>
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress}>
           <Ionicons name="search" size={22} color="#fff" />
         </TouchableOpacity>
       </View>
