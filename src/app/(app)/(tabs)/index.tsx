@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Stack, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,6 +21,20 @@ import {
   where,
 } from "firebase/firestore";
 import Colors from "@/src/constants/Colors";
+
+// Journal prompts that will rotate
+const journalPrompts = [
+  "What's one thing you're grateful for?",
+  "What made you smile today?",
+  "What's something new you learned recently?",
+  "What are you looking forward to this week?",
+  "What's a challenge you're facing right now?",
+  "Write about someone who inspires you.",
+  "What's a goal you're working towards?",
+  "What's your favorite memory from last month?",
+  "How are you feeling right now?",
+  "What's something that made you proud recently?",
+];
 
 const months = [
   "January",
@@ -42,8 +56,52 @@ const HomePage = () => {
   const { data, loading } = useUser();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
+  const promptIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [promptProgress, setPromptProgress] = useState(0);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [entries, setEntries] = useState<any[]>([]);
+  const [collections, setCollections] = useState<any[]>([]);
+  const [allEntries, setAllEntries] = useState<any[]>([]);
+
+  // Set up the interval for changing prompts
+  useEffect(() => {
+    // Reset progress
+    setPromptProgress(0);
+    
+    // Start the interval for changing prompts
+    promptIntervalRef.current = setInterval(() => {
+      setCurrentPromptIndex((prevIndex) => 
+        (prevIndex + 1) % journalPrompts.length
+      );
+      setPromptProgress(0); // Reset progress when prompt changes
+    }, 300000); // 5 minutes instead of 5 seconds
+    
+    // Clean up the interval on component unmount
+    return () => {
+      if (promptIntervalRef.current) {
+        clearInterval(promptIntervalRef.current);
+      }
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, []);
+
+  // Set up interval for progress bar
+  useEffect(() => {
+    // Start the interval for updating progress
+    progressIntervalRef.current = setInterval(() => {
+      setPromptProgress((prev) => Math.min(prev + 0.00033, 1)); // Adjusted for 5 minutes (0.00033 ≈ 1/3000)
+    }, 100);
+    
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
+  }, [currentPromptIndex]);
 
   useEffect(() => {
     if (loading || !data?.uid) return;
@@ -57,7 +115,38 @@ const HomePage = () => {
         id: doc.id,
         ...(doc.data() as Omit<any, "id">),
       }));
-      setEntries(entriesData);
+      setAllEntries(entriesData);
+    });
+
+    return () => unsubscribe();
+  }, [loading, data?.uid]);
+
+  // Filter entries whenever month/year changes
+  useEffect(() => {
+    if (allEntries.length > 0) {
+      const filteredEntries = allEntries.filter(entry => {
+        if (!entry.createdAt) return false;
+        const entryDate = entry.createdAt.toDate();
+        return entryDate.getMonth() === currentMonth && 
+               entryDate.getFullYear() === currentYear;
+      });
+      setEntries(filteredEntries);
+    }
+  }, [allEntries, currentMonth, currentYear]);
+
+  useEffect(() => {
+    if (loading || !data?.uid) return;
+
+    const db = getFirestore();
+    const collectionsRef = collection(db, "collections");
+    const q = query(collectionsRef, where("userId", "==", data.uid));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const collectionsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<any, "id">),
+      }));
+      setCollections(collectionsData);
     });
 
     return () => unsubscribe();
@@ -83,9 +172,31 @@ const HomePage = () => {
     }
   };
 
+  // Helper function to format month year for display
+  const formattedMonthYear = `${months[currentMonth]} ${currentYear}`;
+
   const handleOpenChallenges = () => {
     router.push("/challenges");
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleAddCollection = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.push({
+      pathname: "/(app)/(modals)/add-collection"
+    });
+  };
+
+  const handlePromptPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push({
+      pathname: "/(app)/(modals)/journal-entry",
+      params: {
+        mode: "edit",
+        title: "Journal Entry",
+        content: `${journalPrompts[currentPromptIndex]}\n\n`,
+      },
+    });
   };
 
   if (loading) {
@@ -117,20 +228,37 @@ const HomePage = () => {
             <Ionicons name="chevron-back" size={24} color="#fff" />
           </TouchableOpacity>
           <Text style={styles.monthText}>
-            {months[currentMonth]} {currentYear}
+            {formattedMonthYear}
           </Text>
           <TouchableOpacity onPress={handleNextMonth}>
             <Ionicons name="chevron-forward" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
 
+        
         {/* Prompt Card */}
-        <View style={styles.promptCard}>
+        <TouchableOpacity 
+          style={styles.promptCard}
+          onPress={handlePromptPress}
+          activeOpacity={0.8}
+        >
           <Text style={styles.promptLabel}>Prompt</Text>
           <Text style={styles.promptText}>
-            What's one thing you're grateful for?
+            {journalPrompts[currentPromptIndex]}
           </Text>
-        </View>
+          <View style={styles.promptProgressContainer}>
+            <View 
+              style={[
+                styles.promptProgressBar, 
+                { width: `${promptProgress * 100}%` }
+              ]} 
+            />
+          </View>
+          <View style={styles.promptActionHint}>
+            <Ionicons name="create-outline" size={16} color="rgba(255,255,255,0.7)" />
+            <Text style={styles.promptActionText}>Tap to write</Text>
+          </View>
+        </TouchableOpacity>
 
         {entries.length === 0 && (
           <View
@@ -148,7 +276,7 @@ const HomePage = () => {
                 color: Colors.light.grey,
               }}
             >
-              No entries
+              No entries for {formattedMonthYear}
             </Text>
           </View>
         )}
@@ -163,6 +291,7 @@ const HomePage = () => {
                 router.push({
                   pathname: "/(app)/(modals)/journal-entry",
                   params: {
+                    id: entry.id,
                     title: entry.title,
                     content: entry.content,
                     mode: "read",
@@ -197,20 +326,44 @@ const HomePage = () => {
         {/* Collections */}
         <Text style={styles.sectionTitle}>Collections</Text>
 
-        <TouchableOpacity style={styles.collectionItem}>
-          <View style={styles.collectionIconContainer}>
-            <Ionicons name="journal-outline" size={20} color="#9C27B0" />
+        {collections.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>No collections yet</Text>
           </View>
-          <Text style={styles.collectionName}>Wisconsin Trip</Text>
-          <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
-        </TouchableOpacity>
+        ) : (
+          collections.map((collection) => (
+            <TouchableOpacity 
+              key={collection.id} 
+              style={styles.collectionItem}
+              onPress={() => {
+                // Navigate to collection view (to be implemented)
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }}
+            >
+              <View 
+                style={[
+                  styles.collectionIconContainer,
+                  { backgroundColor: `${collection.color}20` || "rgba(156, 39, 176, 0.2)" }
+                ]}
+              >
+                <Ionicons 
+                  name={collection.icon || "journal-outline"} 
+                  size={20} 
+                  color={collection.color || "#9C27B0"} 
+                />
+              </View>
+              <Text style={styles.collectionName}>{collection.name}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
+            </TouchableOpacity>
+          ))
+        )}
 
-        <TouchableOpacity style={styles.collectionItem}>
-          <View style={styles.collectionIconContainer}>
-            <Ionicons name="leaf-outline" size={20} color="#4CAF50" />
-          </View>
-          <Text style={styles.collectionName}>Hiking in the Wichita...</Text>
-          <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
+        <TouchableOpacity 
+          style={styles.addCollectionButton}
+          onPress={handleAddCollection}
+        >
+          <Ionicons name="add-circle-outline" size={20} color="#fff" />
+          <Text style={styles.addCollectionButtonText}>Add Collection</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -284,6 +437,28 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+    marginBottom: 15,
+  },
+  promptProgressContainer: {
+    height: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 2,
+    overflow: "hidden",
+  },
+  promptProgressBar: {
+    height: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+  },
+  promptActionHint: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  promptActionText: {
+    color: "rgba(255, 255, 255, 0.7)",
+    fontSize: 14,
+    marginLeft: 5,
   },
   journalEntryCard: {
     backgroundColor: "#2a2933",
@@ -359,6 +534,44 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   challengesButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  emptyState: {
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#2a2933",
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  emptyStateText: {
+    color: "#9b9a9e",
+    fontSize: 16,
+  },
+  addCollectionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#2a2933",
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 5,
+    marginBottom: 20,
+  },
+  addCollectionButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "500",
+    marginLeft: 8,
+  },
+  monthSummary: {
+    backgroundColor: "#2a2933",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  monthSummaryText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "500",

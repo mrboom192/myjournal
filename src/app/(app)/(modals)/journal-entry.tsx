@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
@@ -22,6 +23,7 @@ import {
   runTransaction,
   setDoc,
   Timestamp,
+  deleteDoc,
 } from "firebase/firestore";
 
 const JournalEntryScreen = () => {
@@ -30,6 +32,7 @@ const JournalEntryScreen = () => {
 
   // Get params if editing an existing entry
   const isEditMode = params.mode === "edit";
+  const isReadMode = params.mode === "read";
   const paramTitle = params.title
     ? decodeURIComponent(params.title as string)
     : "";
@@ -38,6 +41,7 @@ const JournalEntryScreen = () => {
     : "";
   const challengeId = params.challengeId as string;
   const isChallenge = !!challengeId;
+  const entryId = params.id as string;
 
   const [title, setTitle] = useState(paramTitle);
   const [content, setContent] = useState("");
@@ -98,6 +102,42 @@ const JournalEntryScreen = () => {
     }
   };
 
+  const handleDelete = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    
+    Alert.alert(
+      "Delete Journal Entry",
+      "Are you sure you want to delete this entry? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              if (!entryId) {
+                console.error("Entry ID is missing");
+                return;
+              }
+              
+              const entryRef = doc(db, "entries", entryId);
+              await deleteDoc(entryRef);
+              
+              router.back();
+              
+            } catch (error) {
+              console.error("Error deleting entry:", error);
+              Alert.alert("Error", "Could not delete the entry. Please try again.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <Stack.Screen
@@ -123,9 +163,15 @@ const JournalEntryScreen = () => {
               <Text style={styles.headerTitle}>{title || paramTitle}</Text>
             </View>
           )}
-          <TouchableOpacity onPress={handleSave} style={styles.doneButton}>
-            <Text style={styles.doneButtonText}>done</Text>
-          </TouchableOpacity>
+          {isReadMode && entryId ? (
+            <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+              <Ionicons name="trash-outline" size={22} color="#FF3B30" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={handleSave} style={styles.doneButton}>
+              <Text style={styles.doneButtonText}>done</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView style={styles.scrollView}>
@@ -292,6 +338,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     minHeight: 300,
+  },
+  deleteButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
 });
 
