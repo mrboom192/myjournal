@@ -11,9 +11,10 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { SessionProvider } from "../contexts/AuthContext";
 
-import { useColorScheme } from "@/src/components/useColorScheme";
-import { SignUpProvider } from "../contexts/SignupContext";
-import { UserProvider } from "../contexts/UserContext";
+import {useColorScheme } from "@/src/components/useColorScheme";
+import {SignUpProvider } from "../contexts/SignupContext";
+import {UserProvider } from "../contexts/UserContext";
+import {LanguageProvider} from "@/src/contexts/LanguageContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,7 +50,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <LanguageProvider> 
+    <RootLayoutNav />
+    </LanguageProvider> 
+  );
 }
 
 function RootLayoutNav() {
