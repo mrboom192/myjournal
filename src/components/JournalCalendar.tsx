@@ -6,10 +6,12 @@ const JournalCalendar = ({
   entries,
   currentMonth,
   currentYear,
+  setSelectedDate
 }: {
   entries: any[];
   currentMonth: number;
   currentYear: number;
+  setSelectedDate: (date: string) => void;
 }) => {
   const markedDates = Object.fromEntries(
     entries.map((entry) => {
@@ -53,6 +55,9 @@ const JournalCalendar = ({
           textDayHeaderFontSize: 14,
         }}
         style={styles.calendar}
+        onDayPress={(day: { dateString: string; }) => {
+            setSelectedDate(day.dateString); // e.g., "2024-04-17"
+          }}
       />
     </View>
   );

@@ -29,6 +29,7 @@ import JournalEntry from "@/src/components/JournalEntry";
 import Collections from "@/src/components/Collections/Collections";
 import HomeHeader from "@/src/components/HomeHeader";
 
+
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
     month: "long",
@@ -41,6 +42,8 @@ const HomePage = () => {
   const { data, loading } = useUser();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
 
   const [entries, setEntries] = useState<any[]>([]);
   const [allEntries, setAllEntries] = useState<any[]>([]);
@@ -150,10 +153,6 @@ const HomePage = () => {
         <NoEntries formattedMonthYear={formattedMonthYear} />
       )}
 
-      {/* Recent Journal Entry */}
-      {entries.map((entry) => {
-        return <JournalEntry data={entry} />;
-      })}
 
       {/* Prompt Card */}
       <PromptsCard />
