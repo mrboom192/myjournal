@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { db } from "@/firebaseConfig";
-import Modal from "react-native-modal";
-import { v4 as uuidv4 } from "uuid";
+import {db} from "@/firebaseConfig"
+import Modal from "react-native-modal"; 
+import {v4 as uuidv4} from "uuid";
+import i18n from "@/src/locales";
 import {
   doc,
   setDoc,
@@ -39,6 +40,9 @@ const ProfileScreen = () => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [friendCodeInput, setFriendCodeInput] = useState("");
   const [showFriends, setShowFriends] = useState(false);
+  const [showLanguageOptions, setShowLanguageOptions] = useState(false);
+  const [languageChanged, setLanguageChanged] = useState(false);
+
 
   function handleLogout() {
     signOut();
@@ -96,6 +100,15 @@ const ProfileScreen = () => {
     } else {
       alert("Friend code was not found.");
     }
+  };
+
+
+  const switchToSpanish = () => {
+    i18n.locale = "es";
+  };
+  
+  const switchToEnglish = () => {
+    i18n.locale = "en";
   };
 
   if (loading) {
@@ -250,30 +263,69 @@ const ProfileScreen = () => {
             style={styles.settingsItem}
             onPress={() => router.push("/profile/account-info")}
           >
-            <Text style={styles.settingsItemText}>Account info</Text>
+            <Text style={styles.settingsItemText}>{i18n.t("Account info")}</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>Notifications</Text>
+          <TouchableOpacity 
+            style={styles.settingsItem}>
+           <Text style={styles.settingsItemText}>{i18n.t("Notifications")}</Text>
+
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>Language</Text>
+          <TouchableOpacity
+            style={styles.settingsItem}
+            onPress={() => {
+              console.log("Language pressed!");
+              setShowLanguageOptions(true);
+            }}
+          >
+            <Text style={styles.settingsItemText}>{i18n.t("Language")}</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
+
           <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>Appearance</Text>
+          <Text style={styles.settingsItemText}>{i18n.t("Appearance")}</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
         </View>
+
 
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
       </ScrollView>
+      <Modal
+      isVisible={showLanguageOptions}
+      onBackdropPress={() => setShowLanguageOptions(false)}
+      style={styles.modal}
+    >
+      <View style={styles.languageContainer}>
+        <Text style={styles.emojiPickerTitle}>Select Language</Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            i18n.locale = "en";
+            setLanguageChanged((prev) => !prev); // force re-render
+            setShowLanguageOptions(false);
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>English</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            i18n.locale = "es";
+            setLanguageChanged((prev) => !prev); // force re-render
+            setShowLanguageOptions(false);
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>Español</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
 
       <Modal
         isVisible={isMoodVisible}
@@ -464,6 +516,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
   },
+  languageContainer: {
+    backgroundColor: "#2a2933",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: "center",
+  },
+  
   emojiContainer: {
     position: "absolute",
     bottom: 0, // or top: '30%' if you prefer it in the middle

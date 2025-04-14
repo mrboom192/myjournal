@@ -18,6 +18,7 @@ import {
   Poppins_400Regular,
   Poppins_600SemiBold,
 } from "@expo-google-fonts/poppins";
+import { LanguageProvider } from "@/src/contexts/LanguageContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,7 +54,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <LanguageProvider>
+      <RootLayoutNav />
+    </LanguageProvider>
+  );
 }
 
 function RootLayoutNav() {

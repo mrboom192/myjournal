@@ -55,7 +55,8 @@
         {
           "microphonePermission": "Allow MyJournal to access your microphone."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

@@ -22,8 +22,9 @@ import {
 } from "firebase/firestore";
 import Colors from "@/src/constants/Colors";
 import { PoppinsRegular, PoppinsSemiBold } from "@/src/components/StyledText";
+import i18n from "@/src/locales"; //for languages
 
-// Journal prompts that will rotate
+/*// Journal prompts that will rotate
 const journalPrompts = [
   "What's one thing you're grateful for?",
   "What made you smile today?",
@@ -36,7 +37,20 @@ const journalPrompts = [
   "How are you feeling right now?",
   "What's something that made you proud recently?",
 ];
-
+*/
+const journalPrompts = [
+  i18n.t("prompts.grateful"),
+  i18n.t("prompts.smile"),
+  i18n.t("prompts.learned"),
+  i18n.t("prompts.lookForward"),
+  i18n.t("prompts.challenge"),
+  i18n.t("prompts.inspires"),
+  i18n.t("prompts.goal"),
+  i18n.t("prompts.memory"),
+  i18n.t("prompts.feeling"),
+  i18n.t("prompts.proud"),
+];
+/*
 const months = [
   "January",
   "February",
@@ -51,6 +65,13 @@ const months = [
   "November",
   "December",
 ];
+*/
+const months = Array.from({ length: 12 }, (_, i) => {
+  const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
+    month: "long",
+  });
+  return monthName.charAt(0).toUpperCase() + monthName.slice(1);
+});
 
 const HomePage = () => {
   const router = useRouter();
@@ -226,7 +247,7 @@ const HomePage = () => {
         <View style={styles.greetingRow}>
           <UserAvatar size={40} canUpload={false} />
           <PoppinsSemiBold style={styles.greeting}>
-            Hi, {data.firstName || "Ghulam"}!
+            {i18n.t("home.greeting", { name: data.firstName })}
           </PoppinsSemiBold>
         </View>
         <TouchableOpacity
@@ -260,7 +281,7 @@ const HomePage = () => {
           onPress={handlePromptPress}
           activeOpacity={0.8}
         >
-          <PoppinsRegular style={styles.promptLabel}>Prompt</PoppinsRegular>
+          <Text style={styles.promptLabel}>Prompt</Text>
           <PoppinsSemiBold style={styles.promptText}>
             {journalPrompts[currentPromptIndex]}
           </PoppinsSemiBold>
@@ -278,9 +299,7 @@ const HomePage = () => {
               size={16}
               color="rgba(255,255,255,0.7)"
             />
-            <PoppinsRegular style={styles.promptActionText}>
-              Tap to write
-            </PoppinsRegular>
+            <Text style={styles.promptActionText}>Tap to write</Text>
           </View>
         </TouchableOpacity>
 
@@ -300,7 +319,7 @@ const HomePage = () => {
                 color: Colors.light.grey,
               }}
             >
-              No entries for {formattedMonthYear}
+              {i18n.t("home.noEntries", { monthYear: formattedMonthYear })}
             </Text>
           </View>
         )}
@@ -326,8 +345,10 @@ const HomePage = () => {
             >
               <Text style={styles.entryTitle}>{entry.title}</Text>
               <Text style={styles.entryDate}>
-                Created on {entry.createdAt?.toDate().toLocaleDateString()}
+                {i18n.t("home.createdOn")}{" "}
+                {entry.createdAt?.toDate().toLocaleDateString(i18n.locale)}
               </Text>
+
               <View style={styles.divider} />
               <Text style={styles.entryContent} numberOfLines={4}>
                 {entry.content}
@@ -344,15 +365,19 @@ const HomePage = () => {
           <View style={styles.challengesIconContainer}>
             <Ionicons name="trophy-outline" size={20} color="#FFC107" />
           </View>
-          <Text style={styles.challengesButtonText}>View Challenges</Text>
+          <Text style={styles.challengesButtonText}>
+            {i18n.t("home.viewChallenges")}
+          </Text>
         </TouchableOpacity>
 
         {/* Collections */}
-        <Text style={styles.sectionTitle}>Collections</Text>
+        <Text style={styles.sectionTitle}>{i18n.t("home.collections")}</Text>
 
         {collections.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>No collections yet</Text>
+            <Text style={styles.emptyStateText}>
+              {i18n.t("home.noCollections")}
+            </Text>
           </View>
         ) : (
           collections.map((collection) => (
@@ -398,7 +423,9 @@ const HomePage = () => {
           onPress={handleAddCollection}
         >
           <Ionicons name="add-circle-outline" size={20} color="#fff" />
-          <Text style={styles.addCollectionButtonText}>Add Collection</Text>
+          <Text style={styles.addCollectionButtonText}>
+            {i18n.t("home.addCollection")}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
