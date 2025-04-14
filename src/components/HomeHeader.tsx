@@ -17,6 +17,10 @@ const HomeHeader = () => {
     router.push("/(app)/(modals)/search");
   };
 
+if(loading ){
+  return <></>;
+}
+
   return (
     <SafeAreaView style={{ backgroundColor: "#1c1b22" }}>
       <View style={styles.header}>

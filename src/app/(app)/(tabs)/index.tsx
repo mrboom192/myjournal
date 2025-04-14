@@ -145,13 +145,39 @@ const HomePage = () => {
       </View>
       <JournalCalendar
         entries={allEntries}
+        setSelectedDate={setSelectedDate}
         currentMonth={currentMonth}
         currentYear={currentYear}
       />
 
-      {entries.length === 0 && (
-        <NoEntries formattedMonthYear={formattedMonthYear} />
+      {selectedDate ? (
+        // Show entries only for selected date
+        <>
+          {entries.filter((entry) => {
+            const dateStr = entry.createdAt?.toDate().toISOString().split("T")[0];
+            return dateStr === selectedDate;
+          }).length === 0 ? (
+            <NoEntries formattedMonthYear={selectedDate} />
+          ) : (
+            entries
+              .filter((entry) => {
+                const dateStr = entry.createdAt?.toDate().toISOString().split("T")[0];
+                return dateStr === selectedDate;
+              })
+              .map((entry) => <JournalEntry key={entry.id} data={entry} />)
+          )}
+        </>
+      ) : (
+        // Show all entries for the current month
+        <>
+          {entries.length === 0 ? (
+            <NoEntries formattedMonthYear={formattedMonthYear} />
+          ) : (
+            entries.map((entry) => <JournalEntry key={entry.id} data={entry} />)
+          )}
+        </>
       )}
+
 
 
       {/* Prompt Card */}
