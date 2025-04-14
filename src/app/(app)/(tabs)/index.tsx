@@ -29,7 +29,6 @@ import JournalEntry from "@/src/components/JournalEntry";
 import Collections from "@/src/components/Collections/Collections";
 import HomeHeader from "@/src/components/HomeHeader";
 
-
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
     month: "long",
@@ -43,7 +42,6 @@ const HomePage = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
 
   const [entries, setEntries] = useState<any[]>([]);
   const [allEntries, setAllEntries] = useState<any[]>([]);
@@ -115,13 +113,6 @@ const HomePage = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const handleAddCollection = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push({
-      pathname: "/(app)/(modals)/add-collection",
-    });
-  };
-
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -154,14 +145,20 @@ const HomePage = () => {
         // Show entries only for selected date
         <>
           {entries.filter((entry) => {
-            const dateStr = entry.createdAt?.toDate().toISOString().split("T")[0];
+            const dateStr = entry.createdAt
+              ?.toDate()
+              .toISOString()
+              .split("T")[0];
             return dateStr === selectedDate;
           }).length === 0 ? (
             <NoEntries formattedMonthYear={selectedDate} />
           ) : (
             entries
               .filter((entry) => {
-                const dateStr = entry.createdAt?.toDate().toISOString().split("T")[0];
+                const dateStr = entry.createdAt
+                  ?.toDate()
+                  .toISOString()
+                  .split("T")[0];
                 return dateStr === selectedDate;
               })
               .map((entry) => <JournalEntry key={entry.id} data={entry} />)
@@ -177,8 +174,6 @@ const HomePage = () => {
           )}
         </>
       )}
-
-
 
       {/* Prompt Card */}
       <PromptsCard />
@@ -200,7 +195,7 @@ const HomePage = () => {
 
       <TouchableOpacity
         style={styles.addCollectionButton}
-        onPress={handleAddCollection}
+        onPress={() => router.push("/(app)/(modals)/add-collection")}
       >
         <Ionicons name="add-circle-outline" size={20} color="#fff" />
         <PoppinsSemiBold style={styles.addCollectionButtonText}>
