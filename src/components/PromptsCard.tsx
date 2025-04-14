@@ -21,7 +21,7 @@ const journalPrompts = [
 
 const PROMPT_DURATION_SECONDS = 60;
 
-const Prompt = () => {
+const PromptsCard = () => {
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   const [promptProgress, setPromptProgress] = useState(0);
   const promptIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -112,7 +112,7 @@ const Prompt = () => {
   );
 };
 
-export default Prompt;
+export default PromptsCard;
 
 const styles = StyleSheet.create({
   promptCard: {

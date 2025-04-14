@@ -23,7 +23,9 @@ import {
 import Colors from "@/src/constants/Colors";
 import { PoppinsRegular, PoppinsSemiBold } from "@/src/components/StyledText";
 import i18n from "@/src/locales"; //for languages
-import Prompt from "@/src/components/Prompt";
+import PromptsCard from "@/src/components/PromptsCard";
+import NoEntries from "@/src/components/NoEntries";
+import JournalEntry from "@/src/components/JournalEntry";
 
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
@@ -180,60 +182,15 @@ const HomePage = () => {
           </TouchableOpacity>
         </View>
 
-        <Prompt />
+        <PromptsCard />
 
         {entries.length === 0 && (
-          <View
-            style={{
-              width: "100%",
-              alignItems: "center",
-              marginTop: 48,
-              marginBottom: 64,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: 600,
-                color: Colors.light.grey,
-              }}
-            >
-              {i18n.t("home.noEntries", { monthYear: formattedMonthYear })}
-            </Text>
-          </View>
+          <NoEntries formattedMonthYear={formattedMonthYear} />
         )}
 
         {/* Recent Journal Entry */}
         {entries.map((entry) => {
-          return (
-            <TouchableOpacity
-              key={entry.id}
-              style={styles.journalEntryCard}
-              onPress={() => {
-                router.push({
-                  pathname: "/(app)/(modals)/journal-entry",
-                  params: {
-                    id: entry.id,
-                    title: entry.title,
-                    content: entry.content,
-                    mode: "read",
-                    challengeId: entry.challengeId,
-                  },
-                });
-              }}
-            >
-              <Text style={styles.entryTitle}>{entry.title}</Text>
-              <Text style={styles.entryDate}>
-                {i18n.t("home.createdOn")}{" "}
-                {entry.createdAt?.toDate().toLocaleDateString(i18n.locale)}
-              </Text>
-
-              <View style={styles.divider} />
-              <Text style={styles.entryContent} numberOfLines={4}>
-                {entry.content}
-              </Text>
-            </TouchableOpacity>
-          );
+          return <JournalEntry data={entry} />;
         })}
 
         {/* Challenges Button */}
@@ -359,33 +316,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "600",
-  },
-  journalEntryCard: {
-    backgroundColor: "#2a2933",
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
-  },
-  entryTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  entryDate: {
-    color: "#9b9a9e",
-    fontSize: 14,
-    marginBottom: 10,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#3b3946",
-    marginBottom: 10,
-  },
-  entryContent: {
-    color: "#fff",
-    fontSize: 14,
-    lineHeight: 20,
   },
   sectionTitle: {
     color: "#fff",
