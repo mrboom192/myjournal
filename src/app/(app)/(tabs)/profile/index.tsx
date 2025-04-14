@@ -156,15 +156,6 @@ const ProfileScreen = () => {
       </View>
 
 
-        {/* Mood*/}
-          <TouchableOpacity
-          style={styles.moodButton}
-          onPress={() => setMoodVisible(true)}
-          > 
-          <Text style={styles.moodButtonText}>Set mood</Text>
-         <Text style={styles.moodEmoji}>{mood}</Text>
-         </TouchableOpacity>
-
         {/* Friends- checks if the length is 0, 1, or more for plural form of friends*/}
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
@@ -209,6 +200,16 @@ const ProfileScreen = () => {
             )}
           </View>
         </View>
+
+
+        {/* Mood*/}
+          <TouchableOpacity
+          style={styles.moodButton}
+          onPress={() => setMoodVisible(true)}
+          > 
+          <Text style={styles.moodButtonText}>Set mood</Text>
+         <Text style={styles.moodEmoji}>{mood}</Text>
+         </TouchableOpacity>
 
         {/* Statistics */}
         <View style={styles.statsContainer}>
