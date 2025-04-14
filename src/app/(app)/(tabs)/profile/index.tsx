@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {db} from "@/firebaseConfig"
-import Modal from "react-native-modal"; 
-import {v4 as uuidv4} from "uuid";
-import { doc, setDoc, updateDoc, collection, query, where, getDocs, arrayUnion } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
+import Modal from "react-native-modal";
+import { v4 as uuidv4 } from "uuid";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  arrayUnion,
+} from "firebase/firestore";
 import {
   View,
   Text,
@@ -10,7 +19,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
-  TextInput
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
@@ -30,7 +39,6 @@ const ProfileScreen = () => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [friendCodeInput, setFriendCodeInput] = useState("");
   const [showFriends, setShowFriends] = useState(false);
-
 
   function handleLogout() {
     signOut();
@@ -61,15 +69,17 @@ const ProfileScreen = () => {
         console.warn("Cannot add friend — friend code is undefined.");
         return;
       }
-      
+
       const userRef = doc(db, "users", session); //these adds the user as a friend for each person
       const friendRef = doc(db, "users", friendId);
 
       await updateDoc(userRef, {
-        friends: arrayUnion({id: friendId,
+        friends: arrayUnion({
+          id: friendId,
           firstName: friendDoc.data().firstName,
           lastName: friendDoc.data().lastName,
-          image: friendDoc.data().image || null,}),
+          image: friendDoc.data().image || null,
+        }),
       });
 
       await updateDoc(friendRef, {
@@ -87,7 +97,6 @@ const ProfileScreen = () => {
       alert("Friend code was not found.");
     }
   };
-
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -112,56 +121,65 @@ const ProfileScreen = () => {
         </View>
 
         <View style={{ marginBottom: 20 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}>
-        <Text style={styles.sectionTitle}>Friend Code: </Text>
-          <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
-            {data.friendCode.toUpperCase()}
-          </Text>
-          <Pressable onPress={handleCopy}>
-            <Ionicons name="copy" size={20} color="#fff" style={{ marginLeft: 10 }} />
-          </Pressable>
-        </View>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
+          >
+            <Text style={styles.sectionTitle}>Friend Code: </Text>
+            <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
+              {data.friendCode.toUpperCase()}
+            </Text>
+            <Pressable onPress={handleCopy}>
+              <Ionicons
+                name="copy"
+                size={20}
+                color="#fff"
+                style={{ marginLeft: 10 }}
+              />
+            </Pressable>
+          </View>
 
-        {/* Add Friend */}
-        <View style={{ marginTop: 20 }}>
-          <Text style={styles.sectionTitle}>Add a Friend</Text>
-          <View style={{ flexDirection: "row", marginTop: 8 }}>
-            <TextInput
-              style={{
-                flex: 1,
-                backgroundColor: "#2a2933",
-                padding: 10,
-                color: "#fff",
-                borderRadius: 8,
-              }}
-              placeholder="Enter friend code"
-              placeholderTextColor="#888"
-              value={friendCodeInput}
-              onChangeText={setFriendCodeInput}
-            />
-            <TouchableOpacity
-              onPress={handleAddFriend}
-              style={{
-                backgroundColor: "#660066",
-                paddingHorizontal: 16,
-                paddingVertical: 10,
-                borderRadius: 8,
-                marginLeft: 10,
-              }}
-            >
-              <Text style={{ color: "#fff", fontWeight: "600" }}>Add</Text>
-            </TouchableOpacity>
+          {/* Add Friend */}
+          <View style={{ marginTop: 20 }}>
+            <Text style={styles.sectionTitle}>Add a Friend</Text>
+            <View style={{ flexDirection: "row", marginTop: 8 }}>
+              <TextInput
+                style={{
+                  flex: 1,
+                  backgroundColor: "#2a2933",
+                  padding: 10,
+                  color: "#fff",
+                  borderRadius: 8,
+                }}
+                placeholder="Enter friend code"
+                placeholderTextColor="#888"
+                value={friendCodeInput}
+                onChangeText={setFriendCodeInput}
+              />
+              <TouchableOpacity
+                onPress={handleAddFriend}
+                style={{
+                  backgroundColor: "#660066",
+                  paddingHorizontal: 16,
+                  paddingVertical: 10,
+                  borderRadius: 8,
+                  marginLeft: 10,
+                }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "600" }}>Add</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-
 
         {/* Friends- checks if the length is 0, 1, or more for plural form of friends*/}
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <Text style={styles.sectionTitle}>
-            {data.friends?.length === 0 ? "No Friends"
-                : `${data.friends.length} ${data.friends.length === 1 ? "Friend" : "Friends"}`}
+              {data.friends?.length === 0
+                ? "No Friends"
+                : `${data.friends.length} ${
+                    data.friends.length === 1 ? "Friend" : "Friends"
+                  }`}
             </Text>
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
@@ -173,25 +191,23 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.friendsAvatars}>
-            {data.friends?.length > 0 ? (
+            {data.friends ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {/* For demo, show placeholder avatars if no friends */}
-                {(data.friends.length > 0
-                  ? data.friends
-                  : Array(6).fill(null)
-                ).map((friend: any, index: number) => (
-                  <View key={index} style={styles.friendAvatarContainer}>
-                    <Avatar
-                      size={40}
-                      initials={
-                        friend?.firstName
-                          ? friend.firstName[0] + friend.lastName[0]
-                          : ""
-                      }
-                      uri={friend?.image || undefined}
-                    />
-                  </View>
-                ))}
+                {(data.friends ? data.friends : Array(6).fill(null)).map(
+                  (friend: any, index: number) => (
+                    <View key={index} style={styles.friendAvatarContainer}>
+                      <Avatar
+                        size={40}
+                        initials={
+                          friend?.firstName
+                            ? friend.firstName[0] + friend.lastName[0]
+                            : ""
+                        }
+                        uri={friend?.image || undefined}
+                      />
+                    </View>
+                  )
+                )}
               </ScrollView>
             ) : (
               <Text style={{ fontWeight: "500", color: "#9b9a9e" }}>
@@ -201,15 +217,14 @@ const ProfileScreen = () => {
           </View>
         </View>
 
-
         {/* Mood*/}
-          <TouchableOpacity
+        <TouchableOpacity
           style={styles.moodButton}
           onPress={() => setMoodVisible(true)}
-          > 
+        >
           <Text style={styles.moodButtonText}>Set mood</Text>
-         <Text style={styles.moodEmoji}>{mood}</Text>
-         </TouchableOpacity>
+          <Text style={styles.moodEmoji}>{mood}</Text>
+        </TouchableOpacity>
 
         {/* Statistics */}
         <View style={styles.statsContainer}>
@@ -239,8 +254,7 @@ const ProfileScreen = () => {
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.settingsItem}>
+          <TouchableOpacity style={styles.settingsItem}>
             <Text style={styles.settingsItemText}>Notifications</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
@@ -268,38 +282,58 @@ const ProfileScreen = () => {
         swipeDirection="down"
         style={styles.modal}
       >
-      <View style={styles.emojiContainer}>
-        <Text style={styles.emojiPickerTitle}>Pick your mood</Text>
-        <View style={styles.emojiGrid}>
-          {["😊", "😃", "🤣", "😔", "😢", "😫", "😤", "😡", "😴", "😎", "😭","🤫", "🥶", "😑", "🤔", "😍","😇", "😳", "😈", "🤪", "🤓", "🤩", "🤯", "🥳"].map((emoji) => (
-            <TouchableOpacity
-              key={emoji}
-              onPress={() => {
-                setMood(emoji);
-                setMoodVisible(false);
-              }}
-              style={styles.emojiButton}
-            >
-              <Text style={{ fontSize: 28 }}>{emoji}</Text>
-            </TouchableOpacity>
-          ))}
+        <View style={styles.emojiContainer}>
+          <Text style={styles.emojiPickerTitle}>Pick your mood</Text>
+          <View style={styles.emojiGrid}>
+            {[
+              "😊",
+              "😃",
+              "🤣",
+              "😔",
+              "😢",
+              "😫",
+              "😤",
+              "😡",
+              "😴",
+              "😎",
+              "😭",
+              "🤫",
+              "🥶",
+              "😑",
+              "🤔",
+              "😍",
+              "😇",
+              "😳",
+              "😈",
+              "🤪",
+              "🤓",
+              "🤩",
+              "🤯",
+              "🥳",
+            ].map((emoji) => (
+              <TouchableOpacity
+                key={emoji}
+                onPress={() => {
+                  setMood(emoji);
+                  setMoodVisible(false);
+                }}
+                style={styles.emojiButton}
+              >
+                <Text style={{ fontSize: 28 }}>{emoji}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </Modal>
     </SafeAreaView>
-
-    
   );
 };
-
-
 
 export default ProfileScreen;
 
 // STYLES
 
 const styles = StyleSheet.create({
-    
   container: {
     flex: 1,
     backgroundColor: "#1c1b22",
@@ -439,7 +473,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    zIndex: 100,  // ensure it appears above other content
+    zIndex: 100, // ensure it appears above other content
   },
   emojiPickerTitle: {
     color: "#fff",
@@ -463,10 +497,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   modal: {
-  justifyContent: "flex-end",
-  margin: 0,
-},
-
-
+    justifyContent: "flex-end",
+    margin: 0,
+  },
 });
-
