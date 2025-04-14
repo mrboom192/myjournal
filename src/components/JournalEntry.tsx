@@ -3,6 +3,7 @@ import React from "react";
 import { router } from "expo-router";
 import i18n from "../locales";
 import { Entry } from "../types/Entry";
+import { PoppinsRegular, PoppinsSemiBold } from "./StyledText";
 
 const JournalEntry = ({ data }: { data: Entry }) => {
   return (
@@ -21,16 +22,16 @@ const JournalEntry = ({ data }: { data: Entry }) => {
         });
       }}
     >
-      <Text style={styles.entryTitle}>{data.title}</Text>
-      <Text style={styles.entryDate}>
+      <PoppinsSemiBold style={styles.entryTitle}>{data.title}</PoppinsSemiBold>
+      <PoppinsRegular style={styles.entryDate}>
         {i18n.t("home.createdOn")}{" "}
         {data.createdAt?.toDate().toLocaleDateString(i18n.locale)}
-      </Text>
+      </PoppinsRegular>
 
       <View style={styles.divider} />
-      <Text style={styles.entryContent} numberOfLines={4}>
+      <PoppinsRegular style={styles.entryContent} numberOfLines={4}>
         {data.content}
-      </Text>
+      </PoppinsRegular>
     </TouchableOpacity>
   );
 };

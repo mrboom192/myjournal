@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import JournalCalendar from "@/src/components/JournalCalendar";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,7 +15,6 @@ import UserAvatar from "@/src/components/UserAvatar";
 import { useUser } from "@/src/contexts/UserContext";
 import {
   collection,
-  getDocs,
   getFirestore,
   onSnapshot,
   query,
@@ -27,6 +26,8 @@ import i18n from "@/src/locales"; //for languages
 import PromptsCard from "@/src/components/PromptsCard";
 import NoEntries from "@/src/components/NoEntries";
 import JournalEntry from "@/src/components/JournalEntry";
+import NoCollections from "@/src/components/NoCollections";
+import CollectionButton from "@/src/components/CollectionButton";
 
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
@@ -205,56 +206,21 @@ const HomePage = () => {
           <View style={styles.challengesIconContainer}>
             <Ionicons name="trophy-outline" size={20} color="#FFC107" />
           </View>
-          <Text style={styles.challengesButtonText}>
+          <PoppinsSemiBold style={styles.challengesButtonText}>
             {i18n.t("home.viewChallenges")}
-          </Text>
+          </PoppinsSemiBold>
         </TouchableOpacity>
 
         {/* Collections */}
-        <Text style={styles.sectionTitle}>{i18n.t("home.collections")}</Text>
+        <PoppinsSemiBold style={styles.sectionTitle}>
+          {i18n.t("home.collections")}
+        </PoppinsSemiBold>
 
         {collections.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>
-              {i18n.t("home.noCollections")}
-            </Text>
-          </View>
+          <NoCollections />
         ) : (
           collections.map((collection) => (
-            <TouchableOpacity
-              key={collection.id}
-              style={styles.collectionItem}
-              onPress={() => {
-                router.push({
-                  pathname: "/(app)/(modals)/collection-view",
-                  params: {
-                    id: collection.id,
-                    name: collection.name,
-                    color: collection.color,
-                    icon: collection.icon,
-                  },
-                });
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              }}
-            >
-              <View
-                style={[
-                  styles.collectionIconContainer,
-                  {
-                    backgroundColor:
-                      `${collection.color}20` || "rgba(156, 39, 176, 0.2)",
-                  },
-                ]}
-              >
-                <Ionicons
-                  name={collection.icon || "journal-outline"}
-                  size={20}
-                  color={collection.color || "#9C27B0"}
-                />
-              </View>
-              <Text style={styles.collectionName}>{collection.name}</Text>
-              <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
-            </TouchableOpacity>
+            <CollectionButton data={collection} />
           ))
         )}
 
@@ -263,9 +229,9 @@ const HomePage = () => {
           onPress={handleAddCollection}
         >
           <Ionicons name="add-circle-outline" size={20} color="#fff" />
-          <Text style={styles.addCollectionButtonText}>
+          <PoppinsSemiBold style={styles.addCollectionButtonText}>
             {i18n.t("home.addCollection")}
-          </Text>
+          </PoppinsSemiBold>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -327,28 +293,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
   },
-  collectionItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#2a2933",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 10,
-  },
-  collectionIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: "rgba(156, 39, 176, 0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  collectionName: {
-    color: "#fff",
-    fontSize: 16,
-    flex: 1,
-  },
   challengesButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -371,17 +315,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "500",
-  },
-  emptyState: {
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#2a2933",
-    borderRadius: 12,
-    marginBottom: 10,
-  },
-  emptyStateText: {
-    color: "#9b9a9e",
-    fontSize: 16,
   },
   addCollectionButton: {
     flexDirection: "row",
