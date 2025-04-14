@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { Stack, useRouter } from "expo-router";
+import JournalCalendar from "@/src/components/JournalCalendar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -179,6 +180,10 @@ const HomePage = () => {
             <Ionicons name="chevron-forward" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
+
+        {/* Monthly Calendar */}
+        <JournalCalendar entries={allEntries} />
+
 
         <Prompt />
 
