@@ -6,7 +6,7 @@ const JournalCalendar = ({
   entries,
   currentMonth,
   currentYear,
-  setSelectedDate
+  setSelectedDate,
 }: {
   entries: any[];
   currentMonth: number;
@@ -30,7 +30,7 @@ const JournalCalendar = ({
     <View style={styles.calendarWrapper}>
       <Calendar
         markedDates={markedDates}
-        current={new Date(currentYear, currentMonth, 1)}
+        current={String(new Date(currentYear, currentMonth, 1))}
         disableMonthChange={true}
         hideArrows={true}
         renderHeader={() => <></>}
@@ -55,9 +55,9 @@ const JournalCalendar = ({
           textDayHeaderFontSize: 14,
         }}
         style={styles.calendar}
-        onDayPress={(day: { dateString: string; }) => {
-            setSelectedDate(day.dateString); // e.g., "2024-04-17"
-          }}
+        onDayPress={(day: { dateString: string }) => {
+          setSelectedDate(day.dateString); // e.g., "2024-04-17"
+        }}
       />
     </View>
   );
