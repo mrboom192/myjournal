@@ -112,5 +112,5 @@ export function SessionProvider({ children }: PropsWithChildren) {
 // Utility to generate a short alphanumeric code
 const generateFriendCode = (uid: string) => {
   // Use the last 6–8 characters of UID, or hash if needed
-  return uid.slice(-8);
+  return uid.slice(-8).toUpperCase();
 };

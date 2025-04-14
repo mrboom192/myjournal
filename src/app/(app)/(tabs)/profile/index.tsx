@@ -25,18 +25,9 @@ import Avatar from "@/src/components/Avatar";
 const ProfileScreen = () => {
   const router = useRouter();
   const { data, loading } = useUser();
-  const { signOut } = useSession();
+  const { signOut, session } = useSession();
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [friendCodeInput, setFriendCodeInput] = useState("");
-
-  
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync(); // clean up on unmount
-        }
-      : undefined;
-  }, [sound]);
 
   function handleLogout() {
     signOut();
@@ -46,45 +37,42 @@ const ProfileScreen = () => {
     await Clipboard.setStringAsync(data.friendCode);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }
-  useEffect(() => {
-    if (!loading && data && !data.friendCode) {
-      const generateFriendCode = async () => {
-        const friendCode = uuidv4().slice(0, 6); // makes the friend code 6 characters long
-        const userRef = doc(db, "users", data.id);
-        await setDoc(userRef, { friendCode }, { merge: true });
-      };
-      generateFriendCode();
-    }
-  }, [loading, data]);
-  
+
 
   const handleAddFriend = async () => {
-    const q = query(
-      collection(db, "users"),
-      where("friendCode", "==", friendCodeInput)
-    );
+    const code = friendCodeInput.trim().toUpperCase();
+    const q = query(collection(db, "users"), where("friendCode", "==", code));
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
       const friendDoc = snapshot.docs[0];
       const friendId = friendDoc.id;
 
-      if (friendId === data.id) {
+      if (friendId === session) {
         alert("You can't add yourself as a friend!");
         return;
       }
 
-      const userRef = doc(db, "users", data.id); //these adds the user as a friend for each person
+      if (!session) {
+        console.warn("Cannot add friend — friend code is undefined.");
+        return;
+      }
+      
+      const userRef = doc(db, "users", session); //these adds the user as a friend for each person
       const friendRef = doc(db, "users", friendId);
 
       await updateDoc(userRef, {
-        friends: arrayUnion({ id: friendId, ...friendDoc.data() }),
+        friends: arrayUnion({id: friendId,
+          firstName: friendDoc.data().firstName,
+          lastName: friendDoc.data().lastName,
+          image: friendDoc.data().image || null,}),
       });
 
       await updateDoc(friendRef, {
         friends: arrayUnion({
-          id: data.id,
+          id: session,
           firstName: data.firstName,
           lastName: data.lastName,
+          image: data.image || null,
         }),
       });
 
@@ -122,7 +110,7 @@ const ProfileScreen = () => {
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}>
         <Text style={styles.sectionTitle}>Friend Code: </Text>
           <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
-            {data.friendCode}
+            {data.friendCode.toUpperCase()}
           </Text>
           <Pressable onPress={handleCopy}>
             <Ionicons name="copy" size={20} color="#fff" style={{ marginLeft: 10 }} />
