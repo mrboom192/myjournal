@@ -186,9 +186,6 @@ const HomePage = () => {
         {/* Monthly Calendar */}
         <JournalCalendar entries={allEntries} />
 
-        {/* Monthly Calendar */}
-        <JournalCalendar entries={allEntries} />
-
         <PromptsCard />
 
         {entries.length === 0 && (
