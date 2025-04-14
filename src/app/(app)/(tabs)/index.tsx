@@ -27,7 +27,7 @@ import PromptsCard from "@/src/components/PromptsCard";
 import NoEntries from "@/src/components/NoEntries";
 import JournalEntry from "@/src/components/JournalEntry";
 import Collections from "@/src/components/Collections/Collections";
-
+import HomeHeader from "@/src/components/HomeHeader";
 
 const months = Array.from({ length: 12 }, (_, i) => {
   const monthName = new Date(2000, i, 1).toLocaleString(i18n.locale, {
@@ -119,137 +119,81 @@ const HomePage = () => {
     });
   };
 
-  const handleSearchPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    router.push("/(app)/(modals)/search");
-  };
-
   if (loading) {
     return <Text>Loading...</Text>;
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <Stack.Screen options={{ headerShown: false }} />
-
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.greetingRow}>
-          <UserAvatar size={40} canUpload={false} />
-          <PoppinsSemiBold style={styles.greeting}>
-            {i18n.t("home.greeting", { name: data.firstName })}
-          </PoppinsSemiBold>
-        </View>
-        <TouchableOpacity
-          style={styles.searchButton}
-          onPress={handleSearchPress}
-        >
-          <Ionicons name="search" size={22} color="#fff" />
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}
+    >
+      {/* Month Navigation */}
+      <View style={styles.monthNavigation}>
+        <TouchableOpacity onPress={handlePrevMonth}>
+          <Ionicons name="chevron-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <PoppinsSemiBold style={styles.monthText}>
+          {formattedMonthYear}
+        </PoppinsSemiBold>
+        <TouchableOpacity onPress={handleNextMonth}>
+          <Ionicons name="chevron-forward" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
+      <JournalCalendar
+        entries={allEntries}
+        currentMonth={currentMonth}
+        currentYear={currentYear}
+      />
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+      {entries.length === 0 && (
+        <NoEntries formattedMonthYear={formattedMonthYear} />
+      )}
+
+      {/* Recent Journal Entry */}
+      {entries.map((entry) => {
+        return <JournalEntry data={entry} />;
+      })}
+
+      {/* Prompt Card */}
+      <PromptsCard />
+
+      {/* Challenges Button */}
+      <TouchableOpacity
+        style={styles.challengesButton}
+        onPress={handleOpenChallenges}
       >
-        {/* Month Navigation */}
-        <View style={styles.monthNavigation}>
-          <TouchableOpacity onPress={handlePrevMonth}>
-            <Ionicons name="chevron-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <PoppinsSemiBold style={styles.monthText}>
-            {formattedMonthYear}
-          </PoppinsSemiBold>
-          <TouchableOpacity onPress={handleNextMonth}>
-            <Ionicons name="chevron-forward" size={24} color="#fff" />
-          </TouchableOpacity>
+        <View style={styles.challengesIconContainer}>
+          <Ionicons name="trophy-outline" size={20} color="#FFC107" />
         </View>
-        <JournalCalendar
-          entries={allEntries}
-          currentMonth={currentMonth}
-          currentYear={currentYear}
-        />
+        <PoppinsSemiBold style={styles.challengesButtonText}>
+          {i18n.t("home.viewChallenges")}
+        </PoppinsSemiBold>
+      </TouchableOpacity>
 
+      <Collections />
 
-        
-
-        {entries.length === 0 && (
-          <NoEntries formattedMonthYear={formattedMonthYear} />
-        )}
-
-        {/* Recent Journal Entry */}
-        {entries.map((entry) => {
-          return <JournalEntry data={entry} />;
-        })}
-
-        {/* Prompt Card */}
-        <PromptsCard />
-
-        {/* Challenges Button */}
-        <TouchableOpacity
-          style={styles.challengesButton}
-          onPress={handleOpenChallenges}
-        >
-          <View style={styles.challengesIconContainer}>
-            <Ionicons name="trophy-outline" size={20} color="#FFC107" />
-          </View>
-          <PoppinsSemiBold style={styles.challengesButtonText}>
-            {i18n.t("home.viewChallenges")}
-          </PoppinsSemiBold>
-        </TouchableOpacity>
-
-        <Collections />
-
-        <TouchableOpacity
-          style={styles.addCollectionButton}
-          onPress={handleAddCollection}
-        >
-          <Ionicons name="add-circle-outline" size={20} color="#fff" />
-          <PoppinsSemiBold style={styles.addCollectionButtonText}>
-            {i18n.t("home.addCollection")}
-          </PoppinsSemiBold>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+      <TouchableOpacity
+        style={styles.addCollectionButton}
+        onPress={handleAddCollection}
+      >
+        <Ionicons name="add-circle-outline" size={20} color="#fff" />
+        <PoppinsSemiBold style={styles.addCollectionButtonText}>
+          {i18n.t("home.addCollection")}
+        </PoppinsSemiBold>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
     backgroundColor: "#1c1b22",
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  greetingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  greeting: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  searchButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "#2a2933",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scrollView: {
-    flex: 1,
-  },
   scrollContent: {
     padding: 20,
-    paddingTop: 5,
+    paddingTop: 0,
     paddingBottom: 100,
   },
   monthNavigation: {

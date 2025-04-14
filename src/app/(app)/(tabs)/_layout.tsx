@@ -4,6 +4,8 @@ import { Image, TouchableOpacity, StyleSheet, View } from "react-native";
 import { useColorScheme } from "@/src/components/useColorScheme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import Home from "@/src/components/icons/Home";
+import HomeHeader from "@/src/components/HomeHeader";
 
 export default function TabLayout(): React.JSX.Element {
   const colorScheme = useColorScheme();
@@ -43,7 +45,6 @@ export default function TabLayout(): React.JSX.Element {
             height: 60,
             paddingBottom: 8,
           },
-          headerShown: false,
         }}
       >
         <Tabs.Screen
@@ -60,6 +61,7 @@ export default function TabLayout(): React.JSX.Element {
                 }}
               />
             ),
+            header: () => <HomeHeader />,
           }}
         />
 
