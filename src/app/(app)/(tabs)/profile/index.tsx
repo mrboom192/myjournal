@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {db} from "@/firebaseConfig"
+import Modal from "react-native-modal"; 
 import {v4 as uuidv4} from "uuid";
 import { doc, setDoc, updateDoc, collection, query, where, getDocs, arrayUnion } from "firebase/firestore";
 import {
@@ -259,7 +260,13 @@ const ProfileScreen = () => {
         </TouchableOpacity>
       </ScrollView>
 
-          {isMoodVisible && (
+      <Modal
+        isVisible={isMoodVisible}
+        onBackdropPress={() => setMoodVisible(false)}
+        onSwipeComplete={() => setMoodVisible(false)}
+        swipeDirection="down"
+        style={styles.modal}
+      >
       <View style={styles.emojiContainer}>
         <Text style={styles.emojiPickerTitle}>Pick your mood</Text>
         <View style={styles.emojiGrid}>
@@ -275,10 +282,9 @@ const ProfileScreen = () => {
               <Text style={{ fontSize: 28 }}>{emoji}</Text>
             </TouchableOpacity>
           ))}
+          </View>
         </View>
-      </View>
-    )}
-
+      </Modal>
     </SafeAreaView>
 
     
@@ -455,5 +461,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  modal: {
+  justifyContent: "flex-end",
+  margin: 0,
+},
+
+
 });
 
