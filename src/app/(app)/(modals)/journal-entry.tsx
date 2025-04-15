@@ -45,8 +45,13 @@ const months = [
   "December",
 ];
 
-const getOrdinalNum = (n) => {
-  return n + (n > 0 ? ["th", "st", "nd", "rd"][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : "");
+const getOrdinalNum = (n: number) => {
+  return (
+    n +
+    (n > 0
+      ? ["th", "st", "nd", "rd"][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10]
+      : "")
+  );
 };
 
 const JournalEntryScreen = () => {
@@ -79,19 +84,24 @@ const JournalEntryScreen = () => {
       if (!auth.currentUser?.uid) return;
 
       const collectionsRef = collection(db, "collections");
-      const q = query(collectionsRef, where("userId", "==", auth.currentUser.uid));
-      
+      const q = query(
+        collectionsRef,
+        where("userId", "==", auth.currentUser.uid)
+      );
+
       try {
         const querySnapshot = await getDocs(q);
-        const collectionsData = querySnapshot.docs.map(doc => ({
+        const collectionsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
         setCollections(collectionsData);
 
         // If entry has a collection, select it
         if (params.collectionId) {
-          const collection = collectionsData.find(c => c.id === params.collectionId);
+          const collection = collectionsData.find(
+            (c) => c.id === params.collectionId
+          );
           if (collection) {
             setSelectedCollection(collection);
           }
@@ -124,7 +134,7 @@ const JournalEntryScreen = () => {
       [
         {
           text: "Cancel",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Delete",
@@ -132,18 +142,20 @@ const JournalEntryScreen = () => {
           onPress: async () => {
             try {
               if (!entryId) return;
-              
+
               const entryRef = doc(db, "entries", entryId);
               await deleteDoc(entryRef);
-              
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Success
+              );
               router.back();
             } catch (error) {
               console.error("Error deleting entry:", error);
               Alert.alert("Error", "Failed to delete entry. Please try again.");
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
@@ -167,9 +179,13 @@ const JournalEntryScreen = () => {
       if (entryId) {
         // Update existing entry
         const entryRef = doc(db, "entries", entryId);
-        await setDoc(entryRef, {
-          ...entryData,
-        }, { merge: true });
+        await setDoc(
+          entryRef,
+          {
+            ...entryData,
+          },
+          { merge: true }
+        );
       } else {
         // Create new entry
         const entriesRef = collection(db, "entries");
@@ -180,16 +196,16 @@ const JournalEntryScreen = () => {
 
         // If this is a challenge entry, update user points
         if (challengeId) {
-          const challenge = challenges.find(c => c.id === challengeId);
+          const challenge = challenges.find((c) => c.id === challengeId);
           if (challenge) {
             const userRef = doc(db, "users", userId);
             await runTransaction(db, async (transaction) => {
               const userDoc = await transaction.get(userRef);
               if (!userDoc.exists()) return;
-              
+
               const currentPoints = userDoc.data().points || 0;
               transaction.update(userRef, {
-                points: currentPoints + challenge.points
+                points: currentPoints + challenge.points,
               });
             });
           }
@@ -240,10 +256,7 @@ const JournalEntryScreen = () => {
               </TouchableOpacity>
             </>
           ) : (
-            <TouchableOpacity
-              style={styles.headerButton}
-              onPress={handleSave}
-            >
+            <TouchableOpacity style={styles.headerButton} onPress={handleSave}>
               <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>
           )}
@@ -316,10 +329,14 @@ const JournalEntryScreen = () => {
                       color={selectedCollection.color}
                     />
                   </View>
-                  <Text style={styles.collectionName}>{selectedCollection.name}</Text>
+                  <Text style={styles.collectionName}>
+                    {selectedCollection.name}
+                  </Text>
                 </View>
               ) : (
-                <Text style={styles.collectionPlaceholder}>Add to Collection</Text>
+                <Text style={styles.collectionPlaceholder}>
+                  Add to Collection
+                </Text>
               )}
               <Ionicons name="chevron-forward" size={20} color="#9b9a9e" />
             </TouchableOpacity>
@@ -351,9 +368,7 @@ const JournalEntryScreen = () => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Choose Collection</Text>
-              <TouchableOpacity
-                onPress={() => setShowCollectionModal(false)}
-              >
+              <TouchableOpacity onPress={() => setShowCollectionModal(false)}>
                 <Ionicons name="close" size={24} color="#fff" />
               </TouchableOpacity>
             </View>

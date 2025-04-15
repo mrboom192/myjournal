@@ -106,6 +106,7 @@ const ProfileScreen = () => {
    i18n.locale = "es";
  };
   const switchToEnglish = () => {
+
    i18n.locale = "en";
  };
  if (loading) {
@@ -246,6 +247,7 @@ const ProfileScreen = () => {
          >
          <Text style={styles.moodButtonText}>{i18n.t("profile.mood")}</Text>
         <Text style={styles.moodEmoji}>{mood}</Text>
+
         </TouchableOpacity>
 
 

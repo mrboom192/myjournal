@@ -39,6 +39,12 @@
       "expo-router",
       "expo-secure-store",
       [
+        "expo-font",
+        {
+          "fonts": ["path/to/file.ttf"]
+        }
+      ],
+      [
         "expo-audio",
         {
           "microphonePermission": "Allow MyJournal to access your microphone."
