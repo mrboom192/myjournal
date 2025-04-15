@@ -5,12 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 const CollectionViewScreen = () => {
@@ -50,6 +51,49 @@ const CollectionViewScreen = () => {
     fetchEntries();
   }, [params.id]);
 
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete Collection",
+      "Are you sure you want to delete this collection? All entries will be removed from this collection but will not be deleted.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              // Delete the collection
+              const collectionRef = doc(db, "collections", params.id as string);
+              await deleteDoc(collectionRef);
+
+              // Remove collection reference from all entries
+              const entriesRef = collection(db, "entries");
+              const q = query(entriesRef, where("collectionId", "==", params.id));
+              const querySnapshot = await getDocs(q);
+
+              // Update each entry to remove the collection reference
+              const updatePromises = querySnapshot.docs.map(doc => 
+                updateDoc(doc.ref, {
+                  collectionId: null
+                })
+              );
+              await Promise.all(updatePromises);
+
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              router.back();
+            } catch (error) {
+              console.error("Error deleting collection:", error);
+              Alert.alert("Error", "Failed to delete collection. Please try again.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <Stack.Screen options={{ headerShown: false }} />
@@ -81,6 +125,12 @@ const CollectionViewScreen = () => {
             </>
           )}
         </View>
+        <TouchableOpacity
+          style={[styles.headerButton, styles.deleteButton]}
+          onPress={handleDelete}
+        >
+          <Ionicons name="trash-outline" size={24} color="#ff4444" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollView}>
@@ -137,6 +187,9 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     padding: 8,
+  },
+  deleteButton: {
+    marginLeft: 8,
   },
   headerTitleContainer: {
     flex: 1,
