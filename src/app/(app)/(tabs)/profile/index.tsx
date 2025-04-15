@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 128,
   },
   profileHeader: {
     flexDirection: "row",
