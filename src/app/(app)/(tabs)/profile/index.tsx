@@ -253,17 +253,17 @@ const ProfileScreen = () => {
 
        {/* Statistics */}
        <View style={styles.statsContainer}>
-         <View style={styles.statItem}>
+         {/* <View style={styles.statItem}>
            <Text style={styles.statValue}>16</Text>
            <Text style={styles.statLabel}>{i18n.t("profile.days")}</Text>
            <Text style={styles.statLabel}>{i18n.t("profile.currentStreak")}</Text>
-         </View>
+         </View> */}
          <View style={styles.statItem}>
-           <Text style={styles.statValue}>32</Text>
+           <Text style={styles.statValue}>12</Text>
            <Text style={styles.statLabel}>{i18n.t("profile.entriesThisYear")}</Text>
          </View>
          <View style={styles.statItem}>
-           <Text style={styles.statValue}>9,029</Text>
+           <Text style={styles.statValue}>2,153</Text>
            <Text style={styles.statLabel}>{i18n.t("profile.wordsWritten")}</Text>
          </View>
        </View>
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
    paddingHorizontal: 12,
    paddingVertical: 8,
    borderRadius: 20,
-   alignSelf: "flex-start",
+   alignSelf: "center",
    marginBottom: 20,
  },
  moodButtonText: {
@@ -465,15 +465,19 @@ const styles = StyleSheet.create({
    marginBottom: 20,
  },
  statItem: {
-   alignItems: "flex-start",
+   flex: 1,
+   alignItems: "center",
  },
  statValue: {
    fontSize: 20,
    fontWeight: "bold",
    color: "#f0883e", // Orange color like in the image
+   marginBottom: 4,
+
  },
  statLabel: {
    color: "#9b9a9e",
+   textAlign: "center",
    fontSize: 14,
  },
  statSubLabel: {
