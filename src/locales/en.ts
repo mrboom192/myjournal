@@ -1,4 +1,3 @@
-
 export default {
   "Language": "Language",
   "Notifications": "Notifications",
@@ -26,8 +25,31 @@ export default {
     memory: "What's your favorite memory from last month?",
     feeling: "How are you feeling right now?",
     proud: "What's something that made you proud recently?",
+  },
+  profile: {
+    mood: "Set mood",
+    addFriend: "Add a Friend",
+    enterFriendCode: "Enter friend code",
+    add: "Add",
+    seeAll: "See all",
+    friendCode: "Friend Code",
+    days: "days",
+    enterCode: "Enter friend code",
+    noFriends: "No Friends",
+    friend: "Friend",
+    friends: "Friends",
+    settings: "Settings",
+    currentStreak: "Current streak",
+    entriesThisYear: "Entries this year",
+    wordsWritten: "Words Written",
+    language: "Language",
+    appearance: "Appearance",
+    notifications: "Notifications",
+    accountInfo: "Account info",
+    logout: "Log out",
+    selectLanguage: "Select Language",
+    challengeEntry: "Challenge Entry"
   }
-  
-  
-}
-
+   
+  }
+ 
