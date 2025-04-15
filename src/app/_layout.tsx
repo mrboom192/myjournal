@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { SessionProvider } from "../contexts/AuthContext";
 
-import { useColorScheme } from "@/src/components/useColorScheme";
 import { SignUpProvider } from "../contexts/SignupContext";
 import { UserProvider } from "../contexts/UserContext";
 import {
@@ -62,23 +61,19 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   // Need to make a header function that looks good!!
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <SessionProvider>
-        <UserProvider>
-          <SignUpProvider>
-            <Stack
-              screenOptions={{
-                navigationBarColor: "#FFF",
-                headerShown: false,
-              }}
-            />
-          </SignUpProvider>
-        </UserProvider>
-      </SessionProvider>
-    </ThemeProvider>
+    <SessionProvider>
+      <UserProvider>
+        <SignUpProvider>
+          <Stack
+            screenOptions={{
+              navigationBarColor: "#FFF",
+              headerShown: false,
+            }}
+          />
+        </SignUpProvider>
+      </UserProvider>
+    </SessionProvider>
   );
 }
