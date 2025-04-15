@@ -193,7 +193,7 @@ const ProfileScreen = () => {
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <Text style={styles.sectionTitle}>
-              {data.friends?.length === 0
+              {!data.friends
                 ? i18n.t("profile.noFriends")
                 : `${data.friends.length} ${
                     data.friends.length === 1
