@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import {
   View,
   Text,
@@ -172,6 +171,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-=======
- 
->>>>>>> Stashed changes
