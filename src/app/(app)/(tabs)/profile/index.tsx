@@ -136,8 +136,7 @@ const ProfileScreen = () => {
             style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
           >
             <Text style={styles.sectionTitle}>
-              {i18n.t("profile.addFriend")} {language}
-            </Text>
+              {i18n.t("profile.friendCode")}: </Text>
             <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
               {data.friendCode.toUpperCase()}
             </Text>
