@@ -126,7 +126,7 @@ const SignIn = () => {
               onChangeText={setPassword}
               secureTextEntry={true}
               labelRight={
-                <Link href="/forgot-password">
+                <Link href="/" disabled>
                   <Text style={styles.forgotPassword}>Forgot Password?</Text>
                 </Link>
               }

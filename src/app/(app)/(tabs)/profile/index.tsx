@@ -275,7 +275,7 @@ const ProfileScreen = () => {
         <View style={styles.settingsContainer}>
           <TouchableOpacity
             style={styles.settingsItem}
-            onPress={() => router.push("/profile/account-info")}
+            onPress={() => router.push("/(app)/(other)/account-info")}
           >
             <Text style={styles.settingsItemText}>
               {i18n.t("Account info")}
@@ -319,7 +319,6 @@ const ProfileScreen = () => {
           <TouchableOpacity
             onPress={() => {
               i18n.locale = "en";
-              setLanguageChanged((prev) => !prev); // force re-render
               setShowLanguageOptions(false);
             }}
           >
@@ -331,7 +330,6 @@ const ProfileScreen = () => {
           <TouchableOpacity
             onPress={() => {
               i18n.locale = "es";
-              setLanguageChanged((prev) => !prev); // force re-render
               setShowLanguageOptions(false);
             }}
           >
@@ -541,14 +539,14 @@ const styles = StyleSheet.create({
 
   emojiContainer: {
     position: "absolute",
-    bottom: 0, 
+    bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: "#2a2933",
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    zIndex: 100, 
+    zIndex: 100,
   },
   emojiPickerTitle: {
     color: "#fff",
