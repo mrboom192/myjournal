@@ -1,4 +1,3 @@
-
 export default {
   "Language": "Idioma",
   "Notifications": "Notificaciones",
@@ -14,7 +13,7 @@ export default {
     noCollections: "Aún no hay colecciones",
     addCollection: "Agregar colección",
     createdOn: "Creado el",
-    
+   
   },
   prompts: {
     grateful: "¿Por qué estás agradecido/a hoy?",
@@ -27,7 +26,31 @@ export default {
     memory: "¿Cuál es tu recuerdo favorito del mes pasado?",
     feeling: "¿Cómo te sientes ahora?",
     proud: "¿Qué es algo de lo que te sentiste orgulloso/a recientemente?",
+  },
+  profile: {
+    mood: "Estado de ánimo",
+    addFriend: "Agregar un amigo",
+    enterFriendCode: "Código de amigo",
+    add: "Agregar",
+    seeAll: "Ver todos",
+    friendCode: "Código de amigo",
+    enterCode: "Ingresa el código de amigo",
+    days: "días",
+    noFriends: "Sin amigos",
+    friend: "Amigo",
+    friends: "Amigos",
+    settings: "Configuración",
+    currentStreak: "Racha actual",
+    entriesThisYear: "Entradas este año",
+    wordsWritten: "Palabras escritas",
+    language: "Idioma",
+    appearance: "Apariencia",
+    notifications: "Notificaciones",
+    accountInfo: "Información de la cuenta",
+    logout: "Cerrar sesión",
+    selectLanguage: "Selecciona un idioma",
+    challengeEntry: "Entrada de desafío"
   }
   
-  
-}
+  }
+ 
