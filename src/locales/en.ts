@@ -8,7 +8,7 @@ export default {
     promptLabel: "Prompt",
     tapToWrite: "Tap to write",
     noEntries: "No entries for {{monthYear}}",
-    viewChallenges: "View Challenges",
+    viewChallenges: "View Monthly Challenges",
     collections: "Collections",
     noCollections: "No collections yet",
     addCollection: "Add Collection",

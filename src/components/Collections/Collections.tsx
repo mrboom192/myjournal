@@ -37,7 +37,14 @@ const Collections = () => {
   }, [loading, data?.uid]);
 
   return (
-    <View>
+    <View
+      style={{
+        marginHorizontal: 16,
+        backgroundColor: "#2a2933",
+        borderRadius: 16,
+        paddingVertical: 16,
+      }}
+    >
       <View
         style={{
           marginBottom: 10,

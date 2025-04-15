@@ -89,7 +89,7 @@ const PromptsCard = () => {
       onPress={handlePromptPress}
       activeOpacity={0.8}
     >
-      <Text style={styles.promptLabel}>Prompt</Text>
+      <Text style={styles.promptLabel}>This months prompt(s)</Text>
       <PoppinsSemiBold style={styles.promptText}>
         {journalPrompts[currentPromptIndex]}
       </PoppinsSemiBold>

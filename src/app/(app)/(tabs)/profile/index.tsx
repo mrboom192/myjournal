@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { db } from "@/firebaseConfig";
 import Modal from "react-native-modal";
-import { v4 as uuidv4 } from "uuid";
 import i18n from "@/src/locales";
 import {
   doc,
-  setDoc,
   updateDoc,
   collection,
   query,
