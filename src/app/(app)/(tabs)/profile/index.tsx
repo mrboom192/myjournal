@@ -541,14 +541,14 @@ const styles = StyleSheet.create({
 
   emojiContainer: {
     position: "absolute",
-    bottom: 0, // or top: '30%' if you prefer it in the middle
+    bottom: 0, 
     left: 0,
     right: 0,
     backgroundColor: "#2a2933",
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    zIndex: 100, // ensure it appears above other content
+    zIndex: 100, 
   },
   emojiPickerTitle: {
     color: "#fff",
