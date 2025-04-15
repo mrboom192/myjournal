@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
 
   statItem: {
     flex: 1,
-    alignItems: "center", // or "flex-start" if you want left-aligned
+    alignItems: "center", 
   },
 
   statValue: {
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
   },
   emojiButton: {
     backgroundColor: "#444",
-    padding: 5,
+    padding: 6,
     borderRadius: 12,
     margin: 6,
     alignItems: "center",
