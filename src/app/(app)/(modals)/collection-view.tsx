@@ -21,6 +21,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+import Colors from "@/src/constants/Colors";
 
 const CollectionViewScreen = () => {
   const router = useRouter();
@@ -120,7 +121,7 @@ const CollectionViewScreen = () => {
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "#1c1b22" },
+          headerStyle: { backgroundColor: Colors.background },
           headerShadowVisible: false,
           headerTitle: () => <></>,
           headerLeft: () => (
@@ -187,7 +188,7 @@ const CollectionViewScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: "row",

@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useUser } from "@/src/contexts/UserContext";
 import { collection, getFirestore, addDoc } from "firebase/firestore";
 import * as Haptics from "expo-haptics";
+import Colors from "@/src/constants/Colors";
 
 // Available icons for collections
 const ICONS = [
@@ -88,7 +89,7 @@ export default function AddCollectionModal() {
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "#1c1b22" },
+          headerStyle: { backgroundColor: Colors.background },
           headerShadowVisible: false,
           title: "New Collection",
           headerLeft: () => (
@@ -167,7 +168,7 @@ export default function AddCollectionModal() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   content: {
     flex: 1,

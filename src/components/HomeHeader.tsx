@@ -8,6 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Colors from "../constants/Colors";
 
 const HomeHeader = () => {
   const { data, loading } = useUser();
@@ -17,12 +18,12 @@ const HomeHeader = () => {
     router.push("/(app)/(modals)/search");
   };
 
-if(loading ){
-  return <></>;
-}
+  if (loading) {
+    return <></>;
+  }
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#1c1b22" }}>
+    <SafeAreaView style={{ backgroundColor: Colors.background }}>
       <View style={styles.header}>
         <View style={styles.greetingRow}>
           <UserAvatar size={40} canUpload={false} />

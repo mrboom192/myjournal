@@ -43,6 +43,12 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="(modals)/add-collection"
+        options={{
+          presentation: "modal",
+        }}
+      />
+      <Stack.Screen
         name="(modals)/journal-entry"
         options={{
           presentation: "modal",

@@ -32,6 +32,7 @@ import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
 import { Audio } from "expo-av";
 import Avatar from "@/src/components/Avatar";
+import Colors from "@/src/constants/Colors";
 
 const ProfileScreen = () => {
   const router = useRouter();
@@ -402,7 +403,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   scrollContent: {
     padding: 20,

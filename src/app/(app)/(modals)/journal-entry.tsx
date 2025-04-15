@@ -29,6 +29,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import Colors from "@/src/constants/Colors";
 
 const months = [
   "January",
@@ -419,7 +420,7 @@ const JournalEntryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: "row",
@@ -521,7 +522,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     paddingBottom: 32,

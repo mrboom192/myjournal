@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import * as Haptics from "expo-haptics";
 import challenges from "@/assets/data/challenges.json";
+import Colors from "@/src/constants/Colors";
 
 // Fetch challenge info based on title
 const getChallengeInfo = (title: string) => {
@@ -118,7 +119,7 @@ const ChallengeDetail = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: "row",

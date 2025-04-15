@@ -4,6 +4,7 @@ import { useUser } from "@/src/contexts/UserContext";
 import PromptsCard from "@/src/components/PromptsCard";
 import Collections from "@/src/components/Collections/Collections";
 import ChallengesButton from "@/src/components/buttons/ChallengesButton";
+import Colors from "@/src/constants/Colors";
 
 const HomePage = () => {
   const { loading } = useUser();
@@ -28,7 +29,7 @@ const HomePage = () => {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   scrollContent: {
     flexDirection: "column",

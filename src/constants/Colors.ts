@@ -5,4 +5,5 @@ export default {
   pink: "#FF2776",
   gold: "#E5A21B",
   grey: "#555",
+  background: "#1c1b22",
 };

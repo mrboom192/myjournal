@@ -127,7 +127,7 @@ export default function SearchModal() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   searchContainer: {
     flexDirection: "row",

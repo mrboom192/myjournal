@@ -57,7 +57,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 onLongPress={onLongPress}
                 isFocused={isFocused}
                 routeName={route.name}
-                color={isFocused ? "#1c1b22" : "#FFF"}
+                color={isFocused ? Colors.background : "#FFF"}
                 label={label}
               />
             </React.Fragment>
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   tabBarContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
     padding: 8,
     borderRadius: 9999,
     shadowColor: "#000",

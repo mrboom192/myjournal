@@ -16,6 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import LabeledInput from "../components/LabeledInput";
 import { useSession } from "@/src/contexts/AuthContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Colors from "../constants/Colors";
 
 const SignIn = () => {
   const { signIn } = useSession();
@@ -54,7 +55,7 @@ const SignIn = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
@@ -66,7 +67,9 @@ const SignIn = () => {
               style={styles.logo}
             />
             <Text style={styles.title}>MyJournal</Text>
-            <Text style={styles.subtitle}>Your personal space for reflection</Text>
+            <Text style={styles.subtitle}>
+              Your personal space for reflection
+            </Text>
           </View>
 
           {/* Social Sign In Section */}
@@ -132,7 +135,7 @@ const SignIn = () => {
             <TouchableOpacity
               style={[
                 styles.signInButton,
-                (!email || !password) && styles.signInButtonDisabled
+                (!email || !password) && styles.signInButtonDisabled,
               ]}
               onPress={handleSignIn}
               disabled={loading || !email || !password}
@@ -163,7 +166,7 @@ const SignIn = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -171,7 +174,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: Platform.OS === 'ios' ? 20 : 40,
+    paddingTop: Platform.OS === "ios" ? 20 : 40,
     paddingBottom: 24,
     justifyContent: "space-between",
   },
@@ -273,4 +276,3 @@ const styles = StyleSheet.create({
 });
 
 export default SignIn;
-

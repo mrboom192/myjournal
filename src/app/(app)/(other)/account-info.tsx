@@ -12,6 +12,7 @@ import { Stack } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
+import Colors from "@/src/constants/Colors";
 
 const AccountInfo = () => {
   const { data } = useUser();
@@ -54,14 +55,14 @@ const AccountInfo = () => {
     <View
       style={{
         flex: 1,
-        backgroundColor: "#1c1b22",
+        backgroundColor: Colors.background,
       }}
     >
       <Stack.Screen
         options={{
           title: "Account info",
           headerTitleStyle: { fontFamily: "dm-sb", color: "#fff" },
-          headerStyle: { backgroundColor: "#1c1b22" },
+          headerStyle: { backgroundColor: Colors.background },
           headerTitleAlign: "center",
           headerShadowVisible: false,
         }}
@@ -141,7 +142,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: 1,
     borderColor: "#3b3946",
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   saveButton: {
     paddingVertical: 16,

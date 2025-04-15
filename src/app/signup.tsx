@@ -70,7 +70,7 @@ const SignUp = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
         >
@@ -95,7 +95,9 @@ const SignUp = () => {
                 style={styles.logo}
               />
               <Text style={styles.title}>Create Account</Text>
-              <Text style={styles.subtitle}>Join MyJournal and start your journaling journey</Text>
+              <Text style={styles.subtitle}>
+                Join MyJournal and start your journaling journey
+              </Text>
             </View>
 
             {/* Social Sign Up Section */}
@@ -106,7 +108,9 @@ const SignUp = () => {
                 disabled={submitting}
               >
                 <Ionicons name="logo-google" size={20} color="#fff" />
-                <Text style={styles.socialButtonText}>Continue with Google</Text>
+                <Text style={styles.socialButtonText}>
+                  Continue with Google
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -201,7 +205,7 @@ const SignUp = () => {
                 disabled={submitting || !isFormValid()}
                 style={[
                   styles.createButton,
-                  (!isFormValid() || submitting) && styles.createButtonDisabled
+                  (!isFormValid() || submitting) && styles.createButtonDisabled,
                 ]}
                 onPress={handleSignUp}
               >
@@ -220,7 +224,7 @@ const SignUp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -230,15 +234,15 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-    paddingTop: Platform.OS === 'ios' ? 0 : 24,
+    paddingTop: Platform.OS === "ios" ? 0 : 24,
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 24,
   },
   backButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
     marginLeft: 8,
   },

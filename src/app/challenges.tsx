@@ -16,6 +16,7 @@ import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import Avatar from "../components/Avatar";
 import { useUser } from "../contexts/UserContext";
+import Colors from "../constants/Colors";
 
 const Challenges = () => {
   const router = useRouter();
@@ -107,7 +108,7 @@ const Challenges = () => {
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#1c1b22",
+            backgroundColor: Colors.background,
           }}
         >
           <Ionicons name="hourglass-outline" size={32} color="#fff" />
@@ -280,7 +281,7 @@ const Challenges = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1c1b22",
+    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: "row",
