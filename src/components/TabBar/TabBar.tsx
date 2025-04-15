@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   tabBarContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.background,
+    backgroundColor: "#2a2933",
     padding: 8,
     borderRadius: 9999,
     shadowColor: "#000",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator } from "react-native";
 import {
   query,
   collection,
@@ -8,13 +8,18 @@ import {
   orderBy,
   Timestamp,
 } from "firebase/firestore";
-import { startOfMonth, endOfMonth } from "date-fns";
+import {
+  startOfMonth,
+  endOfMonth,
+  format,
+  isFuture,
+  differenceInDays,
+} from "date-fns";
 import { useUser } from "../contexts/UserContext";
 import { db } from "@/firebaseConfig";
 import { PoppinsSemiBold } from "./StyledText";
 import Colors from "../constants/Colors";
 import JournalEntry from "./JournalEntry";
-import { ScrollView } from "react-native-gesture-handler";
 
 type Props = {
   month: number;
@@ -26,11 +31,16 @@ const Entries = ({ month, year }: Props) => {
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const selectedDate = new Date(year, month); // centralize this
+  const isFutureDate = isFuture(startOfMonth(selectedDate));
+  const daysAway = differenceInDays(startOfMonth(selectedDate), new Date());
+  const formattedMonth = format(selectedDate, "MMMM yyyy");
+
   useEffect(() => {
     if (!data) return;
 
-    const start = Timestamp.fromDate(startOfMonth(new Date(year, month)));
-    const end = Timestamp.fromDate(endOfMonth(new Date(year, month)));
+    const start = Timestamp.fromDate(startOfMonth(selectedDate));
+    const end = Timestamp.fromDate(endOfMonth(selectedDate));
 
     const entriesRef = collection(db, "entries");
     const q = query(
@@ -64,6 +74,23 @@ const Entries = ({ month, year }: Props) => {
     return <ActivityIndicator style={{ marginTop: 20 }} />;
   }
 
+  if (isFutureDate) {
+    return (
+      <PoppinsSemiBold
+        style={{
+          width: "100%",
+          textAlign: "center",
+          color: Colors.grey,
+          marginBottom: 24,
+        }}
+      >
+        {`${formattedMonth} is ${daysAway} day${
+          daysAway !== 1 ? "s" : ""
+        } away!`}
+      </PoppinsSemiBold>
+    );
+  }
+
   if (entries.length === 0) {
     return (
       <PoppinsSemiBold
@@ -71,7 +98,6 @@ const Entries = ({ month, year }: Props) => {
           width: "100%",
           textAlign: "center",
           color: Colors.grey,
-          marginVertical: 24,
         }}
       >
         No entries for this month.
