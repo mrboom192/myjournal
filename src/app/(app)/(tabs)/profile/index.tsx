@@ -134,8 +134,7 @@ const ProfileScreen = () => {
             style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
           >
             <Text style={styles.sectionTitle}>
-              {i18n.t("profile.addFriend")} {language}
-            </Text>
+              {i18n.t("profile.friendCode")}: </Text>
             <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
               {data.friendCode.toUpperCase()}
             </Text>
@@ -428,7 +427,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
-    alignSelf: "flex-start",
+    alignSelf: "center",
     marginBottom: 20,
   },
   moodButtonText: {
@@ -465,7 +464,7 @@ const styles = StyleSheet.create({
   friendAvatarContainer: {
     marginRight: 10,
   },
-  statsContainer: {
+   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#2a2933",
@@ -473,18 +472,25 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 20,
   },
+  
   statItem: {
-    alignItems: "flex-start",
+    flex: 1,
+    alignItems: "center", // or "flex-start" if you want left-aligned
   },
+  
   statValue: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#f0883e", // Orange color like in the image
+    color: "#f0883e",
+    marginBottom: 4, // add spacing between value and label
   },
+  
   statLabel: {
     color: "#9b9a9e",
     fontSize: 14,
+    textAlign: "center",
   },
+
   statSubLabel: {
     color: "#9b9a9e",
     fontSize: 12,
