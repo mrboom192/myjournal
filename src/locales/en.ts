@@ -1,7 +1,7 @@
 export default {
-  "Language": "Language",
-  "Notifications": "Notifications",
-  "Appearance": "Appearance",
+  Language: "Language",
+  Notifications: "Notifications",
+  Appearance: "Appearance",
   "Account info": "Account info",
   home: {
     greeting: "Hi, {{name}}!",
@@ -28,7 +28,7 @@ export default {
   },
   profile: {
     mood: "Set mood",
-    addFriend: "Add a Friend",
+    addFriend: "Friend code:",
     enterFriendCode: "Enter friend code",
     add: "Add",
     seeAll: "See all",
@@ -48,8 +48,6 @@ export default {
     accountInfo: "Account info",
     logout: "Log out",
     selectLanguage: "Select Language",
-    challengeEntry: "Challenge Entry"
-  }
-   
-  }
- 
+    challengeEntry: "Challenge Entry",
+  },
+};
