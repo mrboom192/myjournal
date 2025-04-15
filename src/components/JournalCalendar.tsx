@@ -75,12 +75,12 @@ const JournalCalendar = () => {
   );
 
   return (
-    <View>
+    <View style={{ flexDirection: "column", gap: 16 }}>
       <Calendar
         markedDates={markedDates}
         current={new Date().toISOString()}
         theme={{
-          calendarBackground: "transparent",
+          calendarBackground: "#2a2933",
           textSectionTitleColor: "#9b9a9e",
           selectedDayBackgroundColor: "#fff",
           selectedDayTextColor: "#fff",
@@ -141,7 +141,9 @@ const JournalCalendar = () => {
 
 const styles = StyleSheet.create({
   calendar: {
-    marginBottom: 16,
+    borderRadius: 16,
+    marginHorizontal: 16,
+    paddingBottom: 8,
   },
 });
 

@@ -19,9 +19,9 @@ const HomePage = () => {
       contentContainerStyle={styles.scrollContent}
     >
       <PromptsCard />
-      <Collections />
       <ChallengesButton />
       <JournalCalendar />
+      <Collections />
     </ScrollView>
   );
 };
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 16,
     paddingTop: 0,
-    paddingBottom: 100,
+    paddingBottom: 128,
   },
 });
 
