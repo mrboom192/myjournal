@@ -1,16 +1,10 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Image, TouchableOpacity, StyleSheet, View } from "react-native";
-import { useColorScheme } from "@/src/components/useColorScheme";
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import HomeHeader from "@/src/components/HomeHeader";
 import { TabBar } from "@/src/components/TabBar/TabBar";
 
 export default function TabLayout(): React.JSX.Element {
-  const colorScheme = useColorScheme();
-  const router = useRouter();
-
   // Use theme colors for tab bar
   const activeColor = "#FFFFFF";
   const inactiveColor = "#8E8E93";
