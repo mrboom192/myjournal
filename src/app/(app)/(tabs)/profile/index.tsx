@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {db} from "@/firebaseConfig"
-import Modal from "react-native-modal"; 
-import {v4 as uuidv4} from "uuid";
+import { db } from "@/firebaseConfig";
+import Modal from "react-native-modal";
+import { v4 as uuidv4 } from "uuid";
 import i18n from "@/src/locales";
 import {
   doc,
@@ -42,7 +42,6 @@ const ProfileScreen = () => {
   const [showFriends, setShowFriends] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
   const [languageChanged, setLanguageChanged] = useState(false);
-
 
   function handleLogout() {
     signOut();
@@ -102,11 +101,10 @@ const ProfileScreen = () => {
     }
   };
 
-
   const switchToSpanish = () => {
     i18n.locale = "es";
   };
-  
+
   const switchToEnglish = () => {
     i18n.locale = "en";
   };
@@ -261,15 +259,18 @@ const ProfileScreen = () => {
         <View style={styles.settingsContainer}>
           <TouchableOpacity
             style={styles.settingsItem}
-            onPress={() => router.push("/profile/account-info")}
+            onPress={() => router.push("/(app)/(other)/account-info")}
           >
-            <Text style={styles.settingsItemText}>{i18n.t("Account info")}</Text>
+            <Text style={styles.settingsItemText}>
+              {i18n.t("Account info")}
+            </Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.settingsItem}>
-           <Text style={styles.settingsItemText}>{i18n.t("Notifications")}</Text>
+          <TouchableOpacity style={styles.settingsItem}>
+            <Text style={styles.settingsItemText}>
+              {i18n.t("Notifications")}
+            </Text>
 
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
@@ -285,47 +286,49 @@ const ProfileScreen = () => {
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
-
           <TouchableOpacity style={styles.settingsItem}>
-          <Text style={styles.settingsItemText}>{i18n.t("Appearance")}</Text>
+            <Text style={styles.settingsItemText}>{i18n.t("Appearance")}</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
         </View>
-
 
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
       </ScrollView>
       <Modal
-      isVisible={showLanguageOptions}
-      onBackdropPress={() => setShowLanguageOptions(false)}
-      style={styles.modal}
-    >
-      <View style={styles.languageContainer}>
-        <Text style={styles.emojiPickerTitle}>Select Language</Text>
+        isVisible={showLanguageOptions}
+        onBackdropPress={() => setShowLanguageOptions(false)}
+        style={styles.modal}
+      >
+        <View style={styles.languageContainer}>
+          <Text style={styles.emojiPickerTitle}>Select Language</Text>
 
-        <TouchableOpacity
-          onPress={() => {
-            i18n.locale = "en";
-            setLanguageChanged((prev) => !prev); // force re-render
-            setShowLanguageOptions(false);
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>English</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              i18n.locale = "en";
+              setLanguageChanged((prev) => !prev); // force re-render
+              setShowLanguageOptions(false);
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>
+              English
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            i18n.locale = "es";
-            setLanguageChanged((prev) => !prev); // force re-render
-            setShowLanguageOptions(false);
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>Español</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
+          <TouchableOpacity
+            onPress={() => {
+              i18n.locale = "es";
+              setLanguageChanged((prev) => !prev); // force re-render
+              setShowLanguageOptions(false);
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>
+              Español
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
       <Modal
         isVisible={isMoodVisible}
@@ -523,7 +526,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     alignItems: "center",
   },
-  
+
   emojiContainer: {
     position: "absolute",
     bottom: 0, // or top: '30%' if you prefer it in the middle

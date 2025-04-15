@@ -4,6 +4,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import TabBarButton from "./TabBarButton";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import Colors from "@/src/constants/Colors";
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const handleNewJournal = () => {
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   addButton: {
     borderRadius: 9999,
     padding: 16,
-    backgroundColor: "#9C27B0",
+    backgroundColor: Colors.purple,
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 12,

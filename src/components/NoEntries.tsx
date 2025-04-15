@@ -18,7 +18,7 @@ const NoEntries = ({ formattedMonthYear }: { formattedMonthYear: string }) => {
         style={{
           fontSize: 24,
           fontWeight: 600,
-          color: Colors.light.grey,
+          color: Colors.grey,
         }}
       >
         {i18n.t("home.noEntries", { monthYear: formattedMonthYear })}

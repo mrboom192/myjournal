@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import i18n from "../locales";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PoppinsSemiBold } from "./StyledText";
+import Colors from "../constants/Colors";
 
 const journalPrompts = [
   i18n.t("prompts.grateful"),
@@ -116,15 +117,15 @@ export default PromptsCard;
 
 const styles = StyleSheet.create({
   promptCard: {
-    backgroundColor: "#9C27B0",
+    backgroundColor: Colors.purple,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 12,
     padding: 20,
-    marginBottom: 20,
     position: "relative",
     overflow: "hidden",
+    marginHorizontal: 16,
   },
   promptLabel: {
     color: "rgba(255, 255, 255, 0.7)",

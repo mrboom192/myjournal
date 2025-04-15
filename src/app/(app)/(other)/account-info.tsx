@@ -63,7 +63,7 @@ const AccountInfo = () => {
           headerTitleStyle: { fontFamily: "dm-sb", color: "#fff" },
           headerStyle: { backgroundColor: "#1c1b22" },
           headerTitleAlign: "center",
-          headerBackTitle: "Profile",
+          headerShadowVisible: false,
         }}
       />
 

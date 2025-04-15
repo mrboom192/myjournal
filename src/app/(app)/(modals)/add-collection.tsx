@@ -11,11 +11,7 @@ import React, { useState } from "react";
 import { Stack, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useUser } from "@/src/contexts/UserContext";
-import {
-  collection,
-  getFirestore,
-  addDoc,
-} from "firebase/firestore";
+import { collection, getFirestore, addDoc } from "firebase/firestore";
 import * as Haptics from "expo-haptics";
 
 // Available icons for collections
@@ -92,6 +88,8 @@ export default function AddCollectionModal() {
     <View style={styles.container}>
       <Stack.Screen
         options={{
+          headerStyle: { backgroundColor: "#1c1b22" },
+          headerShadowVisible: false,
           title: "New Collection",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
@@ -108,7 +106,7 @@ export default function AddCollectionModal() {
 
       <ScrollView style={styles.content}>
         {/* Name Input */}
-        <Text style={styles.label}>Name</Text>
+        <Text style={[styles.label, { marginTop: 0 }]}>Name</Text>
         <TextInput
           style={styles.input}
           value={name}
@@ -223,4 +221,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-}); 
+});
