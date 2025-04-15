@@ -94,7 +94,8 @@ const HomePage = () => {
       setCurrentMonth(currentMonth - 1);
     }
   };
-
+  // Function to handle next month button press
+  // This function updates the current month and year state variables
   const handleNextMonth = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (currentMonth === 11) {
@@ -116,6 +117,14 @@ const HomePage = () => {
   if (loading) {
     return <Text>Loading...</Text>;
   }
+  const entriesForSelectedDate = selectedDate
+  ? allEntries
+      .filter((entry) => {
+        const dateStr = entry.createdAt?.toDate().toLocaleDateString("en-CA");
+        return !entry.collectionId && dateStr === selectedDate;
+      })
+      .sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate())
+  : [];
 
   return (
     <ScrollView
@@ -142,37 +151,19 @@ const HomePage = () => {
       />
 
       {selectedDate ? (
-        // Show entries only for selected date
-        <>
-          {entries.filter((entry) => {
-            const dateStr = entry.createdAt
-              ?.toDate()
-              .toISOString()
-              .split("T")[0];
-            return dateStr === selectedDate;
-          }).length === 0 ? (
-            <NoEntries formattedMonthYear={selectedDate} />
-          ) : (
-            entries
-              .filter((entry) => {
-                const dateStr = entry.createdAt
-                  ?.toDate()
-                  .toISOString()
-                  .split("T")[0];
-                return dateStr === selectedDate;
-              })
-              .map((entry) => <JournalEntry key={entry.id} data={entry} />)
-          )}
-        </>
+        entriesForSelectedDate.length === 0 ? (
+          <NoEntries formattedMonthYear={selectedDate} />
+        ) : (
+          entriesForSelectedDate.map((entry) => (
+            <JournalEntry key={entry.id} data={entry} />
+          ))
+        )
       ) : (
-        // Show all entries for the current month
-        <>
-          {entries.length === 0 ? (
-            <NoEntries formattedMonthYear={formattedMonthYear} />
-          ) : (
-            entries.map((entry) => <JournalEntry key={entry.id} data={entry} />)
-          )}
-        </>
+        entries.length === 0 ? (
+          <NoEntries formattedMonthYear={formattedMonthYear} />
+        ) : (
+          entries.map((entry) => <JournalEntry key={entry.id} data={entry} />)
+        )
       )}
 
       {/* Prompt Card */}

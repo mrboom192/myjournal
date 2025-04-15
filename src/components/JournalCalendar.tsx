@@ -14,17 +14,15 @@ const JournalCalendar = ({
   setSelectedDate: (date: string) => void;
 }) => {
   const markedDates = Object.fromEntries(
-    entries.map((entry) => {
-      const dateStr = entry.createdAt?.toDate().toISOString().split("T")[0];
-      return [
-        dateStr,
-        {
-          marked: true,
-          dotColor: "#9C27B0",
-        },
-      ];
+    entries.flatMap((entry) => {
+      const dateObj = entry.createdAt?.toDate?.();
+      if (!dateObj) return []; // return empty array instead of null
+      const dateStr = dateObj.toLocaleDateString("en-CA");
+      return [[dateStr, { marked: true, dotColor: "#9C27B0" }]];
     })
   );
+  
+  
 
   return (
     <View style={styles.calendarWrapper}>
