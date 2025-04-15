@@ -41,7 +41,8 @@ const ProfileScreen = () => {
   const [friendCodeInput, setFriendCodeInput] = useState("");
   const [showFriends, setShowFriends] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
-  const [languageChanged, setLanguageChanged] = useState(false);
+  const [language, setLanguage] = useState(i18n.locale);
+  const [, forceUpdate] = useState(0); // State to force re-render
 
   function handleLogout() {
     signOut();
@@ -104,11 +105,9 @@ const ProfileScreen = () => {
   const switchToSpanish = () => {
     i18n.locale = "es";
   };
-
   const switchToEnglish = () => {
     i18n.locale = "en";
   };
-
   if (loading) {
     return <Text>Loading...</Text>;
   }
@@ -135,7 +134,9 @@ const ProfileScreen = () => {
           <View
             style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
           >
-            <Text style={styles.sectionTitle}>Friend Code: </Text>
+            <Text style={styles.sectionTitle}>
+              {i18n.t("profile.addFriend")} {language}
+            </Text>
             <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
               {data.friendCode.toUpperCase()}
             </Text>
@@ -151,7 +152,10 @@ const ProfileScreen = () => {
 
           {/* Add Friend */}
           <View style={{ marginTop: 20 }}>
-            <Text style={styles.sectionTitle}>Add a Friend</Text>
+            <Text style={styles.sectionTitle}>
+              {i18n.t("profile.addFriend")}
+            </Text>
+
             <View style={{ flexDirection: "row", marginTop: 8 }}>
               <TextInput
                 style={{
@@ -161,7 +165,7 @@ const ProfileScreen = () => {
                   color: "#fff",
                   borderRadius: 8,
                 }}
-                placeholder="Enter friend code"
+                placeholder={i18n.t("profile.enterCode")}
                 placeholderTextColor="#888"
                 value={friendCodeInput}
                 onChangeText={setFriendCodeInput}
@@ -176,7 +180,9 @@ const ProfileScreen = () => {
                   marginLeft: 10,
                 }}
               >
-                <Text style={{ color: "#fff", fontWeight: "600" }}>Add</Text>
+                <Text style={{ color: "#fff", fontWeight: "600" }}>
+                  {i18n.t("profile.add")}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -186,39 +192,44 @@ const ProfileScreen = () => {
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <Text style={styles.sectionTitle}>
-              {!data.friends
-                ? "No Friends"
+              {data.friends?.length === 0
+                ? i18n.t("profile.noFriends")
                 : `${data.friends.length} ${
-                    data.friends.length === 1 ? "Friend" : "Friends"
+                    data.friends.length === 1
+                      ? i18n.t("profile.friend")
+                      : i18n.t("profile.friends")
                   }`}
             </Text>
+
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
             >
               <Text style={styles.seeAllText}>
-                See all{" "}
+                {i18n.t("profile.seeAll")}{" "}
                 <Ionicons name="chevron-forward" size={16} color="#9b9a9e" />
               </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.friendsAvatars}>
-            {data.friends ? (
+            {data.friends?.length > 0 ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {(data.friends ? data.friends : Array(6).fill(null)).map(
-                  (friend: any, index: number) => (
-                    <View key={index} style={styles.friendAvatarContainer}>
-                      <Avatar
-                        size={40}
-                        initials={
-                          friend?.firstName
-                            ? friend.firstName[0] + friend.lastName[0]
-                            : ""
-                        }
-                        uri={friend?.image || undefined}
-                      />
-                    </View>
-                  )
-                )}
+                {/* For demo, show placeholder avatars if no friends */}
+                {(data.friends.length > 0
+                  ? data.friends
+                  : Array(6).fill(null)
+                ).map((friend: any, index: number) => (
+                  <View key={index} style={styles.friendAvatarContainer}>
+                    <Avatar
+                      size={40}
+                      initials={
+                        friend?.firstName
+                          ? friend.firstName[0] + friend.lastName[0]
+                          : ""
+                      }
+                      uri={friend?.image || undefined}
+                    />
+                  </View>
+                ))}
               </ScrollView>
             ) : (
               <Text style={{ fontWeight: "500", color: "#9b9a9e" }}>
@@ -233,33 +244,37 @@ const ProfileScreen = () => {
           style={styles.moodButton}
           onPress={() => setMoodVisible(true)}
         >
-          <Text style={styles.moodButtonText}>Set mood</Text>
+          <Text style={styles.moodButtonText}>{i18n.t("profile.mood")}</Text>
           <Text style={styles.moodEmoji}>{mood}</Text>
         </TouchableOpacity>
 
         {/* Statistics */}
         <View style={styles.statsContainer}>
+          {/* <View style={styles.statItem}>
+           <Text style={styles.statValue}>16</Text>
+           <Text style={styles.statLabel}>{i18n.t("profile.days")}</Text>
+           <Text style={styles.statLabel}>{i18n.t("profile.currentStreak")}</Text>
+         </View> */}
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>16</Text>
-            <Text style={styles.statLabel}>days</Text>
-            <Text style={styles.statSubLabel}>Current streak</Text>
+            <Text style={styles.statValue}>12</Text>
+            <Text style={styles.statLabel}>
+              {i18n.t("profile.entriesThisYear")}
+            </Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>32</Text>
-            <Text style={styles.statLabel}>Entries this year</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>9,029</Text>
-            <Text style={styles.statLabel}>Words Written</Text>
+            <Text style={styles.statValue}>2,153</Text>
+            <Text style={styles.statLabel}>
+              {i18n.t("profile.wordsWritten")}
+            </Text>
           </View>
         </View>
 
         {/* Settings */}
-        <Text style={styles.settingsHeader}>Settings</Text>
+        <Text style={styles.settingsHeader}>{i18n.t("profile.settings")}</Text>
         <View style={styles.settingsContainer}>
           <TouchableOpacity
             style={styles.settingsItem}
-            onPress={() => router.push("/(app)/(other)/account-info")}
+            onPress={() => router.push("/profile/account-info")}
           >
             <Text style={styles.settingsItemText}>
               {i18n.t("Account info")}
@@ -271,16 +286,12 @@ const ProfileScreen = () => {
             <Text style={styles.settingsItemText}>
               {i18n.t("Notifications")}
             </Text>
-
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.settingsItem}
-            onPress={() => {
-              console.log("Language pressed!");
-              setShowLanguageOptions(true);
-            }}
+            onPress={() => setShowLanguageOptions(true)}
           >
             <Text style={styles.settingsItemText}>{i18n.t("Language")}</Text>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
