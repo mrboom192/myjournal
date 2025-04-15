@@ -2,7 +2,6 @@
 
 # MyJournal
 
-![MyJournal]
 
 </div>
 
