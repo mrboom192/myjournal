@@ -6,13 +6,15 @@ import {
   ScrollView,
   Pressable,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import Colors from "@/src/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
 
 const AccountInfo = () => {
   const { data } = useUser();
@@ -61,6 +63,11 @@ const AccountInfo = () => {
       <Stack.Screen
         options={{
           title: "Account info",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
           headerTitleStyle: { fontFamily: "dm-sb", color: "#fff" },
           headerStyle: { backgroundColor: Colors.background },
           headerTitleAlign: "center",
@@ -68,7 +75,7 @@ const AccountInfo = () => {
         }}
       />
 
-      <ScrollView>
+      <ScrollView style={{ marginTop: 16 }}>
         <View
           style={{
             backgroundColor: "#2a2933",
