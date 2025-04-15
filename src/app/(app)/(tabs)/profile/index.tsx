@@ -31,6 +31,7 @@ import * as Haptics from "expo-haptics";
 import { Audio } from "expo-av";
 import Avatar from "@/src/components/Avatar";
 import Colors from "@/src/constants/Colors";
+import { PoppinsRegular, PoppinsSemiBold } from "@/src/components/StyledText";
 
 const ProfileScreen = () => {
   const router = useRouter();
@@ -108,7 +109,7 @@ const ProfileScreen = () => {
     i18n.locale = "en";
   };
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <PoppinsRegular>Loading...</PoppinsRegular>;
   }
 
   return (
@@ -120,9 +121,9 @@ const ProfileScreen = () => {
         <View style={styles.profileHeader}>
           <View style={styles.profileRow}>
             <UserAvatar size={48} canUpload={true} />
-            <Text style={styles.userName}>
+            <PoppinsRegular style={styles.userName}>
               {data.firstName} {data.lastName}
-            </Text>
+            </PoppinsRegular>
           </View>
           <Pressable>
             <Ionicons name="ellipsis-horizontal" size={24} color="#9b9a9e" />
@@ -133,11 +134,14 @@ const ProfileScreen = () => {
           <View
             style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
           >
-            <Text style={styles.sectionTitle}>
-              {i18n.t("profile.friendCode")}: </Text>
-            <Text style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}>
+            <PoppinsRegular style={styles.sectionTitle}>
+              {i18n.t("profile.friendCode")}:{" "}
+            </PoppinsRegular>
+            <PoppinsRegular
+              style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}
+            >
               {data.friendCode.toUpperCase()}
-            </Text>
+            </PoppinsRegular>
             <Pressable onPress={handleCopy}>
               <Ionicons
                 name="copy"
@@ -150,9 +154,9 @@ const ProfileScreen = () => {
 
           {/* Add Friend */}
           <View style={{ marginTop: 20 }}>
-            <Text style={styles.sectionTitle}>
+            <PoppinsRegular style={styles.sectionTitle}>
               {i18n.t("profile.addFriend")}
-            </Text>
+            </PoppinsRegular>
 
             <View style={{ flexDirection: "row", marginTop: 8 }}>
               <TextInput
@@ -178,9 +182,9 @@ const ProfileScreen = () => {
                   marginLeft: 10,
                 }}
               >
-                <Text style={{ color: "#fff", fontWeight: "600" }}>
+                <PoppinsRegular style={{ color: "#fff", fontWeight: "600" }}>
                   {i18n.t("profile.add")}
-                </Text>
+                </PoppinsRegular>
               </TouchableOpacity>
             </View>
           </View>
@@ -189,7 +193,7 @@ const ProfileScreen = () => {
         {/* Friends- checks if the length is 0, 1, or more for plural form of friends*/}
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
-            <Text style={styles.sectionTitle}>
+            <PoppinsRegular style={styles.sectionTitle}>
               {!data.friends
                 ? i18n.t("profile.noFriends")
                 : `${data.friends.length} ${
@@ -197,15 +201,15 @@ const ProfileScreen = () => {
                       ? i18n.t("profile.friend")
                       : i18n.t("profile.friends")
                   }`}
-            </Text>
+            </PoppinsRegular>
 
             <TouchableOpacity
               onPress={() => router.push("/(app)/(modals)/friends")}
             >
-              <Text style={styles.seeAllText}>
+              <PoppinsRegular style={styles.seeAllText}>
                 {i18n.t("profile.seeAll")}{" "}
                 <Ionicons name="chevron-forward" size={16} color="#9b9a9e" />
-              </Text>
+              </PoppinsRegular>
             </TouchableOpacity>
           </View>
           <View style={styles.friendsAvatars}>
@@ -230,9 +234,9 @@ const ProfileScreen = () => {
                 ))}
               </ScrollView>
             ) : (
-              <Text style={{ fontWeight: "500", color: "#9b9a9e" }}>
+              <PoppinsRegular style={{ fontWeight: "500", color: "#9b9a9e" }}>
                 No friends
-              </Text>
+              </PoppinsRegular>
             )}
           </View>
         </View>
@@ -242,48 +246,52 @@ const ProfileScreen = () => {
           style={styles.moodButton}
           onPress={() => setMoodVisible(true)}
         >
-          <Text style={styles.moodButtonText}>{i18n.t("profile.mood")}</Text>
-          <Text style={styles.moodEmoji}>{mood}</Text>
+          <PoppinsRegular style={styles.moodButtonText}>
+            {i18n.t("profile.mood")}
+          </PoppinsRegular>
+          <PoppinsRegular style={styles.moodEmoji}>{mood}</PoppinsRegular>
         </TouchableOpacity>
 
         {/* Statistics */}
         <View style={styles.statsContainer}>
           {/* <View style={styles.statItem}>
-           <Text style={styles.statValue}>16</Text>
-           <Text style={styles.statLabel}>{i18n.t("profile.days")}</Text>
-           <Text style={styles.statLabel}>{i18n.t("profile.currentStreak")}</Text>
+           <PoppinsRegular style={styles.statValue}>16</PoppinsRegular>
+           <PoppinsRegular style={styles.statLabel}>{i18n.t("profile.days")}</PoppinsRegular>
+           <PoppinsRegular style={styles.statLabel}>{i18n.t("profile.currentStreak")}</PoppinsRegular>
          </View> */}
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>12</Text>
-            <Text style={styles.statLabel}>
+            <PoppinsRegular style={styles.statValue}>12</PoppinsRegular>
+            <PoppinsRegular style={styles.statLabel}>
               {i18n.t("profile.entriesThisYear")}
-            </Text>
+            </PoppinsRegular>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>2,153</Text>
-            <Text style={styles.statLabel}>
+            <PoppinsRegular style={styles.statValue}>2,153</PoppinsRegular>
+            <PoppinsRegular style={styles.statLabel}>
               {i18n.t("profile.wordsWritten")}
-            </Text>
+            </PoppinsRegular>
           </View>
         </View>
 
         {/* Settings */}
-        <Text style={styles.settingsHeader}>{i18n.t("profile.settings")}</Text>
+        <PoppinsSemiBold style={styles.settingsHeader}>
+          {i18n.t("profile.settings")}
+        </PoppinsSemiBold>
         <View style={styles.settingsContainer}>
           <TouchableOpacity
             style={styles.settingsItem}
             onPress={() => router.push("/(app)/(other)/account-info")}
           >
-            <Text style={styles.settingsItemText}>
+            <PoppinsRegular style={styles.settingsItemText}>
               {i18n.t("Account info")}
-            </Text>
+            </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>
+            <PoppinsRegular style={styles.settingsItemText}>
               {i18n.t("Notifications")}
-            </Text>
+            </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
@@ -291,18 +299,24 @@ const ProfileScreen = () => {
             style={styles.settingsItem}
             onPress={() => setShowLanguageOptions(true)}
           >
-            <Text style={styles.settingsItemText}>{i18n.t("Language")}</Text>
+            <PoppinsRegular style={styles.settingsItemText}>
+              {i18n.t("Language")}
+            </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.settingsItem}>
-            <Text style={styles.settingsItemText}>{i18n.t("Appearance")}</Text>
+            <PoppinsRegular style={styles.settingsItemText}>
+              {i18n.t("Appearance")}
+            </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutButtonText}>Log out</Text>
+          <PoppinsRegular style={styles.logoutButtonText}>
+            Log out
+          </PoppinsRegular>
         </TouchableOpacity>
       </ScrollView>
       <Modal
@@ -311,7 +325,9 @@ const ProfileScreen = () => {
         style={styles.modal}
       >
         <View style={styles.languageContainer}>
-          <Text style={styles.emojiPickerTitle}>Select Language</Text>
+          <PoppinsRegular style={styles.emojiPickerTitle}>
+            Select Language
+          </PoppinsRegular>
 
           <TouchableOpacity
             onPress={() => {
@@ -319,9 +335,11 @@ const ProfileScreen = () => {
               setShowLanguageOptions(false);
             }}
           >
-            <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>
+            <PoppinsRegular
+              style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}
+            >
               English
-            </Text>
+            </PoppinsRegular>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -330,9 +348,11 @@ const ProfileScreen = () => {
               setShowLanguageOptions(false);
             }}
           >
-            <Text style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}>
+            <PoppinsRegular
+              style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}
+            >
               Español
-            </Text>
+            </PoppinsRegular>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -345,7 +365,9 @@ const ProfileScreen = () => {
         style={styles.modal}
       >
         <View style={styles.emojiContainer}>
-          <Text style={styles.emojiPickerTitle}>Pick your mood</Text>
+          <PoppinsRegular style={styles.emojiPickerTitle}>
+            Pick your mood
+          </PoppinsRegular>
           <View style={styles.emojiGrid}>
             {[
               "😊",
@@ -381,7 +403,9 @@ const ProfileScreen = () => {
                 }}
                 style={styles.emojiButton}
               >
-                <Text style={{ fontSize: 28 }}>{emoji}</Text>
+                <PoppinsRegular style={{ fontSize: 28 }}>
+                  {emoji}
+                </PoppinsRegular>
               </TouchableOpacity>
             ))}
           </View>
@@ -464,7 +488,7 @@ const styles = StyleSheet.create({
   friendAvatarContainer: {
     marginRight: 10,
   },
-   statsContainer: {
+  statsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#2a2933",
@@ -472,19 +496,19 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 20,
   },
-  
+
   statItem: {
     flex: 1,
     alignItems: "center", // or "flex-start" if you want left-aligned
   },
-  
+
   statValue: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#f0883e",
     marginBottom: 4, // add spacing between value and label
   },
-  
+
   statLabel: {
     color: "#9b9a9e",
     fontSize: 14,
