@@ -71,6 +71,10 @@ export default function SearchModal() {
       <Stack.Screen
         options={{
           title: "Search Entries",
+          animation: "fade",
+          animationDuration: 125,
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: Colors.background },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="close" size={24} color="#fff" />

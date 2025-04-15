@@ -55,13 +55,6 @@ export default function AppLayout() {
           headerShown: false,
         }}
       />
-      <Stack.Screen
-        name="(modals)/search"
-        options={{
-          presentation: "modal",
-          headerShown: true,
-        }}
-      />
     </Stack>
   );
 }

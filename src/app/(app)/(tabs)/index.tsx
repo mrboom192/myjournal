@@ -18,10 +18,10 @@ const HomePage = () => {
       style={styles.scrollView}
       contentContainerStyle={styles.scrollContent}
     >
+      <Collections />
       <PromptsCard />
       <ChallengesButton />
       <JournalCalendar />
-      <Collections />
     </ScrollView>
   );
 };

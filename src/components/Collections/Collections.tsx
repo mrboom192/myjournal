@@ -14,6 +14,7 @@ import i18n from "@/src/locales";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import Colors from "@/src/constants/Colors";
+import NoCollections from "./NoCollections";
 
 const Collections = () => {
   const [collections, setCollections] = useState<any[]>([]);
@@ -66,18 +67,22 @@ const Collections = () => {
         </Link>
       </View>
 
-      <ScrollView
-        horizontal
-        contentContainerStyle={{
-          paddingLeft: 16,
-          flexDirection: "row",
-          gap: 8,
-        }}
-      >
-        {collections.map((collection) => (
-          <CollectionButton key={collection.id} data={collection} />
-        ))}
-      </ScrollView>
+      {collections.length > 0 ? (
+        <ScrollView
+          horizontal
+          contentContainerStyle={{
+            paddingLeft: 16,
+            flexDirection: "row",
+            gap: 8,
+          }}
+        >
+          {collections.map((collection) => (
+            <CollectionButton key={collection.id} data={collection} />
+          ))}
+        </ScrollView>
+      ) : (
+        <NoCollections />
+      )}
     </View>
   );
 };

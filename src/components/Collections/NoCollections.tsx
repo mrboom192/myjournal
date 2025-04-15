@@ -19,9 +19,8 @@ const styles = StyleSheet.create({
   emptyState: {
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#2a2933",
     borderRadius: 12,
-    marginBottom: 10,
+    marginHorizontal: 16,
   },
   emptyStateText: {
     color: "#9b9a9e",
