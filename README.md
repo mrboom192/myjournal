@@ -31,8 +31,6 @@ incorporating engaging features to boost productivity. Whether new to writing, M
 - i18n-js for languages
 - React Navigation and Expo Router for screen management
   
-### Version History: 
-Version 1
 
 
 ## Getting started(installation): 
@@ -52,3 +50,6 @@ Firebase Auth – For secure login and user authentication
 - Tyler Vu
 - Jasmine Lim
 - Nhu Van
+
+### Version History: 
+Version 1
