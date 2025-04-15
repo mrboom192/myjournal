@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
+import { PoppinsSemiBold } from "./StyledText";
 
 type Props = {
   date: Date;
@@ -15,7 +16,9 @@ const MonthSelector = ({ date, onPrev, onNext }: Props) => {
       <TouchableOpacity onPress={onPrev}>
         <Ionicons name="chevron-back" size={24} color="#fff" />
       </TouchableOpacity>
-      <Text style={styles.label}>{format(date, "MMMM yyyy")}</Text>
+      <PoppinsSemiBold style={styles.label}>
+        {format(date, "MMMM yyyy")}
+      </PoppinsSemiBold>
       <TouchableOpacity onPress={onNext}>
         <Ionicons name="chevron-forward" size={24} color="#fff" />
       </TouchableOpacity>
