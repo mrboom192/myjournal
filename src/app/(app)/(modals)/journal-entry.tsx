@@ -30,6 +30,8 @@ import {
   getDocs,
 } from "firebase/firestore";
 import Colors from "@/src/constants/Colors";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 
 const months = [
   "January",
@@ -161,6 +163,29 @@ const JournalEntryScreen = () => {
     );
   };
 
+  const handleShare = async () => {
+    try {
+      const fileName = `${title || "journal-entry"}.txt`;
+      const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+      const fileContent = `Title: ${title}\n\n${content}\n\n${formattedDate}`;
+
+      // Write to file
+      await FileSystem.writeAsStringAsync(fileUri, fileContent, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
+
+      // Share the file
+      await Sharing.shareAsync(fileUri, {
+        mimeType: "text/plain",
+        dialogTitle: "Share Journal Entry",
+        UTI: "public.plain-text", // for iOS
+      });
+    } catch (error) {
+      console.error("Error sharing entry:", error);
+      Alert.alert("Error", "Failed to share entry. Please try again.");
+    }
+  };
+
   const handleSave = async () => {
     if (!title.trim()) {
       Alert.alert("Error", "Please enter a title");
@@ -246,6 +271,12 @@ const JournalEntryScreen = () => {
                 onPress={handleDelete}
               >
                 <Ionicons name="trash-outline" size={24} color="#ff4444" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.headerButton}
+                onPress={handleShare}
+              >
+                <Ionicons name="share-outline" size={24} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.headerButton}
