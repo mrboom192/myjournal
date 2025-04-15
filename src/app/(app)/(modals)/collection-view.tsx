@@ -11,7 +11,15 @@ import { Stack, useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import { collection, query, where, getDocs, doc, deleteDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 const CollectionViewScreen = () => {
@@ -27,7 +35,9 @@ const CollectionViewScreen = () => {
       try {
         // Fetch collection data
         const collectionRef = collection(db, "collections");
-        const collectionDoc = await getDocs(query(collectionRef, where("id", "==", params.id)));
+        const collectionDoc = await getDocs(
+          query(collectionRef, where("id", "==", params.id))
+        );
         if (!collectionDoc.empty) {
           setCollectionData(collectionDoc.docs[0].data());
         }
@@ -36,11 +46,15 @@ const CollectionViewScreen = () => {
         const entriesRef = collection(db, "entries");
         const q = query(entriesRef, where("collectionId", "==", params.id));
         const querySnapshot = await getDocs(q);
-        
-        const entriesData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })).sort((a: any, b: any) => b.createdAt.toDate() - a.createdAt.toDate());
+
+        const entriesData = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .sort(
+            (a: any, b: any) => b.createdAt.toDate() - a.createdAt.toDate()
+          );
 
         setEntries(entriesData);
       } catch (error) {
@@ -58,7 +72,7 @@ const CollectionViewScreen = () => {
       [
         {
           text: "Cancel",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Delete",
@@ -71,72 +85,68 @@ const CollectionViewScreen = () => {
 
               // Remove collection reference from all entries
               const entriesRef = collection(db, "entries");
-              const q = query(entriesRef, where("collectionId", "==", params.id));
+              const q = query(
+                entriesRef,
+                where("collectionId", "==", params.id)
+              );
               const querySnapshot = await getDocs(q);
 
               // Update each entry to remove the collection reference
-              const updatePromises = querySnapshot.docs.map(doc => 
+              const updatePromises = querySnapshot.docs.map((doc) =>
                 updateDoc(doc.ref, {
-                  collectionId: null
+                  collectionId: null,
                 })
               );
               await Promise.all(updatePromises);
 
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Success
+              );
               router.back();
             } catch (error) {
               console.error("Error deleting collection:", error);
-              Alert.alert("Error", "Failed to delete collection. Please try again.");
+              Alert.alert(
+                "Error",
+                "Failed to delete collection. Please try again."
+              );
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <Stack.Screen options={{ headerShown: false }} />
-
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.headerTitleContainer}>
-          {collectionData && (
-            <>
-              <View
-                style={[
-                  styles.collectionIcon,
-                  { backgroundColor: `${collectionData.color}20` || "rgba(156, 39, 176, 0.2)" }
-                ]}
-              >
-                <Ionicons
-                  name={collectionData.icon || "journal-outline"}
-                  size={20}
-                  color={collectionData.color || "#9C27B0"}
-                />
-              </View>
-              <Text style={styles.headerTitle}>{collectionData.name}</Text>
-            </>
-          )}
-        </View>
-        <TouchableOpacity
-          style={[styles.headerButton, styles.deleteButton]}
-          onPress={handleDelete}
-        >
-          <Ionicons name="trash-outline" size={24} color="#ff4444" />
-        </TouchableOpacity>
-      </View>
-
+    <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerStyle: { backgroundColor: "#1c1b22" },
+          headerShadowVisible: false,
+          headerTitle: () => <></>,
+          headerLeft: () => (
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() => router.back()}
+            >
+              <Ionicons name="arrow-back" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              style={[styles.headerButton, styles.deleteButton]}
+              onPress={handleDelete}
+            >
+              <Ionicons name="trash-outline" size={24} color="#ff4444" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <ScrollView style={styles.scrollView}>
         {entries.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>No entries in this collection</Text>
+            <Text style={styles.emptyStateText}>
+              No entries in this collection
+            </Text>
           </View>
         ) : (
           entries.map((entry) => (
@@ -170,7 +180,7 @@ const CollectionViewScreen = () => {
           ))
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -254,4 +264,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CollectionViewScreen; 
+export default CollectionViewScreen;

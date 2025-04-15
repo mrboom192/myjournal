@@ -5,7 +5,6 @@ import {
   FlatList,
   TouchableOpacity,
   StatusBar,
-  Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
@@ -140,19 +139,20 @@ const Challenges = () => {
           data={challenges}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
-          
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.challengeItem}
-              onPress={() => router.push({
-                pathname: "/(app)/(modals)/journal-entry",
-                params: {
-                  mode: "edit",
-                  title: item.title,
-                  content: item.prompts.map(p => `${p}\n`).join("\n"),
-                  challengeId: item.id
-                }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: "/(app)/(modals)/journal-entry",
+                  params: {
+                    mode: "edit",
+                    title: item.title,
+                    content: item.prompts.map((p) => `${p}\n`).join("\n"),
+                    challengeId: item.id,
+                  },
+                })
+              }
             >
               <View
                 style={[
@@ -201,7 +201,6 @@ const Challenges = () => {
           data={users}
           keyExtractor={(item) => item.uid}
           contentContainerStyle={styles.listContainer}
-          
           renderItem={({ item, index }) => (
             <View style={styles.leaderboardItem}>
               <Text style={styles.rankText}>#{index + 1}</Text>
