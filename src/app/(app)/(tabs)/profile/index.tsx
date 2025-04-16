@@ -193,7 +193,7 @@ const ProfileScreen = () => {
         {/* Friends- checks if the length is 0, 1, or more for plural form of friends*/}
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
-            <Text style={styles.sectionTitle}>
+            <PoppinsRegular style={styles.sectionTitle}>
               {data.friends?.length === 0
                 ? i18n.t("profile.noFriends")
                 : `${data.friends.length} ${
@@ -233,10 +233,6 @@ const ProfileScreen = () => {
                   </View>
                 ))}
               </ScrollView>
-            ) : (
-              <Text style={{ fontWeight: "500", color: "#9b9a9e" }}>
-                No friends
-              </Text>
             )}
           </View>
         </View>
