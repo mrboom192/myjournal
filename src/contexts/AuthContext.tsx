@@ -62,6 +62,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         email: user.email,
         uid: user.uid,
         friendCode,
+        friends: [], // Initialize empty friends array
         ...data, // Spread additional user information
       });
 

@@ -194,7 +194,7 @@ const ProfileScreen = () => {
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <PoppinsRegular style={styles.sectionTitle}>
-              {data.friends?.length === 0
+              {!data.friends || data.friends.length === 0
                 ? i18n.t("profile.noFriends")
                 : `${data.friends.length} ${
                     data.friends.length === 1
@@ -220,7 +220,7 @@ const ProfileScreen = () => {
             ) : (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {data.friends.map((friend: any, index: number) => (
-                  <View key={friend.id} style={styles.friendAvatarContainer}>
+                  <View key={friend.id || index} style={styles.friendAvatarContainer}>
                     <Avatar
                       size={40}
                       initials={
