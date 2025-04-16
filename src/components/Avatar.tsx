@@ -7,6 +7,8 @@ import Animated, {
   withRepeat,
   Easing,
 } from "react-native-reanimated";
+import { PoppinsSemiBold } from "./StyledText";
+import Colors from "../constants/Colors";
 
 const Avatar = ({
   onPress = null,
@@ -90,16 +92,16 @@ const Avatar = ({
           />
         </>
       ) : (
-        <Text
+        <PoppinsSemiBold
           style={{
             fontFamily: "dm-sb",
-            color: "#555",
-            marginHorizontal: 8,
+            color: Colors.grey,
             textAlign: "center",
+            fontSize: size * 0.3,
           }}
         >
           {initials}
-        </Text>
+        </PoppinsSemiBold>
       )}
     </Pressable>
   );

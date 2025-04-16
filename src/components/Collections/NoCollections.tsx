@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { PoppinsSemiBold } from "../StyledText";
 import i18n from "../../locales";
+import Colors from "@/src/constants/Colors";
 
 const NoCollections = () => {
   return (
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   emptyStateText: {
-    color: "#9b9a9e",
+    color: Colors.grey,
     fontSize: 16,
   },
 });

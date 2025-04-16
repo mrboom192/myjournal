@@ -2,10 +2,54 @@
 
 # MyJournal
 
-![MyJournal](https://github.com/user-attachments/assets/079f0e7e-a0ca-4a7f-9c6b-3e0bde27ab6e)
 
 </div>
 
-**MyJournal** is a journaling app designed for individuals on self-discovery. Whether new to writing or looking to deepen your reflective practice, MyJournal provides personalized prompts, tracking, and resources to help you cultivate clarity and mindfulness in your daily life.
+**MyJournal** 
+The MyJournal App is an application designed to help users
+write down information, organize their ideas, design their own
+avatar, and compete in challenges with their friends through
+a ranking system. In designing the MyJournal interface, our primary objectives
+were to enhance learnability, usability, flexibility, and robust-
+ness. We aimed for users to utilize the app as they would
+any standard note-taking and journaling application, while also
+incorporating engaging features to boost productivity. Whether new to writing, MyJournal provides personalized prompts, tracking, and resources to help you in your daily life.
 
-![refactor](https://github.com/user-attachments/assets/00ec5fe9-da7e-4c14-a4b2-8086d35ec53b)
+ ## Features:
+ - **Journal Prompts** – Guided prompts tailored to help you write.
+ - **Mood Tracking** – Set your mood with one tap and decide through.
+ - **Friend Code System** – Share your journal journey with friends by exchanging unique codes.
+ - **Challenges/Leaderboard** - Compete in challenges and earn points to work your way up in a ranking system.
+ - **Multi-language Support** – Built-in to support for English and Spanish (with more coming).
+ - **Monthly Entry Filtering** – Easily review your entries by month and stay consistent.
+ - **Privacy** – Your journal is yours and myJournal uses private storage with Firestore along with a.
+ - **Error Prevention** - Our app ensures that users don't run into problems or make mistakes and are warned with alerts. 
+
+### Build with:
+- React Native** with Expo
+- Firebase Firestore for backend data storage and keeping track of users
+- i18n-js for languages
+- React Navigation and Expo Router for screen management
+  
+
+
+## Getting started(installation): 
+- Clone the repository: git clone https://github.com/mrboom192/myjournal.git
+- npm install
+- npx expo start
+Run the app on a simulator (ex: Xcode) or scan the QR code found in the terminal
+
+## Additional Frameworks:
+react-native-modal – For smooth modal display (e.g., Add Friend, Set Mood)
+uuid – For generating unique friend codes
+Firebase Auth – For secure login and user authentication
+
+## Authors:
+- Cristiana Eagen
+- Jason Nguyen
+- Tyler Vu
+- Jasmine Lim
+- Nhu Van
+
+### Version History: 
+Version 1
