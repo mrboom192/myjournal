@@ -193,7 +193,7 @@ const ProfileScreen = () => {
         <View style={styles.friendsSection}>
           <View style={styles.friendsTitleRow}>
             <Text style={styles.sectionTitle}>
-              {data.friends?.length === 0
+              {!data.friends || data.friends.length === 0
                 ? i18n.t("profile.noFriends")
                 : `${data.friends.length} ${
                     data.friends.length === 1
@@ -212,14 +212,14 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.friendsAvatars}>
-            {data.friends?.length > 0 ? (
+            {!data.friends || data.friends.length === 0 ? (
+              <Text style={{ fontWeight: "500", color: "#9b9a9e" }}>
+                No friends
+              </Text>
+            ) : (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {/* For demo, show placeholder avatars if no friends */}
-                {(data.friends.length > 0
-                  ? data.friends
-                  : Array(6).fill(null)
-                ).map((friend: any, index: number) => (
-                  <View key={index} style={styles.friendAvatarContainer}>
+                {data.friends.map((friend: any, index: number) => (
+                  <View key={friend.id} style={styles.friendAvatarContainer}>
                     <Avatar
                       size={40}
                       initials={
@@ -232,10 +232,6 @@ const ProfileScreen = () => {
                   </View>
                 ))}
               </ScrollView>
-            ) : (
-              <Text style={{ fontWeight: "500", color: "#9b9a9e" }}>
-                No friends
-              </Text>
             )}
           </View>
         </View>
