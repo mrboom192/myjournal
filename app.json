@@ -41,7 +41,9 @@
       [
         "expo-font",
         {
-          "fonts": ["path/to/file.ttf"]
+          "fonts": [
+            "path/to/file.ttf"
+          ]
         }
       ],
       [
@@ -56,7 +58,8 @@
           "microphonePermission": "Allow MyJournal to access your microphone."
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

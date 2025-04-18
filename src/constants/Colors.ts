@@ -6,4 +6,5 @@ export default {
   gold: "#E5A21B",
   grey: "#555",
   background: "#1c1b22",
+  card: "#1C1C1E",
 };

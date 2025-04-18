@@ -1,23 +1,20 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { useEffect } from "react";
+import { StyleSheet } from "react-native";
+
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { LanguageProvider } from "@/src/contexts/LanguageContext";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { SignUpProvider } from "../contexts/SignupContext";
+import { SessionProvider } from "../contexts/AuthContext";
+import { UserProvider } from "../contexts/UserContext";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
-import { SessionProvider } from "../contexts/AuthContext";
-
-import { SignUpProvider } from "../contexts/SignupContext";
-import { UserProvider } from "../contexts/UserContext";
 import {
   Poppins_400Regular,
   Poppins_600SemiBold,
 } from "@expo-google-fonts/poppins";
-import { LanguageProvider } from "@/src/contexts/LanguageContext";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -61,19 +58,29 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  // Need to make a header function that looks good!!
   return (
-    <SessionProvider>
-      <UserProvider>
-        <SignUpProvider>
-          <Stack
-            screenOptions={{
-              navigationBarColor: "#FFF",
-              headerShown: false,
-            }}
-          />
-        </SignUpProvider>
-      </UserProvider>
-    </SessionProvider>
+    <GestureHandlerRootView style={styles.container}>
+      <BottomSheetModalProvider>
+        <SessionProvider>
+          <UserProvider>
+            <SignUpProvider>
+              <StatusBar style="light" />
+              <Stack
+                screenOptions={{
+                  navigationBarColor: "#FFF",
+                  headerShown: false,
+                }}
+              />
+            </SignUpProvider>
+          </UserProvider>
+        </SessionProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

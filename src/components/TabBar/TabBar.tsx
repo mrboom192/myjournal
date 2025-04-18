@@ -1,10 +1,10 @@
-import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import TabBarButton from "./TabBarButton";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import Colors from "@/src/constants/Colors";
+import { Fragment } from "react";
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const handleNewJournal = () => {
@@ -42,7 +42,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           };
 
           return (
-            <React.Fragment key={route.key}>
+            <Fragment key={route.key}>
               {index === 1 && (
                 <TouchableOpacity
                   style={styles.addButton}
@@ -60,7 +60,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 color={isFocused ? Colors.background : "#FFF"}
                 label={label}
               />
-            </React.Fragment>
+            </Fragment>
           );
         })}
       </View>
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: "center",
+    zIndex: 100,
   },
   tabBarContainer: {
     flexDirection: "row",

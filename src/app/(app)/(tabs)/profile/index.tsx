@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { db } from "@/firebaseConfig";
-import Modal from "react-native-modal";
 import i18n from "@/src/locales";
 import {
   doc,
@@ -20,29 +19,27 @@ import {
   Pressable,
   TextInput,
 } from "react-native";
+import { Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import UserAvatar from "@/src/components/UserAvatar";
 import { useSession } from "@/src/contexts/AuthContext";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
-import { Audio } from "expo-av";
 import Avatar from "@/src/components/Avatar";
 import Colors from "@/src/constants/Colors";
 import { PoppinsRegular, PoppinsSemiBold } from "@/src/components/StyledText";
+import EmojiBottomSheet from "@/src/components/BottomSheet/EmojiBottomSheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const ProfileScreen = () => {
   const router = useRouter();
   const { data, loading } = useUser();
   const { signOut, session } = useSession();
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [friendCodeInput, setFriendCodeInput] = useState("");
-  const [showFriends, setShowFriends] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
-  const [language, setLanguage] = useState(i18n.locale);
-  const [, forceUpdate] = useState(0); // State to force re-render
 
   function handleLogout() {
     signOut();
@@ -55,6 +52,8 @@ const ProfileScreen = () => {
 
   const [mood, setMood] = useState("😊");
   const [isMoodVisible, setMoodVisible] = useState(false);
+
+  const EmojiBottomSheetRef = useRef<BottomSheetModal>(null);
 
   const handleAddFriend = async () => {
     const code = friendCodeInput.trim().toUpperCase();
@@ -108,6 +107,12 @@ const ProfileScreen = () => {
   const switchToEnglish = () => {
     i18n.locale = "en";
   };
+
+  const handleShowLanguages = () => {
+    console.log("RAN");
+    EmojiBottomSheetRef.current?.expand();
+  };
+
   if (loading) {
     return <PoppinsRegular>Loading...</PoppinsRegular>;
   }
@@ -115,9 +120,7 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <Stack.Screen options={{ headerShown: false }} />
-      {/* Scrollable content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header with profile and menu */}
         <View style={styles.profileHeader}>
           <View style={styles.profileRow}>
             <UserAvatar size={48} canUpload={true} />
@@ -220,7 +223,10 @@ const ProfileScreen = () => {
             ) : (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {data.friends.map((friend: any, index: number) => (
-                  <View key={friend.id || index} style={styles.friendAvatarContainer}>
+                  <View
+                    key={friend.id || index}
+                    style={styles.friendAvatarContainer}
+                  >
                     <Avatar
                       size={40}
                       initials={
@@ -293,7 +299,7 @@ const ProfileScreen = () => {
 
           <TouchableOpacity
             style={styles.settingsItem}
-            onPress={() => setShowLanguageOptions(true)}
+            onPress={handleShowLanguages}
           >
             <PoppinsRegular style={styles.settingsItemText}>
               {i18n.t("Language")}
@@ -315,46 +321,10 @@ const ProfileScreen = () => {
           </PoppinsRegular>
         </TouchableOpacity>
       </ScrollView>
-      <Modal
-        isVisible={showLanguageOptions}
-        onBackdropPress={() => setShowLanguageOptions(false)}
-        style={styles.modal}
-      >
-        <View style={styles.languageContainer}>
-          <PoppinsRegular style={styles.emojiPickerTitle}>
-            Select Language
-          </PoppinsRegular>
+      <EmojiBottomSheet ref={EmojiBottomSheetRef} />
 
-          <TouchableOpacity
-            onPress={() => {
-              i18n.locale = "en";
-              setShowLanguageOptions(false);
-            }}
-          >
-            <PoppinsRegular
-              style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}
-            >
-              English
-            </PoppinsRegular>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              i18n.locale = "es";
-              setShowLanguageOptions(false);
-            }}
-          >
-            <PoppinsRegular
-              style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}
-            >
-              Español
-            </PoppinsRegular>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
-      <Modal
-        isVisible={isMoodVisible}
+      {/* <Modal
+        isVisible={}
         onBackdropPress={() => setMoodVisible(false)}
         onSwipeComplete={() => setMoodVisible(false)}
         swipeDirection="down"
@@ -406,7 +376,7 @@ const ProfileScreen = () => {
             ))}
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </SafeAreaView>
   );
 };
@@ -495,7 +465,7 @@ const styles = StyleSheet.create({
 
   statItem: {
     flex: 1,
-    alignItems: "center", 
+    alignItems: "center",
   },
 
   statValue: {
@@ -552,32 +522,6 @@ const styles = StyleSheet.create({
     color: "#ff6b6b",
     fontWeight: "600",
     fontSize: 16,
-  },
-  languageContainer: {
-    backgroundColor: "#2a2933",
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: "center",
-  },
-
-  emojiContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#2a2933",
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    zIndex: 100,
-  },
-  emojiPickerTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-    textAlign: "center",
-    marginBottom: 12,
   },
   emojiGrid: {
     flexDirection: "row",
