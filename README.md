@@ -5,14 +5,11 @@
 </div>
 
 **MyJournal**
-The MyJournal App is an application designed to help users
-write down information, organize their ideas, design their own
-avatar, and compete in challenges with their friends through
-a ranking system. In designing the MyJournal interface, our primary objectives
-were to enhance learnability, usability, flexibility, and robust-
-ness. We aimed for users to utilize the app as they would
-any standard note-taking and journaling application, while also
-incorporating engaging features to boost productivity. Whether new to writing, MyJournal provides personalized prompts, tracking, and resources to help you in your daily life.
+The MyJournal App is an application designed to help users write down information, organize their ideas, design their own avatar, and compete in challenges with their friends through a ranking system.
+
+In designing the MyJournal interface, our primary objectives were to enhance learnability, usability, flexibility, and robustness.
+
+We aimed for users to utilize the app as they would any standard note-taking and journaling application, while also incorporating engaging features to boost productivity. MyJournal provides personalized prompts, tracking, and resources to help you in your daily life.
 
 ## Features:
 
@@ -32,15 +29,25 @@ incorporating engaging features to boost productivity. Whether new to writing, M
 - i18n-js for languages
 - React Navigation and Expo Router for screen management
 
-## Building the app:
+## Developement Resources:
+
+This is a React Native application, written in the TypeScript programming language. The app uses Firebase as for auth and storing data.
 
 The [Build Instructions](./docs/build.md) are a good place to get started with the app itself.
 
-## Additional Frameworks:
+## Security disclosures
 
-react-native-modal – For smooth modal display (e.g., Add Friend, Set Mood)
-uuid – For generating unique friend codes
-Firebase Auth – For secure login and user authentication
+If you discover any security issues, please let us know!
+
+## Forking guidelines
+
+You have our blessing 🪄✨ to fork this application! However, it's very important to be clear to users when you're giving them a fork.
+
+Please be sure to:
+
+- Change all branding in the repository and UI to clearly differentiate from MyJournal.
+- Change any support links (feedback, email, terms of service, etc) to your own systems.
+- Replace any analytics or error-collection systems with your own so we don't get super confused.
 
 ## Authors:
 
@@ -49,7 +56,3 @@ Firebase Auth – For secure login and user authentication
 - Tyler Vu
 - Jasmine Lim
 - Nhu Van
-
-### Version History:
-
-Version 1
