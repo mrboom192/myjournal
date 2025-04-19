@@ -11,27 +11,20 @@ In designing the MyJournal interface, our primary objectives were to enhance lea
 
 We aimed for users to utilize the app as they would any standard note-taking and journaling application, while also incorporating engaging features to boost productivity. MyJournal provides personalized prompts, tracking, and resources to help you in your daily life.
 
-## Features:
+The app features
 
 - **Journal Prompts** – Guided prompts tailored to help you write.
-- **Mood Tracking** – Set your mood with one tap and decide through.
-- **Friend Code System** – Share your journal journey with friends by exchanging unique codes.
-- **Challenges/Leaderboard** - Compete in challenges and earn points to work your way up in a ranking system.
-- **Multi-language Support** – Built-in to support for English and Spanish (with more coming).
-- **Monthly Entry Filtering** – Easily review your entries by month and stay consistent.
-- **Privacy** – Your journal is yours and myJournal uses private storage with Firestore along with a.
+- **Mood Tracking** – Set your mood with one tap and let your friends know how you are feeling!
+- **Friend Code System** – Share your journal journey with friends by exchanging friend codes!
+- **Challenges/Leaderboard** - Complete challenges and earn points to work your way up in a ranking system.
+- **Multi-language Support** – Built-in support for English and Spanish.
+- **Monthly Entry Filtering** – Easily review your entries by month and stay consistent in your habits!
+- **Privacy** – Your journal is yours and myJournal uses encrypted storage with Firestore.
 - **Error Prevention** - Our app ensures that users don't run into problems or make mistakes and are warned with alerts.
-
-### Built with:
-
-- React Native\*\* with Expo
-- Firebase Firestore for backend data storage and keeping track of users
-- i18n-js for languages
-- React Navigation and Expo Router for screen management
 
 ## Developement Resources:
 
-This is a React Native application, written in the TypeScript programming language. The app uses Firebase as for auth and storing data.
+This is a React Native (Expo) application, written in the TypeScript programming language. The app uses Firebase as for auth and storing data. The i18n-js library is used to manage languages.
 
 The [Build Instructions](./docs/build.md) are a good place to get started with the app itself.
 
