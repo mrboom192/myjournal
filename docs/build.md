@@ -33,13 +33,17 @@ This is the recommended way to run **MyJournal**.
 
 1. Make sure dependencies are installed:
 
+```bash
    npm install
+```
 
 2. Start the development server:
 
+```bash
    npx expo start
+```
 
-3. A QR code will appear in your terminal or browser window.  
+3. A QR code will appear in your terminal.  
    Open the camera app on your device and scan the QR code to launch the app.
 
 ⚠️ Your computer and mobile device must be on the same Wi-Fi network for this to work.
