@@ -63,7 +63,7 @@ const SignIn = () => {
           {/* Header Section */}
           <View style={styles.headerSection}>
             <Image
-              source={require("../assets/images/logo.png")}
+              source={require("@/assets/images/logo.png")}
               style={styles.logo}
             />
             <Text style={styles.title}>MyJournal</Text>
@@ -276,4 +276,3 @@ const styles = StyleSheet.create({
 });
 
 export default SignIn;
-

@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { db } from "@/firebaseConfig";
-import Modal from "react-native-modal";
 import i18n from "@/src/locales";
 import {
   doc,
@@ -28,34 +27,46 @@ import UserAvatar from "@/src/components/UserAvatar";
 import { useSession } from "@/src/contexts/AuthContext";
 import * as Clipboard from "expo-clipboard";
 import * as Haptics from "expo-haptics";
-import { Audio } from "expo-av";
 import Avatar from "@/src/components/Avatar";
 import Colors from "@/src/constants/Colors";
 import { PoppinsRegular, PoppinsSemiBold } from "@/src/components/StyledText";
+import LanguageBottomSheet from "@/src/components/BottomSheet/LanguageBottomSheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import EmojiBottomSheet from "@/src/components/BottomSheet/EmojiBottomSheet";
+import UserStats from "@/src/components/UserStats";
 
 const ProfileScreen = () => {
   const router = useRouter();
-  const { data, loading } = useUser();
+  const { data } = useUser();
   const { signOut, session } = useSession();
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [friendCodeInput, setFriendCodeInput] = useState("");
-  const [showFriends, setShowFriends] = useState(false);
-  const [showLanguageOptions, setShowLanguageOptions] = useState(false);
-  const [language, setLanguage] = useState(i18n.locale);
-  const [, forceUpdate] = useState(0); // State to force re-render
 
+  // Refs for each bottom sheet which are used below
+  const LanguageBottomSheetRef = useRef<BottomSheetModal | null>(null);
+  const EmojiBottomSheetRef = useRef<BottomSheetModal | null>(null);
+
+  // Imperative function to show the language bottom sheet
+  function handleShowLanguageBottomSheet() {
+    LanguageBottomSheetRef.current?.present();
+  }
+
+  // Imperative function to show the emoji bottom sheet
+  function handleShowEmojiBottomSheet() {
+    EmojiBottomSheetRef.current?.present();
+  }
+
+  // Logs you out of your account
   function handleLogout() {
     signOut();
   }
 
+  // Copies the friend code to your device clipboard, and vibrates the phone too
   async function handleCopy() {
     await Clipboard.setStringAsync(data.friendCode);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }
 
-  const [mood, setMood] = useState("😊");
-  const [isMoodVisible, setMoodVisible] = useState(false);
-
+  // Adds a friend to your user document on firestore
   const handleAddFriend = async () => {
     const code = friendCodeInput.trim().toUpperCase();
     const q = query(collection(db, "users"), where("friendCode", "==", code));
@@ -102,20 +113,9 @@ const ProfileScreen = () => {
     }
   };
 
-  const switchToSpanish = () => {
-    i18n.locale = "es";
-  };
-  const switchToEnglish = () => {
-    i18n.locale = "en";
-  };
-  if (loading) {
-    return <PoppinsRegular>Loading...</PoppinsRegular>;
-  }
-
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
+    <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
-      {/* Scrollable content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header with profile and menu */}
         <View style={styles.profileHeader}>
@@ -220,7 +220,10 @@ const ProfileScreen = () => {
             ) : (
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {data.friends.map((friend: any, index: number) => (
-                  <View key={friend.id || index} style={styles.friendAvatarContainer}>
+                  <View
+                    key={friend.id || index}
+                    style={styles.friendAvatarContainer}
+                  >
                     <Avatar
                       size={40}
                       initials={
@@ -229,6 +232,7 @@ const ProfileScreen = () => {
                           : ""
                       }
                       uri={friend?.image || undefined}
+                      mood={friend.mood}
                     />
                   </View>
                 ))}
@@ -240,34 +244,17 @@ const ProfileScreen = () => {
         {/* Mood*/}
         <TouchableOpacity
           style={styles.moodButton}
-          onPress={() => setMoodVisible(true)}
+          onPress={handleShowEmojiBottomSheet}
         >
           <PoppinsRegular style={styles.moodButtonText}>
             {i18n.t("profile.mood")}
           </PoppinsRegular>
-          <PoppinsRegular style={styles.moodEmoji}>{mood}</PoppinsRegular>
+          <PoppinsRegular style={styles.moodEmoji}>
+            {data.mood ? data.mood : ""}
+          </PoppinsRegular>
         </TouchableOpacity>
 
-        {/* Statistics */}
-        <View style={styles.statsContainer}>
-          {/* <View style={styles.statItem}>
-           <PoppinsRegular style={styles.statValue}>16</PoppinsRegular>
-           <PoppinsRegular style={styles.statLabel}>{i18n.t("profile.days")}</PoppinsRegular>
-           <PoppinsRegular style={styles.statLabel}>{i18n.t("profile.currentStreak")}</PoppinsRegular>
-         </View> */}
-          <View style={styles.statItem}>
-            <PoppinsRegular style={styles.statValue}>12</PoppinsRegular>
-            <PoppinsRegular style={styles.statLabel}>
-              {i18n.t("profile.entriesThisYear")}
-            </PoppinsRegular>
-          </View>
-          <View style={styles.statItem}>
-            <PoppinsRegular style={styles.statValue}>2,153</PoppinsRegular>
-            <PoppinsRegular style={styles.statLabel}>
-              {i18n.t("profile.wordsWritten")}
-            </PoppinsRegular>
-          </View>
-        </View>
+        <UserStats />
 
         {/* Settings */}
         <PoppinsSemiBold style={styles.settingsHeader}>
@@ -283,27 +270,12 @@ const ProfileScreen = () => {
             </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.settingsItem}>
-            <PoppinsRegular style={styles.settingsItemText}>
-              {i18n.t("Notifications")}
-            </PoppinsRegular>
-            <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
-          </TouchableOpacity>
-
           <TouchableOpacity
-            style={styles.settingsItem}
-            onPress={() => setShowLanguageOptions(true)}
+            style={[styles.settingsItem, { borderBottomWidth: 0 }]}
+            onPress={handleShowLanguageBottomSheet}
           >
             <PoppinsRegular style={styles.settingsItemText}>
               {i18n.t("Language")}
-            </PoppinsRegular>
-            <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.settingsItem}>
-            <PoppinsRegular style={styles.settingsItemText}>
-              {i18n.t("Appearance")}
             </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
@@ -315,98 +287,9 @@ const ProfileScreen = () => {
           </PoppinsRegular>
         </TouchableOpacity>
       </ScrollView>
-      <Modal
-        isVisible={showLanguageOptions}
-        onBackdropPress={() => setShowLanguageOptions(false)}
-        style={styles.modal}
-      >
-        <View style={styles.languageContainer}>
-          <PoppinsRegular style={styles.emojiPickerTitle}>
-            Select Language
-          </PoppinsRegular>
 
-          <TouchableOpacity
-            onPress={() => {
-              i18n.locale = "en";
-              setShowLanguageOptions(false);
-            }}
-          >
-            <PoppinsRegular
-              style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}
-            >
-              English
-            </PoppinsRegular>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              i18n.locale = "es";
-              setShowLanguageOptions(false);
-            }}
-          >
-            <PoppinsRegular
-              style={{ color: "#fff", fontSize: 18, marginVertical: 8 }}
-            >
-              Español
-            </PoppinsRegular>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-
-      <Modal
-        isVisible={isMoodVisible}
-        onBackdropPress={() => setMoodVisible(false)}
-        onSwipeComplete={() => setMoodVisible(false)}
-        swipeDirection="down"
-        style={styles.modal}
-      >
-        <View style={styles.emojiContainer}>
-          <PoppinsRegular style={styles.emojiPickerTitle}>
-            Pick your mood
-          </PoppinsRegular>
-          <View style={styles.emojiGrid}>
-            {[
-              "😊",
-              "😃",
-              "🤣",
-              "😔",
-              "😢",
-              "😫",
-              "😤",
-              "😡",
-              "😴",
-              "😎",
-              "😭",
-              "🤫",
-              "🥶",
-              "😑",
-              "🤔",
-              "😍",
-              "😇",
-              "😳",
-              "😈",
-              "🤪",
-              "🤓",
-              "🤩",
-              "🤯",
-              "🥳",
-            ].map((emoji) => (
-              <TouchableOpacity
-                key={emoji}
-                onPress={() => {
-                  setMood(emoji);
-                  setMoodVisible(false);
-                }}
-                style={styles.emojiButton}
-              >
-                <PoppinsRegular style={{ fontSize: 28 }}>
-                  {emoji}
-                </PoppinsRegular>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </Modal>
+      <LanguageBottomSheet ref={LanguageBottomSheetRef} />
+      <EmojiBottomSheet ref={EmojiBottomSheetRef} />
     </SafeAreaView>
   );
 };
@@ -484,37 +367,6 @@ const styles = StyleSheet.create({
   friendAvatarContainer: {
     marginRight: 10,
   },
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "#2a2933",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-  },
-
-  statItem: {
-    flex: 1,
-    alignItems: "center", 
-  },
-
-  statValue: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#f0883e",
-    marginBottom: 4, // add spacing between value and label
-  },
-
-  statLabel: {
-    color: "#9b9a9e",
-    fontSize: 14,
-    textAlign: "center",
-  },
-
-  statSubLabel: {
-    color: "#9b9a9e",
-    fontSize: 12,
-  },
   settingsHeader: {
     color: "#fff",
     fontSize: 18,
@@ -560,7 +412,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     alignItems: "center",
   },
-
   emojiContainer: {
     position: "absolute",
     bottom: 0,
@@ -578,23 +429,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     marginBottom: 12,
-  },
-  emojiGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 2,
-  },
-  emojiButton: {
-    backgroundColor: "#444",
-    padding: 6,
-    borderRadius: 12,
-    margin: 6,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  modal: {
-    justifyContent: "flex-end",
-    margin: 0,
   },
 });

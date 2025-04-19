@@ -9,9 +9,8 @@ import {
   where,
 } from "firebase/firestore";
 import { useUser } from "@/src/contexts/UserContext";
-import { PoppinsRegular, PoppinsSemiBold } from "../StyledText";
+import { PoppinsSemiBold } from "../StyledText";
 import i18n from "@/src/locales";
-import { Ionicons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import Colors from "@/src/constants/Colors";
 import NoCollections from "./NoCollections";
@@ -77,6 +76,7 @@ const Collections = () => {
       {collections.length > 0 ? (
         <ScrollView
           horizontal
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             paddingLeft: 16,
             flexDirection: "row",

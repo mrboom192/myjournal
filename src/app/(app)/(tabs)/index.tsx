@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { subMonths, addMonths, isSameMonth } from "date-fns";
 
-import JournalCalendar from "@/src/components/JournalCalendar";
-import { useUser } from "@/src/contexts/UserContext";
 import PromptsCard from "@/src/components/PromptsCard";
 import Collections from "@/src/components/Collections/Collections";
 import ChallengesButton from "@/src/components/buttons/ChallengesButton";
@@ -12,19 +10,17 @@ import Entries from "@/src/components/Entries";
 import MonthSelector from "@/src/components/MonthSelector";
 
 const HomePage = () => {
-  const { loading } = useUser();
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
+  // Derived state that just checks whether or not the date is the current month and year
   const isCurrentMonthYear = isSameMonth(new Date(), selectedDate);
 
+  // Sets month to the previous month
   const handlePrevMonth = () => {
     setSelectedDate((prev) => subMonths(prev, 1));
   };
 
+  // Sets month to the next month
   const handleNextMonth = () => {
     setSelectedDate((prev) => addMonths(prev, 1));
   };

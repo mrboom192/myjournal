@@ -8,7 +8,6 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack } from "expo-router";
 import { useUser } from "@/src/contexts/UserContext";
 import { doc, setDoc } from "firebase/firestore";
@@ -19,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 const AccountInfo = () => {
   const { data } = useUser();
 
+  // Store an original copy of the account data
   const original = {
     firstName: data.firstName,
     lastName: data.lastName,

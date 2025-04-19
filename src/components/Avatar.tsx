@@ -17,6 +17,7 @@ const Avatar = ({
   initials = "",
   color = "#ddd",
   loading = false,
+  mood,
 }: {
   onPress?: null | (() => void);
   size: number;
@@ -24,6 +25,7 @@ const Avatar = ({
   initials?: string;
   color?: string;
   loading?: boolean;
+  mood?: string;
 }) => {
   const opacity = useSharedValue(1);
 
@@ -54,7 +56,7 @@ const Avatar = ({
         height: size,
         backgroundColor: color,
         borderRadius: 9999,
-        overflow: "hidden",
+        position: "relative",
       }}
       onPress={onPress}
     >
@@ -74,7 +76,7 @@ const Avatar = ({
         <>
           <Image
             source={{ uri }}
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: "100%", height: "100%", borderRadius: 9999 }}
             resizeMode="cover"
           />
           <View
@@ -102,6 +104,18 @@ const Avatar = ({
         >
           {initials}
         </PoppinsSemiBold>
+      )}
+      {mood && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            pointerEvents: "none",
+          }}
+        >
+          <Text>{mood}</Text>
+        </View>
       )}
     </Pressable>
   );

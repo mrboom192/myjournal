@@ -1,13 +1,20 @@
-import { Text } from "react-native";
 import { Redirect, Stack } from "expo-router";
 import { useSession } from "@/src/contexts/AuthContext";
 import { auth } from "@/firebaseConfig.js";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
+import i18n from "@/src/locales";
+import { useUser } from "@/src/contexts/UserContext";
 
 export default function AppLayout() {
   const { signOut, session, isLoading } = useSession();
   const [isAuthReady, setIsAuthReady] = useState(false);
+  const { data, loading } = useUser();
+
+  // Set language
+  useEffect(() => {
+    i18n.locale = data?.locale ?? "en";
+  }, [data?.locale]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -17,9 +24,9 @@ export default function AppLayout() {
     return () => unsubscribe();
   }, []);
 
-  // You can keep the splash screen open, or render a loading screen like we do here.
-  if (isLoading || !isAuthReady) {
-    return <Text>Loading...</Text>;
+  // You can keep the splash screen open, or render a nothing like we do here.
+  if (isLoading || !isAuthReady || loading) {
+    return null;
   }
 
   // Only require authentication within the (app) group's layout as users

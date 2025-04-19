@@ -5,7 +5,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { auth, db, storage } from "../../firebaseConfig";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUser } from "../contexts/UserContext";
 
@@ -140,6 +140,17 @@ const UserAvatar = ({
           <MaterialIcons name="file-upload" size={16} color="#000" />
         </View>
       )}
+
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <Text>{data.mood}</Text>
+      </View>
     </View>
   );
 };
