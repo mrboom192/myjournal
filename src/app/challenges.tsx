@@ -132,7 +132,7 @@ const Challenges = () => {
       <>
         {/* Streak Card */}
         <View style={styles.streakContainer}>
-          <Text style={styles.streakText}>{streak} Days Streak 🔥</Text>
+          <Text style={styles.streakText}>{streak} {streak === 1 ? "Day" : "Days"} Streak 🔥</Text>
         </View>
 
         {/* Challenge List */}
