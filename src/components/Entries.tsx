@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
 import {
   query,
   collection,
@@ -76,42 +76,81 @@ const Entries = ({ month, year }: Props) => {
 
   if (isFutureDate) {
     return (
-      <PoppinsSemiBold
-        style={{
-          width: "100%",
-          textAlign: "center",
-          color: Colors.grey,
-          marginBottom: 24,
-        }}
-      >
-        {`${formattedMonth} is ${daysAway} day${
-          daysAway !== 1 ? "s" : ""
-        } away!`}
-      </PoppinsSemiBold>
+      <View style={styles.entriesContainer}>
+        <Divider />
+        <PoppinsSemiBold
+          style={{
+            width: "100%",
+            textAlign: "center",
+            color: Colors.grey,
+            marginBottom: 24,
+          }}
+        >
+          {`${formattedMonth} is ${daysAway} day${
+            daysAway !== 1 ? "s" : ""
+          } away!`}
+        </PoppinsSemiBold>
+      </View>
     );
   }
 
   if (entries.length === 0) {
     return (
-      <PoppinsSemiBold
-        style={{
-          width: "100%",
-          textAlign: "center",
-          color: Colors.grey,
-        }}
-      >
-        No entries for this month.
-      </PoppinsSemiBold>
+      <View style={styles.entriesContainer}>
+        <Divider />
+        <PoppinsSemiBold
+          style={{
+            width: "100%",
+            textAlign: "center",
+            color: Colors.grey,
+          }}
+        >
+          No entries for this month.
+        </PoppinsSemiBold>
+      </View>
     );
   }
 
   return (
-    <>
+    <View style={styles.entriesContainer}>
+      <Divider />
       {entries.map((entry) => (
         <JournalEntry key={entry.id} data={entry} />
       ))}
-    </>
+    </View>
+  );
+};
+
+const Divider = () => {
+  return (
+    <View style={styles.dividerContainer}>
+      <View style={styles.line} />
+      <PoppinsSemiBold style={styles.dividerText}>
+        Journal Entries
+      </PoppinsSemiBold>
+      <View style={styles.line} />
+    </View>
   );
 };
 
 export default Entries;
+
+const styles = StyleSheet.create({
+  entriesContainer: {
+    flexDirection: "column",
+    marginHorizontal: 16,
+    gap: 16,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
+  },
+  line: {
+    borderBottomWidth: 2,
+    borderBottomColor: Colors.card,
+    flex: 1,
+    borderRadius: 9999,
+  },
+  dividerText: { color: Colors.card },
+});

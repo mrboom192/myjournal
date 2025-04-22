@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  Pressable,
   StyleSheet,
   ScrollView,
   Image,

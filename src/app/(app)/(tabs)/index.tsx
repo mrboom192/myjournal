@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 import { subMonths, addMonths, isSameMonth } from "date-fns";
 
 import PromptsCard from "@/src/components/PromptsCard";
@@ -8,6 +8,7 @@ import ChallengesButton from "@/src/components/buttons/ChallengesButton";
 import Colors from "@/src/constants/Colors";
 import Entries from "@/src/components/Entries";
 import MonthSelector from "@/src/components/MonthSelector";
+import { PoppinsSemiBold } from "@/src/components/StyledText";
 
 const HomePage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());

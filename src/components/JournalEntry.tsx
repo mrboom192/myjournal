@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import i18n from "../locales";
 import { Entry } from "../types/Entry";
 import { PoppinsRegular, PoppinsSemiBold } from "./StyledText";
+import Colors from "../constants/Colors";
 
 const JournalEntry = ({ data }: { data: Entry }) => {
   return (
@@ -40,10 +41,9 @@ export default JournalEntry;
 
 const styles = StyleSheet.create({
   journalEntryCard: {
-    backgroundColor: "#2a2933",
+    backgroundColor: Colors.card,
     borderRadius: 12,
     padding: 20,
-    marginHorizontal: 16,
   },
   entryTitle: {
     color: "#fff",

@@ -3,9 +3,7 @@ import { useSession } from "@/src/contexts/AuthContext";
 import { auth } from "@/firebaseConfig.js";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import i18n from "@/src/locales";
 import { useUser } from "@/src/contexts/UserContext";
-import { useLanguage } from "@/src/contexts/LanguageContext";
 
 export default function AppLayout() {
   const { signOut, session, isLoading } = useSession();

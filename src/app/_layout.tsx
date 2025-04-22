@@ -9,13 +9,12 @@ import { SessionProvider } from "../contexts/AuthContext";
 import { UserProvider } from "../contexts/UserContext";
 import * as SplashScreen from "expo-splash-screen";
 import { Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Poppins_400Regular,
   Poppins_600SemiBold,
 } from "@expo-google-fonts/poppins";
 import { StatusBar } from "expo-status-bar";
-import i18n from "../locales";
 
 export {
   // Catch any errors thrown by the Layout component.
