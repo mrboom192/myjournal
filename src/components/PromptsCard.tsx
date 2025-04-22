@@ -108,7 +108,7 @@ const PromptsCard = () => {
           size={16}
           color="rgba(255,255,255,0.7)"
         />
-        <Text style={styles.promptActionText}>Tap to write</Text>
+        <Text style={styles.promptActionText}>{t("home.tapToWrite")}</Text>
       </View>
     </TouchableOpacity>
   );

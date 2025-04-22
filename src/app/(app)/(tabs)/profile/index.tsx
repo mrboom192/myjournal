@@ -285,7 +285,7 @@ const ProfileScreen = () => {
 
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <PoppinsRegular style={styles.logoutButtonText}>
-            Log out
+            {t("profile.logout")}
           </PoppinsRegular>
         </TouchableOpacity>
       </ScrollView>
