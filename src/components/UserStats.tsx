@@ -2,21 +2,23 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 
 import { PoppinsRegular } from "./StyledText";
-import i18n from "../locales";
+import { useTranslation } from "../hooks/useTranslation";
 
 const UserStats = () => {
+  const t = useTranslation();
+
   return (
     <View style={styles.statsContainer}>
       <View style={styles.statItem}>
         <PoppinsRegular style={styles.statValue}>12</PoppinsRegular>
         <PoppinsRegular style={styles.statLabel}>
-          {i18n.t("profile.entriesThisYear")}
+          {t("profile.entriesThisYear")}
         </PoppinsRegular>
       </View>
       <View style={styles.statItem}>
         <PoppinsRegular style={styles.statValue}>2,153</PoppinsRegular>
         <PoppinsRegular style={styles.statLabel}>
-          {i18n.t("profile.wordsWritten")}
+          {t("profile.wordsWritten")}
         </PoppinsRegular>
       </View>
     </View>

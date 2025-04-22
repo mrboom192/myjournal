@@ -2,11 +2,13 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { PoppinsSemiBold } from "../StyledText";
-import i18n from "@/src/locales";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
+import { useTranslation } from "@/src/hooks/useTranslation";
 
 const ChallengesButton = () => {
+  const t = useTranslation();
+
   const handleOpenChallenges = () => {
     router.push("/challenges");
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -21,7 +23,7 @@ const ChallengesButton = () => {
         <Ionicons name="trophy-outline" size={20} color="#FFC107" />
       </View>
       <PoppinsSemiBold style={styles.challengesButtonText}>
-        {i18n.t("home.viewChallenges")}
+        {t("home.viewChallenges")}
       </PoppinsSemiBold>
     </TouchableOpacity>
   );

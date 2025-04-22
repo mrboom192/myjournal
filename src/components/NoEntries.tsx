@@ -1,10 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { PoppinsSemiBold } from "./StyledText";
-import i18n from "../locales";
 import Colors from "../constants/Colors";
+import { useTranslation } from "../hooks/useTranslation";
 
 const NoEntries = ({ formattedMonthYear }: { formattedMonthYear: string }) => {
+  const t = useTranslation();
+
   return (
     <View
       style={{
@@ -21,7 +23,7 @@ const NoEntries = ({ formattedMonthYear }: { formattedMonthYear: string }) => {
           color: Colors.grey,
         }}
       >
-        {i18n.t("home.noEntries", { monthYear: formattedMonthYear })}
+        {t("home.noEntries", { monthYear: formattedMonthYear })}
       </PoppinsSemiBold>
     </View>
   );

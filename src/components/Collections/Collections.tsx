@@ -10,14 +10,15 @@ import {
 } from "firebase/firestore";
 import { useUser } from "@/src/contexts/UserContext";
 import { PoppinsSemiBold } from "../StyledText";
-import i18n from "@/src/locales";
 import { Link, router } from "expo-router";
 import Colors from "@/src/constants/Colors";
 import NoCollections from "./NoCollections";
+import { useTranslation } from "@/src/hooks/useTranslation";
 
 const Collections = () => {
   const [collections, setCollections] = useState<any[]>([]);
   const { data, loading } = useUser();
+  const t = useTranslation();
 
   useEffect(() => {
     const db = getFirestore();
@@ -55,7 +56,7 @@ const Collections = () => {
         }}
       >
         <PoppinsSemiBold style={styles.sectionTitle}>
-          {i18n.t("home.collections")}
+          {t("home.collections")}
         </PoppinsSemiBold>
         <Link href={"/(app)/(modals)/add-collection"} asChild>
           <TouchableOpacity

@@ -2,23 +2,10 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import i18n from "../locales";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PoppinsSemiBold } from "./StyledText";
 import Colors from "../constants/Colors";
-
-const journalPrompts = [
-  i18n.t("prompts.grateful"),
-  i18n.t("prompts.smile"),
-  i18n.t("prompts.learned"),
-  i18n.t("prompts.lookForward"),
-  i18n.t("prompts.challenge"),
-  i18n.t("prompts.inspires"),
-  i18n.t("prompts.goal"),
-  i18n.t("prompts.memory"),
-  i18n.t("prompts.feeling"),
-  i18n.t("prompts.proud"),
-];
+import { useTranslation } from "../hooks/useTranslation";
 
 const PROMPT_DURATION_SECONDS = 60;
 
@@ -27,6 +14,20 @@ const PromptsCard = () => {
   const [promptProgress, setPromptProgress] = useState(0);
   const promptIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const t = useTranslation();
+
+  const journalPrompts = [
+    t("prompts.grateful"),
+    t("prompts.smile"),
+    t("prompts.learned"),
+    t("prompts.lookForward"),
+    t("prompts.challenge"),
+    t("prompts.inspires"),
+    t("prompts.goal"),
+    t("prompts.memory"),
+    t("prompts.feeling"),
+    t("prompts.proud"),
+  ];
 
   // Set up the interval for changing prompts
   useEffect(() => {

@@ -5,8 +5,11 @@ import i18n from "../locales";
 import { Entry } from "../types/Entry";
 import { PoppinsRegular, PoppinsSemiBold } from "./StyledText";
 import Colors from "../constants/Colors";
+import { useTranslation } from "../hooks/useTranslation";
 
 const JournalEntry = ({ data }: { data: Entry }) => {
+  const t = useTranslation();
+
   return (
     <TouchableOpacity
       style={styles.journalEntryCard}
@@ -25,7 +28,7 @@ const JournalEntry = ({ data }: { data: Entry }) => {
     >
       <PoppinsSemiBold style={styles.entryTitle}>{data.title}</PoppinsSemiBold>
       <PoppinsRegular style={styles.entryDate}>
-        {i18n.t("home.createdOn")}{" "}
+        {t("home.createdOn")}{" "}
         {data.createdAt?.toDate().toLocaleDateString(i18n.locale)}
       </PoppinsRegular>
 

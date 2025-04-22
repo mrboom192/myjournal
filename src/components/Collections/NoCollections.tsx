@@ -1,14 +1,16 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import { PoppinsSemiBold } from "../StyledText";
-import i18n from "../../locales";
 import Colors from "@/src/constants/Colors";
+import { useTranslation } from "@/src/hooks/useTranslation";
 
 const NoCollections = () => {
+  const t = useTranslation();
+
   return (
     <View style={styles.emptyState}>
       <PoppinsSemiBold style={styles.emptyStateText}>
-        {i18n.t("home.noCollections")}
+        {t("home.noCollections")}
       </PoppinsSemiBold>
     </View>
   );
