@@ -1,17 +1,18 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import UserAvatar from "./UserAvatar";
 import { PoppinsSemiBold } from "./StyledText";
-import i18n from "../locales";
 import { useUser } from "../contexts/UserContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors from "../constants/Colors";
+import { useTranslation } from "../hooks/useTranslation";
 
 const HomeHeader = () => {
   const { data, loading } = useUser();
+  const t = useTranslation();
 
   const handleSearchPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -28,7 +29,7 @@ const HomeHeader = () => {
         <View style={styles.greetingRow}>
           <UserAvatar size={40} canUpload={false} />
           <PoppinsSemiBold style={styles.greeting}>
-            {i18n.t("home.greeting", { name: data.firstName })}
+            {t("home.greeting", { name: data.firstName })}
           </PoppinsSemiBold>
         </View>
         <TouchableOpacity

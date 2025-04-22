@@ -17,7 +17,7 @@ const BottomSheetModalComponent = forwardRef<
   BottomSheetModal,
   BottomSheetModalComponentProps
 >(({ children }, ref) => {
-  const snapPoints = useMemo(() => ["50%"], []);
+  const snapPoints = useMemo(() => ["35%"], []);
 
   // Renders
   const renderBackdrop = useCallback(

@@ -34,12 +34,14 @@ import LanguageBottomSheet from "@/src/components/BottomSheet/LanguageBottomShee
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import EmojiBottomSheet from "@/src/components/BottomSheet/EmojiBottomSheet";
 import UserStats from "@/src/components/UserStats";
+import { useTranslation } from "@/src/hooks/useTranslation";
 
 const ProfileScreen = () => {
   const router = useRouter();
   const { data } = useUser();
   const { signOut, session } = useSession();
   const [friendCodeInput, setFriendCodeInput] = useState("");
+  const t = useTranslation();
 
   // Refs for each bottom sheet which are used below
   const LanguageBottomSheetRef = useRef<BottomSheetModal | null>(null);
@@ -135,7 +137,7 @@ const ProfileScreen = () => {
             style={{ flexDirection: "row", alignItems: "center", marginTop: 8 }}
           >
             <PoppinsRegular style={styles.sectionTitle}>
-              {i18n.t("profile.friendCode")}:{" "}
+              {t("profile.friendCode")}:{" "}
             </PoppinsRegular>
             <PoppinsRegular
               style={{ color: "#fff", fontWeight: "500", fontSize: 16 }}
@@ -155,7 +157,7 @@ const ProfileScreen = () => {
           {/* Add Friend */}
           <View style={{ marginTop: 20 }}>
             <PoppinsRegular style={styles.sectionTitle}>
-              {i18n.t("profile.addFriend")}
+              {t("profile.addFriend")}
             </PoppinsRegular>
 
             <View style={{ flexDirection: "row", marginTop: 8 }}>
@@ -167,7 +169,7 @@ const ProfileScreen = () => {
                   color: "#fff",
                   borderRadius: 8,
                 }}
-                placeholder={i18n.t("profile.enterCode")}
+                placeholder={t("profile.enterCode")}
                 placeholderTextColor="#888"
                 value={friendCodeInput}
                 onChangeText={setFriendCodeInput}
@@ -183,7 +185,7 @@ const ProfileScreen = () => {
                 }}
               >
                 <PoppinsRegular style={{ color: "#fff", fontWeight: "600" }}>
-                  {i18n.t("profile.add")}
+                  {t("profile.add")}
                 </PoppinsRegular>
               </TouchableOpacity>
             </View>
@@ -195,11 +197,11 @@ const ProfileScreen = () => {
           <View style={styles.friendsTitleRow}>
             <PoppinsRegular style={styles.sectionTitle}>
               {!data.friends || data.friends.length === 0
-                ? i18n.t("profile.noFriends")
+                ? t("profile.noFriends")
                 : `${data.friends.length} ${
                     data.friends.length === 1
-                      ? i18n.t("profile.friend")
-                      : i18n.t("profile.friends")
+                      ? t("profile.friend")
+                      : t("profile.friends")
                   }`}
             </PoppinsRegular>
 
@@ -207,7 +209,7 @@ const ProfileScreen = () => {
               onPress={() => router.push("/(app)/(modals)/friends")}
             >
               <PoppinsRegular style={styles.seeAllText}>
-                {i18n.t("profile.seeAll")}{" "}
+                {t("profile.seeAll")}{" "}
                 <Ionicons name="chevron-forward" size={16} color="#9b9a9e" />
               </PoppinsRegular>
             </TouchableOpacity>
@@ -247,7 +249,7 @@ const ProfileScreen = () => {
           onPress={handleShowEmojiBottomSheet}
         >
           <PoppinsRegular style={styles.moodButtonText}>
-            {i18n.t("profile.mood")}
+            {t("profile.mood")}
           </PoppinsRegular>
           <PoppinsRegular style={styles.moodEmoji}>
             {data.mood ? data.mood : ""}
@@ -258,7 +260,7 @@ const ProfileScreen = () => {
 
         {/* Settings */}
         <PoppinsSemiBold style={styles.settingsHeader}>
-          {i18n.t("profile.settings")}
+          {t("profile.settings")}
         </PoppinsSemiBold>
         <View style={styles.settingsContainer}>
           <TouchableOpacity
@@ -266,7 +268,7 @@ const ProfileScreen = () => {
             onPress={() => router.push("/(app)/(other)/account-info")}
           >
             <PoppinsRegular style={styles.settingsItemText}>
-              {i18n.t("Account info")}
+              {t("Account info")}
             </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>
@@ -275,7 +277,7 @@ const ProfileScreen = () => {
             onPress={handleShowLanguageBottomSheet}
           >
             <PoppinsRegular style={styles.settingsItemText}>
-              {i18n.t("Language")}
+              {t("Language")}
             </PoppinsRegular>
             <Ionicons name="chevron-forward" size={22} color="#9b9a9e" />
           </TouchableOpacity>

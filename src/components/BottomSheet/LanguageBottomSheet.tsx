@@ -6,6 +6,7 @@ import { PoppinsRegular } from "../StyledText";
 import { auth, db } from "@/firebaseConfig";
 import React, { forwardRef } from "react";
 import i18n from "@/src/locales";
+import { useLanguage } from "@/src/contexts/LanguageContext";
 
 interface LanguageBottomSheetProps {}
 
@@ -13,6 +14,8 @@ const LanguageBottomSheet = forwardRef<
   BottomSheetModalMethods,
   LanguageBottomSheetProps
 >((_props, ref) => {
+  const { changeLanguage } = useLanguage();
+
   // Update the mood and store it in firebase
   async function handleChooseLocale(locale: string) {
     if (!auth.currentUser?.uid) {
@@ -26,6 +29,7 @@ const LanguageBottomSheet = forwardRef<
     });
 
     i18n.locale = locale;
+    changeLanguage(locale);
   }
 
   return (

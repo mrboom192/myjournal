@@ -2,31 +2,30 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import i18n from "@/src/locales";
 
 type LanguageContextType = {
-  language: string;
-  setLanguage: (lang: string) => void;
+  locale: string;
+  changeLanguage: (lang: string) => void;
 };
 
 const LanguageContext = createContext<LanguageContextType>({
-  language: "en",
-  setLanguage: () => {},
+  locale: "en",
+  changeLanguage: () => {},
 });
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [language, setLanguageState] = useState("en");
-
-  const setLanguage = (lang: string) => {
-    i18n.locale = lang;
-    setLanguageState(lang);
-  };
+  const [locale, setLocale] = useState(i18n.locale);
 
   useEffect(() => {
-    i18n.locale = language;
-  }, [language]);
+    i18n.locale = locale;
+  }, [locale]);
+
+  const changeLanguage = (newLocale: string) => {
+    setLocale(newLocale);
+  };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ locale, changeLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
